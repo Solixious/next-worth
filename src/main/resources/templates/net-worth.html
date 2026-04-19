@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    'Net Worth Calculator - NextWorth',
+    'Calculate your current net worth and project your future financial position. Track assets, liabilities, income, expenses, and SIP investments.',
+    'net worth calculator, future net worth, asset liability calculator, sip calculator, financial planning india'
+)}">
+    <!-- page-specific stylesheet loaded after the fragment head -->
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Page-specific stylesheet -->
+<link rel="stylesheet" th:href="@{/css/net-worth.css(v=8)}">
+
+<main>
+
+<!-- ===== Hero ===== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <p class="eyebrow">Financial Tools</p>
+            <h1>Net Worth Calculator</h1>
+            <p class="hero-subtitle">
+                Enter your assets, liabilities, income, and investments.
+                See your current net worth and how it could grow over time.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Calculator ===== -->
+<section class="nw-section">
+<div class="container">
+
+<div class="nw-layout">
+
+    <!-- ── Left column: all input sections ── -->
+    <div class="nw-inputs-col">
+
+        <!-- Currency selector -->
+        <div class="currency-bar" id="currencyBar"></div>
+
+        <!-- Assets -->
+        <div class="calc-card">
+            <div class="calc-card-header">
+                <h2 class="calc-card-title">Assets</h2>
+                <span class="calc-card-total" id="totalAssetsDisplay">&#8377;0</span>
+            </div>
+            <div class="row-list" id="assetRows"></div>
+            <button class="add-row-btn" id="addAssetBtn" type="button">+ Add Asset</button>
+        </div>
+
+        <!-- Liabilities -->
+        <div class="calc-card">
+            <div class="calc-card-header">
+                <h2 class="calc-card-title">Liabilities</h2>
+                <span class="calc-card-total nw-negative" id="totalLiabilitiesDisplay">&#8377;0</span>
+            </div>
+            <div class="row-list" id="liabilityRows"></div>
+            <button class="add-row-btn" id="addLiabilityBtn" type="button">+ Add Liability</button>
+        </div>
+
+        <!-- Income -->
+        <div class="calc-card">
+            <div class="calc-card-header">
+                <h2 class="calc-card-title">Income Streams</h2>
+                <span class="calc-card-total" id="totalIncomeDisplay">&#8377;0 / yr</span>
+            </div>
+            <div class="row-list" id="incomeRows"></div>
+            <button class="add-row-btn" id="addIncomeBtn" type="button">+ Add Income Stream</button>
+        </div>
+
+        <!-- Expenses -->
+        <div class="calc-card">
+            <div class="calc-card-header">
+                <h2 class="calc-card-title">Recurring Expenses</h2>
+                <span class="calc-card-total nw-negative" id="totalExpensesDisplay">&#8377;0 / yr</span>
+            </div>
+            <div class="row-list" id="expenseRows"></div>
+            <button class="add-row-btn" id="addExpenseBtn" type="button">+ Add Expense</button>
+        </div>
+
+        <!-- SIP -->
+        <div class="calc-card">
+            <div class="calc-card-header">
+                <h2 class="calc-card-title">SIP / Investments</h2>
+                <span class="calc-card-subtitle">Ongoing monthly investment contributions</span>
+            </div>
+            <div class="row-list" id="sipRows"></div>
+            <button class="add-row-btn" id="addSipBtn" type="button">+ Add SIP</button>
+        </div>
+
+        <!-- EMI / Loan Payments -->
+        <div class="calc-card">
+            <div class="calc-card-header">
+                <h2 class="calc-card-title">EMI / Loan Payments</h2>
+                <span class="calc-card-total nw-negative" id="totalEMIDisplay">&#8377;0 / yr</span>
+            </div>
+            <div class="row-list" id="emiRows"></div>
+            <button class="add-row-btn" id="addEmiBtn" type="button">+ Add EMI</button>
+        </div>
+
+        <!-- Projection slider -->
+        <div class="proj-slider-bar">
+            <div class="proj-slider-header">
+                <span class="proj-slider-label">Projection Period</span>
+                <span class="proj-slider-value"><span id="projectionYearsDisplay">10</span> years</span>
+            </div>
+            <input type="range" id="projectionYears" min="1" max="40" value="10" class="proj-slider">
+            <div class="proj-slider-ticks">
+                <span>1 yr</span><span>10 yrs</span><span>20 yrs</span><span>30 yrs</span><span>40 yrs</span>
+            </div>
+        </div>
+
+        <button class="reset-btn" id="resetBtn" type="button">Reset Calculator</button>
+
+    </div><!-- /nw-inputs-col -->
+
+    <!-- ── Right column: sticky summary ── -->
+    <div class="nw-summary-col">
+        <div class="nw-summary-sticky">
+            <div class="nw-results-card" id="resultsCard">
+                <h2 class="results-title">Net Worth Summary</h2>
+                <div class="results-grid">
+
+                    <div class="result-group">
+                        <h3 class="result-group-title">Current Position</h3>
+                        <div class="result-row">
+                            <span class="result-label">Total Assets</span>
+                            <span class="result-value" id="r-totalAssets">&#8377;0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Liabilities</span>
+                            <span class="result-value nw-negative" id="r-totalLiabilities">&#8377;0</span>
+                        </div>
+                        <div class="result-row result-row-bold">
+                            <span class="result-label">Current Net Worth</span>
+                            <span class="result-value" id="r-currentNW">&#8377;0</span>
+                        </div>
+                    </div>
+
+                    <div class="result-group">
+                        <h3 class="result-group-title" id="r-futureGroupTitle">Projection (10 Years)</h3>
+                        <div class="result-row">
+                            <span class="result-label">Projected Assets</span>
+                            <span class="result-value" id="r-futureAssets">&#8377;0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Projected Liabilities</span>
+                            <span class="result-value nw-negative" id="r-futureLiabilities">&#8377;0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">SIP Corpus</span>
+                            <span class="result-value" id="r-sipFV">&#8377;0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Accumulated Surplus (cash)</span>
+                            <span class="result-value" id="r-surplusAccum">&#8377;0</span>
+                        </div>
+                        <div class="result-row result-row-bold">
+                            <span class="result-label">Future Net Worth</span>
+                            <span class="result-value" id="r-futureNW">&#8377;0</span>
+                        </div>
+                    </div>
+
+                    <div class="result-group">
+                        <h3 class="result-group-title">Annual Cashflow</h3>
+                        <div class="result-row">
+                            <span class="result-label">Total Annual Income</span>
+                            <span class="result-value" id="r-annualIncome">&#8377;0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Annual Expenses</span>
+                            <span class="result-value nw-negative" id="r-annualExpenses">&#8377;0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">EMI Payments</span>
+                            <span class="result-value nw-negative" id="r-annualEMI">&#8377;0</span>
+                        </div>
+                        <div class="result-row result-row-bold">
+                            <span class="result-label">Net Annual Surplus</span>
+                            <span class="result-value" id="r-surplus">&#8377;0</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="result-highlights" id="resultHighlights"></div>
+                <div class="result-interpretation" id="resultInterpretation"></div>
+            </div>
+        </div>
+    </div><!-- /nw-summary-col -->
+
+</div><!-- /nw-layout -->
+</div><!-- /container -->
+</section>
+
+<!-- ===== Content / FAQ ===== -->
+<section class="content-section">
+<div class="container">
+<div class="content-narrow">
+
+    <h2>What is Net Worth?</h2>
+    <p>
+        Net worth is the total value of everything you own minus everything you owe.
+        It is the single most honest measure of your financial health because it reflects
+        where you actually stand — not just how much you earn.
+    </p>
+
+    <h2>How is Net Worth Calculated?</h2>
+    <p>The formula is straightforward:</p>
+    <p class="formula-block">Net Worth = Total Assets &minus; Total Liabilities</p>
+    <p>
+        Assets include savings, investments, property, gold, fixed deposits, and anything
+        else of monetary value that you own. Liabilities include outstanding home loans,
+        car loans, personal loans, credit card dues, and any other debt.
+    </p>
+
+    <h2>How is Future Net Worth Projected?</h2>
+    <p>This calculator builds your future net worth from three components:</p>
+    <ul class="content-list">
+        <li><strong>Projected Assets:</strong> Each asset grows at its specified annual appreciation rate using compound growth.</li>
+        <li><strong>Projected Liabilities:</strong> Treated as outstanding at current value. Enter an annual reduction rate to model loan paydown.</li>
+        <li><strong>SIP Corpus:</strong> Monthly contributions with annual step-up, compounded at the expected annual return.</li>
+    </ul>
+    <p>
+        Your annual surplus (income minus expenses and EMIs) is shown separately in the summary.
+        To project its growth into your future net worth, add it as a SIP entry above.
+    </p>
+
+    <h2>Why Does Future Net Worth Matter?</h2>
+    <p>
+        Knowing your current net worth is a starting point. Projecting it forward reveals whether
+        you are on track for your goals — retirement, financial independence, or simply outpacing inflation.
+        Small changes in savings rate or investment return assumptions can have dramatic long-run effects.
+    </p>
+
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-list">
+        <article class="faq-item">
+            <h3>Should I include my home as an asset?</h3>
+            <p>
+                Yes. Include the current market value as an asset. If you have a home loan,
+                include the outstanding balance as a liability. The difference is your equity in the property.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>What growth rate should I use for assets?</h3>
+            <p>
+                Common assumptions: equity mutual funds at 10–12%, real estate at 5–8%,
+                gold at 7–8%, fixed deposits at 6–7%. Use realistic, not best-case, estimates.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Is my data saved anywhere?</h3>
+            <p>No. All calculations happen entirely in your browser. Nothing is sent or stored.</p>
+        </article>
+        <article class="faq-item">
+            <h3>What is a healthy net worth?</h3>
+            <p>
+                A common benchmark: Net Worth = (Age &minus; 25) &times; Annual Income &divide; 5.
+                More important than any benchmark is a consistently growing net worth year over year.
+            </p>
+        </article>
+    </div>
+
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- ===== Mobile compact bar ===== -->
+<div class="nw-mobile-bar" id="nwMobileBar" aria-label="Net worth quick summary">
+    <div class="nw-mobile-bar-content">
+        <div class="nw-mobile-bar-item">
+            <span class="nw-mobile-bar-label">Current NW</span>
+            <span class="nw-mobile-bar-value" id="mb-currentNW">&#8377;0</span>
+        </div>
+        <div class="nw-mobile-bar-sep"></div>
+        <div class="nw-mobile-bar-item">
+            <span class="nw-mobile-bar-label">Future NW</span>
+            <span class="nw-mobile-bar-value" id="mb-futureNW">&#8377;0</span>
+        </div>
+        <a href="#resultsCard" class="nw-mobile-bar-link">View Details &#8594;</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/net-worth.js(v=8)}"></script>
+
+</body>
+</html>

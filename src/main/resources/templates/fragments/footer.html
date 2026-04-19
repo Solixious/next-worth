@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+<footer th:fragment="footer" class="site-footer">
+    <div class="container">
+        <div class="footer-inner">
+            <p>&copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2026</span> NextWorth. All rights reserved.</p>
+            <nav class="footer-nav">
+                <a th:href="@{/}">Home</a>
+                <a th:href="@{/tools}">All Tools</a>
+                <a th:href="@{/about}">About</a>
+                <a th:href="@{/contact}">Contact</a>
+                <a th:href="@{/privacy-policy}">Privacy Policy</a>
+            </nav>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

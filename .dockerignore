@@ -1,0 +1,20 @@
+# Build output
+target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docs (not needed in image)
+README.md
+HELP.md
