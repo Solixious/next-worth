@@ -386,7 +386,8 @@
         var annInc       = income.reduce(function(s, i) { return s + i.monthly * 12; }, 0);
         var annExp       = expenses.reduce(function(s, e) { return s + e.monthly * 12; }, 0);
         var annEMI       = emis.reduce(function(s, emi) { return s + emi.monthly * 12; }, 0);
-        var surplus      = annInc - annExp - annEMI;
+        var annSIP       = sips.reduce(function(s, sip) { return s + sip.monthly * 12; }, 0);
+        var surplus      = annInc - annExp - annEMI - annSIP;
         var surplusAccum = surplus * years;
         var futureNW     = fAssets + sipFV + surplusAccum - fLiabs;
 
@@ -416,6 +417,8 @@
         setFmt('r-annualExpenses', annExp);
         var rEmiEl = el('r-annualEMI');
         if (rEmiEl) rEmiEl.textContent = fmt(annEMI);
+        var rSipEl = el('r-annualSIP');
+        if (rSipEl) rSipEl.textContent = fmt(annSIP);
         setValueEl('r-surplus', surplus);
 
         // Mobile compact bar
@@ -443,7 +446,7 @@
         // Interpretation
         var inEl = el('resultInterpretation');
         inEl.innerHTML = '';
-        buildInterpretation(curr.nw, futureNW, annInc, annExp + annEMI, surplus, sipFV, years).forEach(function(m) {
+        buildInterpretation(curr.nw, futureNW, annInc, annExp + annEMI + annSIP, surplus, sipFV, years).forEach(function(m) {
             var p = document.createElement('p');
             p.className = 'interp-msg';
             p.textContent = m;

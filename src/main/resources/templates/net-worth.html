@@ -12,7 +12,7 @@
 <header th:replace="~{fragments/header :: header}"></header>
 
 <!-- Page-specific stylesheet -->
-<link rel="stylesheet" th:href="@{/css/net-worth.css(v=8)}">
+<link rel="stylesheet" th:href="@{/css/net-worth.css(v=9)}">
 
 <main>
 
@@ -179,6 +179,10 @@
                             <span class="result-label">EMI Payments</span>
                             <span class="result-value nw-negative" id="r-annualEMI">&#8377;0</span>
                         </div>
+                        <div class="result-row">
+                            <span class="result-label">SIP Contributions</span>
+                            <span class="result-value nw-negative" id="r-annualSIP">&#8377;0</span>
+                        </div>
                         <div class="result-row result-row-bold">
                             <span class="result-label">Net Annual Surplus</span>
                             <span class="result-value" id="r-surplus">&#8377;0</span>
@@ -291,7 +295,7 @@
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 
-<script th:src="@{/js/net-worth.js(v=8)}"></script>
+<script th:src="@{/js/net-worth.js(v=9)}"></script>
 
 </body>
 </html>
