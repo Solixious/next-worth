@@ -3,12 +3,12 @@
 <head></head>
 <body>
 
-<header th:fragment="header" class="site-header">
+<header th:fragment="header" class="site-header" id="siteHeader">
     <div class="container">
         <div class="header-inner">
             <a th:href="@{/}" class="logo">NextWorth</a>
 
-            <nav class="main-nav">
+            <nav class="main-nav" id="mainNav" aria-label="Main navigation">
                 <ul>
                     <li><a th:href="@{/}">Home</a></li>
                     <li><a th:href="@{/net-worth-calculator}">Net Worth Calculator</a></li>
@@ -18,9 +18,16 @@
                     <li><a th:href="@{/tools}">All Tools</a></li>
                 </ul>
             </nav>
-            <button id="themeToggle" class="theme-toggle" type="button">
-                Dark Mode
-            </button>
+
+            <div class="header-actions">
+                <button id="themeToggle" class="theme-toggle" type="button">Dark Mode</button>
+                <button id="navToggle" class="nav-toggle" type="button"
+                        aria-label="Toggle menu" aria-expanded="false" aria-controls="mainNav">
+                    <span class="nav-toggle-bar"></span>
+                    <span class="nav-toggle-bar"></span>
+                    <span class="nav-toggle-bar"></span>
+                </button>
+            </div>
         </div>
     </div>
 </header>
