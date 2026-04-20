@@ -41,16 +41,29 @@
 .cat-title-row {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 10px;
     cursor: pointer;
     user-select: none;
+    padding: 6px 4px;
+    margin: -6px -4px;
+    border-radius: 8px;
+    transition: background 0.12s;
 }
+.cat-title-row:hover { background: rgba(0, 0, 0, 0.03); }
+[data-theme="dark"] .cat-title-row:hover { background: rgba(255, 255, 255, 0.05); }
 .cat-title-row:hover .calc-card-title { color: var(--color-primary); }
 .cat-arrow {
-    font-size: 0.72rem;
+    font-size: 14px;
     color: var(--color-text-muted);
     flex-shrink: 0;
     line-height: 1;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-light);
+    border-radius: 6px;
 }
 
 /* ===== Subcategory ===== */
@@ -59,6 +72,7 @@
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 12px;
+    background: var(--color-bg-white);
 }
 .subcat-wrapper:last-child { margin-bottom: 0; }
 
@@ -68,11 +82,11 @@
 .subcat-toggle {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
     background: none;
     border: none;
-    padding: 9px 14px;
+    padding: 12px 14px;
     font-size: 0.84rem;
     font-weight: 600;
     color: var(--color-text-main);
@@ -83,10 +97,17 @@
 .subcat-toggle:hover { background: rgba(0, 0, 0, 0.04); }
 [data-theme="dark"] .subcat-toggle:hover { background: rgba(255, 255, 255, 0.06); }
 .subcat-arrow {
-    font-size: 0.7rem;
+    font-size: 14px;
     color: var(--color-text-muted);
     flex-shrink: 0;
     line-height: 1;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-main);
+    border-radius: 6px;
 }
 .subcat-body {
     padding: 14px 14px 10px;
@@ -101,12 +122,9 @@
 
 /* ===== Cards ===== */
 .calc-card {
-    background: var(--color-bg-white);
-    border: 1px solid var(--color-border);
+    background: var(--color-bg-main);
     border-radius: 16px;
     padding: 28px;
-    box-shadow: var(--shadow-soft);
-    margin-bottom: 24px;
 }
 .nw-pair-grid .calc-card { margin-bottom: 0; }
 
@@ -119,9 +137,10 @@
     margin-bottom: 20px;
 }
 .calc-card-title {
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1.25rem;
+    font-weight: 800;
     color: var(--color-text-main);
+    letter-spacing: -0.01em;
 }
 .calc-card-total {
     font-size: 1.05rem;
@@ -277,12 +296,10 @@
 
 /* ===== Projection slider ===== */
 .proj-slider-bar {
-    background: var(--color-bg-white);
-    border: 1px solid var(--color-border);
+    background: var(--color-bg-main);
     border-radius: 16px;
     padding: 20px 28px 18px;
     margin-bottom: 20px;
-    box-shadow: var(--shadow-soft);
 }
 .proj-slider-header {
     display: flex;
