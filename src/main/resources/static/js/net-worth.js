@@ -742,6 +742,23 @@
         });
 
         recalc();
+
+        // Fix: position: fixed; bottom: 0 is anchored to the layout viewport,
+        // not the visual viewport. On mobile browsers the bottom toolbar lives
+        // outside the layout viewport, so the bar doesn't follow when it hides.
+        // visualViewport gives us the true visible area so we can compensate.
+        if (window.visualViewport) {
+            function positionMobileBar() {
+                var bar = el('nwMobileBar');
+                if (!bar) return;
+                var vp = window.visualViewport;
+                var gap = window.innerHeight - vp.offsetTop - vp.height;
+                bar.style.bottom = Math.max(0, gap) + 'px';
+            }
+            window.visualViewport.addEventListener('resize', positionMobileBar);
+            window.visualViewport.addEventListener('scroll', positionMobileBar);
+            positionMobileBar();
+        }
     }
 
     document.addEventListener('DOMContentLoaded', init);
