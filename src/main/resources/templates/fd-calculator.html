@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    'FD Calculator - NextWorth',
+    'Calculate the maturity amount of your fixed deposit. Enter principal, interest rate, tenure and compounding frequency to see your total interest earned and maturity value.',
+    'FD calculator, fixed deposit calculator, FD maturity calculator, fixed deposit interest, bank FD India'
+)}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<link rel="stylesheet" th:href="@{/css/fd-calculator.css(v=1)}">
+
+<main>
+
+<!-- ===== Hero ===== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <p class="eyebrow">Financial Tools</p>
+            <h1>FD Calculator</h1>
+            <p class="hero-subtitle">
+                Calculate the maturity value of your fixed deposit instantly.
+                Adjust the principal, interest rate, tenure, and compounding frequency
+                to see exactly how much your deposit will grow.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Calculator ===== -->
+<section class="fd-section">
+<div class="container">
+<div class="fd-layout">
+
+    <!-- ── Left column: inputs ── -->
+    <div class="fd-inputs-col">
+
+        <!-- Currency selector -->
+        <div class="currency-bar" id="currencyBar"></div>
+
+        <!-- Principal Amount -->
+        <div class="fd-card">
+            <div class="fd-card-header">
+                <span class="fd-card-label">Principal Amount</span>
+                <input type="number" id="principal" class="fd-manual-input"
+                       value="100000" min="0" max="10000000" step="1000"
+                       aria-label="Principal amount">
+            </div>
+            <div class="fd-display-val" id="display-principal">&#8377;1,00,000</div>
+            <input type="range" id="principal-slider" class="fd-slider"
+                   min="0" max="10000000" step="1000" value="100000"
+                   aria-label="Principal slider">
+            <div class="fd-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;25L</span><span>&#8377;50L</span><span>&#8377;75L</span><span>&#8377;1Cr</span>
+            </div>
+        </div>
+
+        <!-- Interest Rate -->
+        <div class="fd-card">
+            <div class="fd-card-header">
+                <span class="fd-card-label">Annual Interest Rate</span>
+                <input type="number" id="interestRate" class="fd-manual-input"
+                       value="7" min="1" max="15" step="0.1"
+                       aria-label="Annual interest rate">
+            </div>
+            <div class="fd-display-val" id="display-rate">7.0%</div>
+            <input type="range" id="rate-slider" class="fd-slider"
+                   min="1" max="15" step="0.1" value="7"
+                   aria-label="Interest rate slider">
+            <div class="fd-slider-ticks">
+                <span>1%</span><span>4.5%</span><span>8%</span><span>11.5%</span><span>15%</span>
+            </div>
+        </div>
+
+        <!-- Tenure -->
+        <div class="fd-card">
+            <div class="fd-card-header">
+                <span class="fd-card-label">Tenure</span>
+                <div class="tenure-toggle">
+                    <button type="button" id="tenure-years-btn" class="tenure-btn active">Years</button>
+                    <button type="button" id="tenure-months-btn" class="tenure-btn">Months</button>
+                </div>
+            </div>
+            <div class="fd-card-val-row">
+                <div class="fd-display-val" id="display-tenure">3 Years</div>
+                <input type="number" id="tenure" class="fd-manual-input"
+                       value="3" min="1" max="10" step="1"
+                       aria-label="Tenure">
+            </div>
+            <input type="range" id="tenure-slider" class="fd-slider"
+                   min="1" max="10" step="1" value="3"
+                   aria-label="Tenure slider">
+            <div class="fd-slider-ticks" id="tenure-ticks">
+                <span>1 yr</span><span>3 yrs</span><span>5 yrs</span><span>8 yrs</span><span>10 yrs</span>
+            </div>
+        </div>
+
+        <!-- Compounding Frequency -->
+        <div class="fd-card">
+            <div class="fd-card-header">
+                <span class="fd-card-label">Compounding Frequency</span>
+            </div>
+            <div class="freq-selector">
+                <button type="button" class="freq-btn" data-freq="12">Monthly</button>
+                <button type="button" class="freq-btn active" data-freq="4">Quarterly</button>
+                <button type="button" class="freq-btn" data-freq="2">Half-yearly</button>
+                <button type="button" class="freq-btn" data-freq="1">Yearly</button>
+            </div>
+        </div>
+
+    </div><!-- /fd-inputs-col -->
+
+    <!-- ── Right column: sticky results ── -->
+    <div class="fd-results-col">
+        <div class="fd-sticky" id="fdResultsAnchor">
+            <div class="fd-results-card">
+
+                <p class="fd-results-label">Maturity Amount</p>
+                <div class="fd-maturity-value" id="r-maturity">&#8377;0</div>
+
+                <div class="fd-stat-rows">
+                    <div class="fd-stat-row">
+                        <span class="fd-stat-label">Principal Amount</span>
+                        <span class="fd-stat-value" id="r-principal">&#8377;0</span>
+                    </div>
+                    <div class="fd-stat-row">
+                        <span class="fd-stat-label">Interest Earned</span>
+                        <span class="fd-stat-value fd-accent" id="r-interest">&#8377;0</span>
+                    </div>
+                    <div class="fd-stat-row fd-stat-row-bold">
+                        <span class="fd-stat-label">Total Value</span>
+                        <span class="fd-stat-value" id="r-total">&#8377;0</span>
+                    </div>
+                </div>
+
+                <div class="fd-breakdown">
+                    <p class="fd-breakdown-title">Principal vs Interest</p>
+                    <div class="fd-bar-track">
+                        <div class="fd-bar-fill fd-bar-principal" id="bar-principal"></div>
+                        <div class="fd-bar-fill fd-bar-interest"></div>
+                    </div>
+                    <div class="fd-bar-legend">
+                        <div class="fd-legend-item">
+                            <span class="fd-legend-dot fd-dot-principal"></span>
+                            <span>Principal &nbsp;<strong id="legend-principal-pct">0%</strong></span>
+                        </div>
+                        <div class="fd-legend-item">
+                            <span class="fd-legend-dot fd-dot-interest"></span>
+                            <span>Interest &nbsp;<strong id="legend-interest-pct">0%</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div><!-- /fd-results-col -->
+
+</div><!-- /fd-layout -->
+</div><!-- /container -->
+</section>
+
+<!-- ===== Content / FAQ ===== -->
+<section class="content-section">
+<div class="container">
+<div class="content-narrow">
+
+    <h2>What is a Fixed Deposit?</h2>
+    <p>
+        A Fixed Deposit (FD) is a financial instrument offered by banks and NBFCs where you deposit
+        a lump sum for a fixed tenure at a predetermined interest rate. Unlike savings accounts,
+        the rate is locked in for the entire tenure, giving you predictable, guaranteed returns.
+    </p>
+
+    <h2>How is FD Maturity Value Calculated?</h2>
+    <p>FDs use the compound interest formula:</p>
+    <p class="formula-block">A = P &times; (1 + r/n)&sup;n&times;t&sup;</p>
+    <p>
+        Where <strong>P</strong> is the principal, <strong>r</strong> is the annual interest rate
+        (as a decimal), <strong>n</strong> is the number of times interest is compounded per year,
+        and <strong>t</strong> is the tenure in years. More frequent compounding yields a slightly
+        higher maturity value for the same nominal rate.
+    </p>
+
+    <h2>Compounding Frequency Explained</h2>
+    <ul class="content-list">
+        <li><strong>Monthly (12&times;/yr):</strong> Interest is calculated and added to principal every month — highest effective yield.</li>
+        <li><strong>Quarterly (4&times;/yr):</strong> The most common frequency for bank FDs in India.</li>
+        <li><strong>Half-yearly (2&times;/yr):</strong> Interest compounded every six months.</li>
+        <li><strong>Yearly (1&times;/yr):</strong> Interest added once a year — lowest effective yield for the same nominal rate.</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+        <article class="faq-item">
+            <h3>What interest rate should I use?</h3>
+            <p>
+                Check your bank's current FD rate card for the tenure you plan to invest.
+                Rates in India typically range from 5.5% to 9% depending on the bank, tenure,
+                and whether you are a senior citizen (who often get an additional 0.25&ndash;0.5%).
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Is FD interest taxable?</h3>
+            <p>
+                Yes. FD interest is added to your income and taxed at your applicable slab rate.
+                Banks deduct TDS at 10% if total interest in a financial year exceeds ₹40,000
+                (₹50,000 for senior citizens). This calculator shows pre-tax maturity values.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>What is the difference between cumulative and non-cumulative FDs?</h3>
+            <p>
+                In a cumulative FD, interest is compounded and paid at maturity (what this calculator
+                shows). In a non-cumulative FD, interest is paid out periodically — monthly,
+                quarterly, or annually — making it suitable for regular income needs.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Can I break an FD before maturity?</h3>
+            <p>
+                Most banks allow premature withdrawal with a small penalty (typically 0.5&ndash;1%
+                reduction in the applicable rate). The maturity value will be lower than projected.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Is my data saved anywhere?</h3>
+            <p>No. All calculations happen in your browser. Nothing is sent to any server or stored.</p>
+        </article>
+    </div>
+
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- ===== Mobile compact bar ===== -->
+<div class="fd-mobile-bar" id="fdMobileBar" aria-label="FD quick summary">
+    <div class="fd-mobile-bar-content">
+        <div class="fd-mobile-bar-item">
+            <span class="fd-mobile-bar-label">Maturity Amount</span>
+            <span class="fd-mobile-bar-value" id="mb-maturity">&#8377;0</span>
+        </div>
+        <a href="#fdResultsAnchor" class="fd-mobile-bar-link">Details &#8594;</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/fd-calculator.js(v=1)}"></script>
+
+</body>
+</html>
