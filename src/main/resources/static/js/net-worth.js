@@ -375,6 +375,15 @@
         }, 0);
     }
 
+    // Total accumulated amount for a stream that grows at an annual compound rate.
+    // Sums: a + a*r + a*r^2 + ... + a*r^(n-1)  where r = 1 + ratePercent/100
+    function geometricSum(annualAmount, ratePercent, years) {
+        if (annualAmount <= 0 || years <= 0) return 0;
+        if (ratePercent <= 0) return annualAmount * years;
+        var r = 1 + ratePercent / 100;
+        return annualAmount * (Math.pow(r, years) - 1) / (r - 1);
+    }
+
     // SIP future value: year-by-year with step-up and monthly compounding.
     // Each year's monthly SIPs are compounded at the monthly rate for 12 months (annuity-due),
     // then grown at the annual rate for the remaining years.
@@ -490,8 +499,19 @@
             return s + moActive * emi.monthly;
         }, 0);
 
+        // Accumulate each stream with its compound rate over the projection period
+        var totalIncome = income.reduce(function(s, i) {
+            return s + geometricSum(i.monthly * 12, i.hike, years);
+        }, 0);
+        var totalExpenses = expenses.reduce(function(s, e) {
+            return s + geometricSum(e.monthly * 12, e.infl, years);
+        }, 0);
+        var totalSIPContrib = sips.reduce(function(s, sip) {
+            return s + geometricSum(sip.monthly * 12, sip.stepup, years);
+        }, 0);
+
         var surplus      = annInc - annExp - annEMI - annSIP;
-        var surplusAccum = annInc * years - annExp * years - totalEMIOutflow - annSIP * years;
+        var surplusAccum = totalIncome - totalExpenses - totalEMIOutflow - totalSIPContrib;
         var futureNW     = fAssets + sipFV + surplusAccum - fLiabs;
 
         // Card header totals
