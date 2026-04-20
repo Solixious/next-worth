@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    'EMI Calculator - NextWorth',
+    'Calculate your monthly loan EMI instantly. Enter loan amount, interest rate and tenure to find your monthly payment, total interest, and total amount payable.',
+    'EMI calculator, loan EMI, home loan calculator, car loan EMI, personal loan calculator, India'
+)}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<link rel="stylesheet" th:href="@{/css/emi-calculator.css(v=1)}">
+
+<main>
+
+<!-- ===== Hero ===== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <p class="eyebrow">Financial Tools</p>
+            <h1>EMI Calculator</h1>
+            <p class="hero-subtitle">
+                Calculate your monthly loan EMI in seconds. Adjust the loan amount,
+                interest rate, and tenure to instantly see your monthly payment and total interest cost.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Calculator ===== -->
+<section class="emi-section">
+<div class="container">
+<div class="emi-layout">
+
+    <!-- ── Left column: inputs ── -->
+    <div class="emi-inputs-col">
+
+        <!-- Currency selector -->
+        <div class="currency-bar" id="currencyBar"></div>
+
+        <!-- Loan Amount -->
+        <div class="emi-card">
+            <div class="emi-card-header">
+                <span class="emi-card-label">Loan Amount</span>
+                <input type="number" id="loanAmount" class="emi-manual-input"
+                       value="2000000" min="0" max="50000000" step="10000"
+                       aria-label="Loan amount">
+            </div>
+            <div class="emi-display-val" id="display-loan">&#8377;20,00,000</div>
+            <input type="range" id="loan-slider" class="emi-slider"
+                   min="0" max="50000000" step="10000" value="2000000"
+                   aria-label="Loan amount slider">
+            <div class="emi-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;1.25Cr</span><span>&#8377;2.5Cr</span><span>&#8377;3.75Cr</span><span>&#8377;5Cr</span>
+            </div>
+        </div>
+
+        <!-- Interest Rate -->
+        <div class="emi-card">
+            <div class="emi-card-header">
+                <span class="emi-card-label">Annual Interest Rate</span>
+                <input type="number" id="interestRate" class="emi-manual-input"
+                       value="8.5" min="0.1" max="30" step="0.1"
+                       aria-label="Annual interest rate">
+            </div>
+            <div class="emi-display-val" id="display-rate">8.5%</div>
+            <input type="range" id="rate-slider" class="emi-slider"
+                   min="0.1" max="30" step="0.1" value="8.5"
+                   aria-label="Interest rate slider">
+            <div class="emi-slider-ticks">
+                <span>0.1%</span><span>8%</span><span>15%</span><span>22%</span><span>30%</span>
+            </div>
+        </div>
+
+        <!-- Loan Tenure -->
+        <div class="emi-card">
+            <div class="emi-card-header">
+                <span class="emi-card-label">Loan Tenure</span>
+                <div class="tenure-toggle">
+                    <button type="button" id="tenure-years-btn" class="tenure-btn active">Years</button>
+                    <button type="button" id="tenure-months-btn" class="tenure-btn">Months</button>
+                </div>
+            </div>
+            <div class="emi-card-val-row">
+                <div class="emi-display-val" id="display-tenure">20 Years</div>
+                <input type="number" id="tenure" class="emi-manual-input"
+                       value="20" min="1" max="30" step="1"
+                       aria-label="Loan tenure">
+            </div>
+            <input type="range" id="tenure-slider" class="emi-slider"
+                   min="1" max="30" step="1" value="20"
+                   aria-label="Tenure slider">
+            <div class="emi-slider-ticks" id="tenure-ticks">
+                <span>1 yr</span><span>8 yrs</span><span>15 yrs</span><span>22 yrs</span><span>30 yrs</span>
+            </div>
+        </div>
+
+    </div><!-- /emi-inputs-col -->
+
+    <!-- ── Right column: sticky results ── -->
+    <div class="emi-results-col">
+        <div class="emi-sticky" id="emiResultsAnchor">
+            <div class="emi-results-card">
+
+                <p class="emi-results-label">Monthly EMI</p>
+                <div class="emi-emi-value" id="r-emi">&#8377;0</div>
+
+                <div class="emi-stat-rows">
+                    <div class="emi-stat-row">
+                        <span class="emi-stat-label">Principal Amount</span>
+                        <span class="emi-stat-value" id="r-principal">&#8377;0</span>
+                    </div>
+                    <div class="emi-stat-row">
+                        <span class="emi-stat-label">Total Interest Payable</span>
+                        <span class="emi-stat-value emi-accent" id="r-interest">&#8377;0</span>
+                    </div>
+                    <div class="emi-stat-row emi-stat-row-bold">
+                        <span class="emi-stat-label">Total Amount Payable</span>
+                        <span class="emi-stat-value" id="r-total">&#8377;0</span>
+                    </div>
+                </div>
+
+                <div class="emi-breakdown">
+                    <p class="emi-breakdown-title">Principal vs Interest</p>
+                    <div class="emi-bar-track">
+                        <div class="emi-bar-fill emi-bar-principal" id="bar-principal"></div>
+                        <div class="emi-bar-fill emi-bar-interest"></div>
+                    </div>
+                    <div class="emi-bar-legend">
+                        <div class="emi-legend-item">
+                            <span class="emi-legend-dot emi-dot-principal"></span>
+                            <span>Principal &nbsp;<strong id="legend-principal-pct">0%</strong></span>
+                        </div>
+                        <div class="emi-legend-item">
+                            <span class="emi-legend-dot emi-dot-interest"></span>
+                            <span>Interest &nbsp;<strong id="legend-interest-pct">0%</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div><!-- /emi-results-col -->
+
+</div><!-- /emi-layout -->
+</div><!-- /container -->
+</section>
+
+<!-- ===== Content / FAQ ===== -->
+<section class="content-section">
+<div class="container">
+<div class="content-narrow">
+
+    <h2>What is an EMI?</h2>
+    <p>
+        An Equated Monthly Instalment (EMI) is the fixed amount you pay your lender every month
+        until the loan is fully repaid. Each payment covers a portion of the principal and the
+        interest accrued during that month.
+    </p>
+
+    <h2>How is EMI Calculated?</h2>
+    <p>The standard EMI formula is:</p>
+    <p class="formula-block">EMI = P &times; r &times; (1 + r)&sup;n&sup; / ((1 + r)&sup;n&sup; &minus; 1)</p>
+    <p>
+        Where <strong>P</strong> is the principal loan amount, <strong>r</strong> is the monthly
+        interest rate (annual rate &divide; 12 &divide; 100), and <strong>n</strong> is the number
+        of monthly instalments. All calculations run entirely in your browser — nothing is sent or stored.
+    </p>
+
+    <h2>How to Lower Your EMI?</h2>
+    <ul class="content-list">
+        <li><strong>Increase the tenure:</strong> Spreading repayment over more months reduces each instalment, though total interest paid goes up.</li>
+        <li><strong>Make a larger down payment:</strong> A smaller principal directly reduces the EMI.</li>
+        <li><strong>Negotiate a lower rate:</strong> Even a 0.5% reduction can meaningfully cut both monthly payments and total interest.</li>
+        <li><strong>Make prepayments:</strong> Lump-sum payments reduce outstanding principal and can shorten the loan term.</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+        <article class="faq-item">
+            <h3>What factors affect my EMI?</h3>
+            <p>
+                Three things determine your EMI: the loan amount (higher = higher EMI),
+                the interest rate (higher = higher EMI), and the tenure (longer = lower EMI
+                but higher total interest paid over the life of the loan).
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Does a longer tenure always mean a lower EMI?</h3>
+            <p>
+                Yes, but at a cost. While a longer tenure reduces your monthly payment, you end up
+                paying significantly more total interest. Use the calculator to compare the trade-off
+                between EMI and total interest for different tenures.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Can I reduce my EMI after taking a loan?</h3>
+            <p>
+                Lump-sum prepayments reduce the outstanding principal, which decreases future interest.
+                You can either let the EMI stay the same (shortening the tenure) or request your lender
+                to recalculate a lower EMI.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Does this work for all loan types?</h3>
+            <p>
+                Yes — the formula applies to home loans, car loans, personal loans, and any fixed-rate
+                instalment loan. Floating-rate loans will see their EMI change whenever the base
+                interest rate is revised.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Is my data saved anywhere?</h3>
+            <p>No. All calculations happen in your browser. Nothing is sent to any server or stored.</p>
+        </article>
+    </div>
+
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- ===== Mobile compact bar ===== -->
+<div class="emi-mobile-bar" id="emiMobileBar" aria-label="EMI quick summary">
+    <div class="emi-mobile-bar-content">
+        <div class="emi-mobile-bar-item">
+            <span class="emi-mobile-bar-label">Monthly EMI</span>
+            <span class="emi-mobile-bar-value" id="mb-emi">&#8377;0</span>
+        </div>
+        <a href="#emiResultsAnchor" class="emi-mobile-bar-link">Details &#8594;</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/emi-calculator.js(v=1)}"></script>
+
+</body>
+</html>
