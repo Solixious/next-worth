@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    'SIP Calculator - NextWorth',
+    'Calculate the future value of your SIP investments. Enter monthly investment, expected return rate and duration to see your maturity amount and estimated gains.',
+    'SIP calculator, systematic investment plan, mutual fund SIP, SIP returns calculator, investment calculator India'
+)}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<link rel="stylesheet" th:href="@{/css/sip-calculator.css(v=1)}">
+
+<main>
+
+<!-- ===== Hero ===== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <p class="eyebrow">Financial Tools</p>
+            <h1>SIP Calculator</h1>
+            <p class="hero-subtitle">
+                Estimate how your monthly SIP investments can grow over time.
+                Adjust the amount, expected return, and duration to instantly see your
+                maturity value and total gains.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Calculator ===== -->
+<section class="sip-section">
+<div class="container">
+<div class="sip-layout">
+
+    <!-- ── Left column: inputs ── -->
+    <div class="sip-inputs-col">
+
+        <!-- Currency selector -->
+        <div class="currency-bar" id="currencyBar"></div>
+
+        <!-- Monthly Investment -->
+        <div class="sip-card">
+            <div class="sip-card-header">
+                <span class="sip-card-label">Monthly Investment</span>
+                <input type="number" id="monthlyAmount" class="sip-manual-input"
+                       value="10000" min="0" max="500000" step="500"
+                       aria-label="Monthly investment amount">
+            </div>
+            <div class="sip-display-val" id="display-amount">&#8377;10,000</div>
+            <input type="range" id="amount-slider" class="sip-slider"
+                   min="0" max="500000" step="500" value="10000"
+                   aria-label="Monthly investment slider">
+            <div class="sip-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;1.25L</span><span>&#8377;2.5L</span><span>&#8377;3.75L</span><span>&#8377;5L</span>
+            </div>
+        </div>
+
+        <!-- Expected Return Rate -->
+        <div class="sip-card">
+            <div class="sip-card-header">
+                <span class="sip-card-label">Expected Annual Return</span>
+                <input type="number" id="returnRate" class="sip-manual-input"
+                       value="12" min="1" max="30" step="0.1"
+                       aria-label="Expected annual return rate">
+            </div>
+            <div class="sip-display-val" id="display-rate">12.0%</div>
+            <input type="range" id="rate-slider" class="sip-slider"
+                   min="1" max="30" step="0.1" value="12"
+                   aria-label="Return rate slider">
+            <div class="sip-slider-ticks">
+                <span>1%</span><span>8%</span><span>15%</span><span>22%</span><span>30%</span>
+            </div>
+        </div>
+
+        <!-- Investment Duration -->
+        <div class="sip-card">
+            <div class="sip-card-header">
+                <span class="sip-card-label">Investment Duration</span>
+                <div class="duration-toggle">
+                    <button type="button" id="duration-years-btn" class="duration-btn active">Years</button>
+                    <button type="button" id="duration-months-btn" class="duration-btn">Months</button>
+                </div>
+            </div>
+            <div class="sip-card-val-row">
+                <div class="sip-display-val" id="display-duration">10 Years</div>
+                <input type="number" id="duration" class="sip-manual-input"
+                       value="10" min="1" max="40" step="1"
+                       aria-label="Investment duration">
+            </div>
+            <input type="range" id="duration-slider" class="sip-slider"
+                   min="1" max="40" step="1" value="10"
+                   aria-label="Duration slider">
+            <div class="sip-slider-ticks" id="duration-ticks">
+                <span>1 yr</span><span>10 yrs</span><span>20 yrs</span><span>30 yrs</span><span>40 yrs</span>
+            </div>
+        </div>
+
+    </div><!-- /sip-inputs-col -->
+
+    <!-- ── Right column: sticky results ── -->
+    <div class="sip-results-col">
+        <div class="sip-sticky" id="sipResultsAnchor">
+            <div class="sip-results-card">
+
+                <p class="sip-results-label">Maturity Value</p>
+                <div class="sip-maturity-value" id="r-maturity">&#8377;0</div>
+
+                <div class="sip-stat-rows">
+                    <div class="sip-stat-row">
+                        <span class="sip-stat-label">Amount Invested</span>
+                        <span class="sip-stat-value" id="r-invested">&#8377;0</span>
+                    </div>
+                    <div class="sip-stat-row">
+                        <span class="sip-stat-label">Estimated Returns</span>
+                        <span class="sip-stat-value sip-accent" id="r-returns">&#8377;0</span>
+                    </div>
+                    <div class="sip-stat-row sip-stat-row-bold">
+                        <span class="sip-stat-label">Total Value</span>
+                        <span class="sip-stat-value" id="r-total">&#8377;0</span>
+                    </div>
+                </div>
+
+                <div class="sip-breakdown">
+                    <p class="sip-breakdown-title">Invested vs Returns</p>
+                    <div class="sip-bar-track">
+                        <div class="sip-bar-fill sip-bar-invested" id="bar-invested"></div>
+                        <div class="sip-bar-fill sip-bar-returns"></div>
+                    </div>
+                    <div class="sip-bar-legend">
+                        <div class="sip-legend-item">
+                            <span class="sip-legend-dot sip-dot-invested"></span>
+                            <span>Invested &nbsp;<strong id="legend-invested-pct">0%</strong></span>
+                        </div>
+                        <div class="sip-legend-item">
+                            <span class="sip-legend-dot sip-dot-returns"></span>
+                            <span>Returns &nbsp;<strong id="legend-returns-pct">0%</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div><!-- /sip-results-col -->
+
+</div><!-- /sip-layout -->
+</div><!-- /container -->
+</section>
+
+<!-- ===== Content / FAQ ===== -->
+<section class="content-section">
+<div class="container">
+<div class="content-narrow">
+
+    <h2>What is a SIP?</h2>
+    <p>
+        A Systematic Investment Plan (SIP) lets you invest a fixed amount in a mutual fund
+        at regular intervals — typically monthly. Instead of timing the market with a lump sum,
+        SIPs spread your investment over time, averaging out the purchase cost and reducing risk.
+    </p>
+
+    <h2>How is SIP Maturity Value Calculated?</h2>
+    <p>The future value of a SIP is calculated using the compound interest formula for an annuity:</p>
+    <p class="formula-block">FV = P &times; ((1 + r)&sup;n&sup; &minus; 1) / r &times; (1 + r)</p>
+    <p>
+        Where <strong>P</strong> is the monthly investment, <strong>r</strong> is the monthly
+        rate (annual return &divide; 12 &divide; 100), and <strong>n</strong> is the total number
+        of months. All calculations run in your browser — nothing is sent or stored.
+    </p>
+
+    <h2>The Power of Long-Term SIP</h2>
+    <ul class="content-list">
+        <li><strong>Rupee cost averaging:</strong> Buying more units when prices are low and fewer when high, reducing average cost over time.</li>
+        <li><strong>Compounding:</strong> Returns earned each period are reinvested, so your corpus grows exponentially over long durations.</li>
+        <li><strong>Discipline:</strong> Automating a fixed monthly investment removes the temptation to time the market.</li>
+        <li><strong>Flexibility:</strong> You can start with as little as ₹500/month and increase the amount as your income grows.</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+        <article class="faq-item">
+            <h3>What return rate should I use?</h3>
+            <p>
+                Common assumptions: large-cap equity funds at 10&ndash;12%, mid/small-cap at 12&ndash;15%,
+                debt funds at 6&ndash;8%. Use conservative estimates for long-term planning — actual returns
+                will vary year to year.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Does this account for step-up SIPs?</h3>
+            <p>
+                This calculator assumes a fixed monthly amount throughout the tenure.
+                For step-up SIPs (where you increase the amount annually), use the SIP entry
+                in the Net Worth Calculator which supports annual step-up rates.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Does duration matter more than the amount?</h3>
+            <p>
+                Both matter, but time has a disproportionate effect because of compounding.
+                Investing ₹5,000/month for 30 years typically generates far more wealth than
+                ₹20,000/month for 10 years at the same return rate.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Is this applicable to mutual funds only?</h3>
+            <p>
+                The formula works for any investment with regular periodic contributions and a
+                compounded return — mutual fund SIPs, recurring deposits, PPF top-ups, and so on.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Is my data saved anywhere?</h3>
+            <p>No. All calculations happen in your browser. Nothing is sent to any server or stored.</p>
+        </article>
+    </div>
+
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- ===== Mobile compact bar ===== -->
+<div class="sip-mobile-bar" id="sipMobileBar" aria-label="SIP quick summary">
+    <div class="sip-mobile-bar-content">
+        <div class="sip-mobile-bar-item">
+            <span class="sip-mobile-bar-label">Maturity Value</span>
+            <span class="sip-mobile-bar-value" id="mb-maturity">&#8377;0</span>
+        </div>
+        <a href="#sipResultsAnchor" class="sip-mobile-bar-link">Details &#8594;</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/sip-calculator.js(v=1)}"></script>
+
+</body>
+</html>
