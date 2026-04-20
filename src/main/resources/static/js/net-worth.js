@@ -468,12 +468,30 @@
         var fLiabs   = futureLiabilities(liabilities, years);
         var sipFV    = sipFutureValue(sips, years);
 
-        var annInc       = income.reduce(function(s, i) { return s + i.monthly * 12; }, 0);
-        var annExp       = expenses.reduce(function(s, e) { return s + e.monthly * 12; }, 0);
-        var annEMI       = emis.reduce(function(s, emi) { return s + emi.monthly * 12; }, 0);
-        var annSIP       = sips.reduce(function(s, sip) { return s + sip.monthly * 12; }, 0);
+        var now       = new Date();
+        var curYear   = now.getFullYear();
+        var curMonth  = now.getMonth() + 1; // 1-indexed
+        var projMonths = years * 12;
+
+        var annInc = income.reduce(function(s, i) { return s + i.monthly * 12; }, 0);
+        var annExp = expenses.reduce(function(s, e) { return s + e.monthly * 12; }, 0);
+        var annSIP = sips.reduce(function(s, sip) { return s + sip.monthly * 12; }, 0);
+
+        // Current-year EMI (for cashflow display): exclude EMIs whose end date has passed
+        var annEMI = emis.reduce(function(s, emi) {
+            var moLeft = (emi.endYear - curYear) * 12 + (emi.endMonth - curMonth);
+            return moLeft > 0 ? s + emi.monthly * 12 : s;
+        }, 0);
+
+        // Total EMI payments actually made over the projection period
+        var totalEMIOutflow = emis.reduce(function(s, emi) {
+            var moLeft   = (emi.endYear - curYear) * 12 + (emi.endMonth - curMonth);
+            var moActive = Math.min(Math.max(0, moLeft), projMonths);
+            return s + moActive * emi.monthly;
+        }, 0);
+
         var surplus      = annInc - annExp - annEMI - annSIP;
-        var surplusAccum = surplus * years;
+        var surplusAccum = annInc * years - annExp * years - totalEMIOutflow - annSIP * years;
         var futureNW     = fAssets + sipFV + surplusAccum - fLiabs;
 
         // Card header totals
