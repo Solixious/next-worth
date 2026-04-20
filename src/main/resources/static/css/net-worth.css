@@ -124,7 +124,7 @@
 .calc-card {
     background: var(--color-bg-main);
     border-radius: 16px;
-    padding: 28px;
+    padding-bottom: 28px;
 }
 .nw-pair-grid .calc-card { margin-bottom: 0; }
 
@@ -298,7 +298,7 @@
 .proj-slider-bar {
     background: var(--color-bg-main);
     border-radius: 16px;
-    padding: 20px 28px 18px;
+    padding-bottom: 28px;
     margin-bottom: 20px;
 }
 .proj-slider-header {
