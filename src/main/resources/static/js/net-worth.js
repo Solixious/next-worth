@@ -1,35 +1,119 @@
 (function () {
     'use strict';
 
-    // ─── Default data ────────────────────────────────────────────────
-    var DEF_ASSETS = [
-        { name: 'Cash & Savings',     amount: '', growth: '' },
-        { name: 'Fixed Deposits',     amount: '', growth: '6.5' },
-        { name: 'Equity Investments', amount: '', growth: '11' },
-        { name: 'Gold',               amount: '', growth: '8' },
-        { name: 'Property',           amount: '', growth: '6' },
-        { name: 'Other Assets',       amount: '', growth: '' }
+    // ─── Hierarchy Definition ────────────────────────────────────────
+    var HIERARCHY = [
+        {
+            id: 'assets', name: 'Assets',
+            totalId: 'totalAssetsDisplay', totalSuffix: '', totalClass: '',
+            subcategories: [
+                {
+                    id: 'cash-savings', name: 'Cash & Savings', rowType: 'asset',
+                    sections: [
+                        { name: 'Bank Balance',   amount: '', growth: '' },
+                        { name: 'Cash',           amount: '', growth: '' },
+                        { name: 'Emergency Fund', amount: '', growth: '6.5' },
+                        { name: 'Fixed Deposits', amount: '', growth: '6.5' }
+                    ]
+                },
+                {
+                    id: 'investments', name: 'Investments', rowType: 'asset',
+                    sections: [
+                        { name: 'Stocks',       amount: '', growth: '11' },
+                        { name: 'Mutual Funds', amount: '', growth: '11' },
+                        { name: 'ETFs',         amount: '', growth: '11' },
+                        { name: 'Crypto',       amount: '', growth: '' }
+                    ]
+                },
+                {
+                    id: 'property-assets', name: 'Property & Assets', rowType: 'asset',
+                    sections: [
+                        { name: 'House',   amount: '', growth: '6' },
+                        { name: 'Land',    amount: '', growth: '6' },
+                        { name: 'Gold',    amount: '', growth: '8' },
+                        { name: 'Vehicle', amount: '', growth: '' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'liabilities', name: 'Liabilities',
+            totalId: 'totalLiabilitiesDisplay', totalSuffix: '', totalClass: 'nw-negative',
+            subcategories: [
+                {
+                    id: 'loans', name: 'Loans', rowType: 'liability',
+                    sections: [
+                        { name: 'Home Loan',      amount: '', rate: '' },
+                        { name: 'Car Loan',       amount: '', rate: '' },
+                        { name: 'Education Loan', amount: '', rate: '' }
+                    ]
+                },
+                {
+                    id: 'credit-debt', name: 'Credit & High Interest Debt', rowType: 'liability',
+                    sections: [
+                        { name: 'Credit Card',   amount: '', rate: '' },
+                        { name: 'Personal Loan', amount: '', rate: '' },
+                        { name: 'BNPL',          amount: '', rate: '' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'income', name: 'Income Streams',
+            totalId: 'totalIncomeDisplay', totalSuffix: ' / yr', totalClass: '',
+            subcategories: [
+                {
+                    id: 'primary-income', name: 'Primary Income', rowType: 'income',
+                    sections: [
+                        { name: 'Salary',          monthly: '', hike: '8' },
+                        { name: 'Business Income', monthly: '', hike: '' }
+                    ]
+                },
+                {
+                    id: 'other-income', name: 'Other Income', rowType: 'income',
+                    sections: [
+                        { name: 'Rental Income', monthly: '', hike: '5' },
+                        { name: 'Dividends',     monthly: '', hike: '' },
+                        { name: 'Side Hustle',   monthly: '', hike: '' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'outflows', name: 'Recurring Outflows',
+            totalId: 'totalOutflowsDisplay', totalSuffix: ' / yr', totalClass: 'nw-negative',
+            subcategories: [
+                {
+                    id: 'living-expenses', name: 'Living Expenses', rowType: 'expense',
+                    sections: [
+                        { name: 'Rent / Housing', monthly: '', infl: '5' },
+                        { name: 'Groceries',      monthly: '', infl: '6' },
+                        { name: 'Utilities',      monthly: '', infl: '6' },
+                        { name: 'Insurance',      monthly: '', infl: '5' },
+                        { name: 'Lifestyle',      monthly: '', infl: '6' }
+                    ]
+                },
+                {
+                    id: 'recurring-investments', name: 'Investments (SIP)', rowType: 'sip',
+                    sections: []
+                },
+                {
+                    id: 'loan-repayments', name: 'Loan Repayments (EMI)', rowType: 'emi',
+                    sections: []
+                }
+            ]
+        }
     ];
-    var DEF_LIABILITIES = [
-        { name: 'Home Loan',         amount: '', rate: '' },
-        { name: 'Car Loan',          amount: '', rate: '' },
-        { name: 'Personal Loan',     amount: '', rate: '' },
-        { name: 'Credit Card Due',   amount: '', rate: '' },
-        { name: 'Other Liabilities', amount: '', rate: '' }
-    ];
-    var DEF_INCOME = [
-        { name: 'Salary',          monthly: '', hike: '8' },
-        { name: 'Rental Income',   monthly: '', hike: '5' },
-        { name: 'Business Income', monthly: '', hike: '' },
-        { name: 'Dividends',       monthly: '', hike: '' }
-    ];
-    var DEF_EXPENSES = [
-        { name: 'Household Expenses', monthly: '', infl: '6' },
-        { name: 'Rent / Housing',     monthly: '', infl: '5' },
-        { name: 'Loan EMIs',          monthly: '', infl: '0' },
-        { name: 'Insurance',          monthly: '', infl: '5' },
-        { name: 'Other Expenses',     monthly: '', infl: '6' }
-    ];
+
+    // ─── Row type config ─────────────────────────────────────────────
+    var ROW_CONFIG = {
+        asset:     { headerClass: 'rh-asset',  cols: ['Name', 'Amount ({SYM})', 'Growth %', ''],               addLabel: '+ Add Asset' },
+        liability: { headerClass: 'rh-asset',  cols: ['Name', 'Amount ({SYM})', 'Change % /yr', ''],           addLabel: '+ Add Liability' },
+        income:    { headerClass: 'rh-stream', cols: ['Name', 'Monthly ({SYM})', 'Hike %', ''],                addLabel: '+ Add Income Source' },
+        expense:   { headerClass: 'rh-stream', cols: ['Name', 'Monthly ({SYM})', 'Inflation %', ''],           addLabel: '+ Add Expense' },
+        sip:       { headerClass: 'rh-sip',    cols: ['Name', 'Monthly ({SYM})', 'Step-up %', 'Return %', ''], addLabel: '+ Add SIP' },
+        emi:       { headerClass: 'rh-emi',    cols: ['Name', 'Monthly ({SYM})', 'End Year', 'End Month', ''], addLabel: '+ Add EMI' }
+    };
 
     // ─── Currencies ──────────────────────────────────────────────────
     // To add a new currency: append an entry to CURRENCIES. No other changes needed.
@@ -110,12 +194,10 @@
         var row = document.createElement('div');
         row.className = 'nw-row';
         if (custom) row.dataset.custom = '1';
-
         var lbl = custom ? inp('Asset name', name, true) : labelSpan(name);
         var amt = inp('0', amount);
         var gr  = inp('0%', growth);
         var rb  = removeBtn(custom);
-
         if (custom) rb.addEventListener('click', function() { row.remove(); recalc(); });
         row.appendChild(lbl); row.appendChild(amt);
         row.appendChild(gr);  row.appendChild(rb);
@@ -127,12 +209,10 @@
         var row = document.createElement('div');
         row.className = 'nw-row';
         if (custom) row.dataset.custom = '1';
-
         var lbl = custom ? inp('Liability name', name, true) : labelSpan(name);
         var amt = inp('0', amount);
         var rt  = inp('0%', rate);
         var rb  = removeBtn(custom);
-
         if (custom) rb.addEventListener('click', function() { row.remove(); recalc(); });
         row.appendChild(lbl); row.appendChild(amt);
         row.appendChild(rt);  row.appendChild(rb);
@@ -144,12 +224,10 @@
         var row = document.createElement('div');
         row.className = 'str-row';
         if (custom) row.dataset.custom = '1';
-
         var lbl = custom ? inp('Income source', name, true) : labelSpan(name);
         var mo  = inp('Monthly {SYM}', monthly);
         var hk  = inp('Hike %', hike);
         var rb  = removeBtn(custom);
-
         if (custom) rb.addEventListener('click', function() { row.remove(); recalc(); });
         row.appendChild(lbl); row.appendChild(mo);
         row.appendChild(hk);  row.appendChild(rb);
@@ -161,12 +239,10 @@
         var row = document.createElement('div');
         row.className = 'str-row';
         if (custom) row.dataset.custom = '1';
-
         var lbl = custom ? inp('Expense name', name, true) : labelSpan(name);
         var mo  = inp('Monthly {SYM}', monthly);
         var inf = inp('Infl %', infl);
         var rb  = removeBtn(custom);
-
         if (custom) rb.addEventListener('click', function() { row.remove(); recalc(); });
         row.appendChild(lbl); row.appendChild(mo);
         row.appendChild(inf); row.appendChild(rb);
@@ -178,7 +254,6 @@
         var row = document.createElement('div');
         row.className = 'emi-row';
         if (custom) row.dataset.custom = '1';
-
         var curYear = new Date().getFullYear();
         var lbl = custom ? inp('EMI name', name, true) : labelSpan(name);
         var mo  = inp('Monthly {SYM}', monthly);
@@ -186,7 +261,6 @@
         var em  = inp('Month (1\u201312)', endMonth || '12');
         if (em.type === 'number') { em.min = '1'; em.max = '12'; }
         var rb  = removeBtn(custom);
-
         rb.disabled = !custom;
         if (custom) rb.addEventListener('click', function() { row.remove(); recalc(); });
         row.appendChild(lbl); row.appendChild(mo);
@@ -199,13 +273,11 @@
         var row = document.createElement('div');
         row.className = 'sip-row';
         if (custom) row.dataset.custom = '1';
-
         var lbl = custom ? inp('SIP name', name, true) : labelSpan(name);
         var mo  = inp('Monthly {SYM}', monthly);
         var su  = inp('Step-up %', stepup);
         var rt  = inp('Return %', ret);
         var rb  = removeBtn(custom);
-
         rb.disabled = !custom;
         if (custom) rb.addEventListener('click', function() { row.remove(); recalc(); });
         row.appendChild(lbl); row.appendChild(mo);
@@ -214,48 +286,62 @@
         return row;
     }
 
+    function makeRow(rowType, section, custom) {
+        section = section || {};
+        switch (rowType) {
+            case 'asset':     return assetRow(section.name || '', section.amount || '', section.growth || '', custom);
+            case 'liability': return liabilityRow(section.name || '', section.amount || '', section.rate || '', custom);
+            case 'income':    return incomeRow(section.name || '', section.monthly || '', section.hike || '', custom);
+            case 'expense':   return expenseRow(section.name || '', section.monthly || '', section.infl || '', custom);
+            case 'sip':       return sipRow(section.name || '', section.monthly || '', section.stepup || '', section.ret || '', custom);
+            case 'emi':       return emiRow(section.name || '', section.monthly || '', section.endYear || '', section.endMonth || '', custom);
+        }
+    }
+
     // ─── Data Extraction ─────────────────────────────────────────────
-    function rowsIn(containerId, rowClass, numCols) {
-        var container = el(containerId);
-        var rows = container.querySelectorAll('.' + rowClass);
-        return Array.from(rows).map(function(row) {
-            var nums   = row.querySelectorAll('input[type="number"]');
-            var txtInp = row.querySelector('input[type="text"]');
-            var lbl    = row.querySelector('.nw-label');
-            var name   = txtInp ? txtInp.value : (lbl ? lbl.textContent : '');
-            var vals   = [];
-            for (var i = 0; i < numCols; i++) vals.push(nums[i] ? num(nums[i].value) : 0);
-            return { name: name, vals: vals };
+    function collectFromContainers(containerClass, rowClass, numCols) {
+        var result = [];
+        document.querySelectorAll('.' + containerClass).forEach(function(container) {
+            container.querySelectorAll('.' + rowClass).forEach(function(row) {
+                var nums   = row.querySelectorAll('input[type="number"]');
+                var txtInp = row.querySelector('input[type="text"]');
+                var lbl    = row.querySelector('.nw-label');
+                var name   = txtInp ? txtInp.value : (lbl ? lbl.textContent : '');
+                var vals   = [];
+                for (var i = 0; i < numCols; i++) vals.push(nums[i] ? num(nums[i].value) : 0);
+                result.push({ name: name, vals: vals });
+            });
         });
+        return result;
     }
 
     function getAssets() {
-        return rowsIn('assetRows', 'nw-row', 2).map(function(r) {
+        return collectFromContainers('subcat-rows-asset', 'nw-row', 2).map(function(r) {
             return { name: r.name, amount: r.vals[0], growth: r.vals[1] };
         });
     }
     function getLiabilities() {
-        return rowsIn('liabilityRows', 'nw-row', 2).map(function(r) {
+        return collectFromContainers('subcat-rows-liability', 'nw-row', 2).map(function(r) {
             return { name: r.name, amount: r.vals[0], rate: r.vals[1] };
         });
     }
     function getIncome() {
-        return rowsIn('incomeRows', 'str-row', 2).map(function(r) {
+        return collectFromContainers('subcat-rows-income', 'str-row', 2).map(function(r) {
             return { name: r.name, monthly: r.vals[0], hike: r.vals[1] };
         });
     }
     function getExpenses() {
-        return rowsIn('expenseRows', 'str-row', 2).map(function(r) {
+        return collectFromContainers('subcat-rows-expense', 'str-row', 2).map(function(r) {
             return { name: r.name, monthly: r.vals[0], infl: r.vals[1] };
         });
     }
     function getSIPs() {
-        return rowsIn('sipRows', 'sip-row', 3).map(function(r) {
+        return collectFromContainers('subcat-rows-sip', 'sip-row', 3).map(function(r) {
             return { name: r.name, monthly: r.vals[0], stepup: r.vals[1], ret: r.vals[2] };
         });
     }
     function getEMIs() {
-        return rowsIn('emiRows', 'emi-row', 3).map(function(r) {
+        return collectFromContainers('subcat-rows-emi', 'emi-row', 3).map(function(r) {
             return { name: r.name, monthly: r.vals[0], endYear: r.vals[1], endMonth: r.vals[2] };
         });
     }
@@ -312,7 +398,6 @@
             return total + fv;
         }, 0);
     }
-
 
     // ─── Highlights & Interpretation ─────────────────────────────────
     function buildHighlights(assets, liabilities, sipFV, futureNW) {
@@ -391,13 +476,11 @@
         var surplusAccum = surplus * years;
         var futureNW     = fAssets + sipFV + surplusAccum - fLiabs;
 
-        // Header totals
+        // Card header totals
         el('totalAssetsDisplay').textContent      = fmt(curr.assets);
         el('totalLiabilitiesDisplay').textContent = fmt(curr.liabilities);
         el('totalIncomeDisplay').textContent      = fmt(annInc) + ' / yr';
-        el('totalExpensesDisplay').textContent    = fmt(annExp) + ' / yr';
-        var emiDisp = el('totalEMIDisplay');
-        if (emiDisp) emiDisp.textContent          = fmt(annEMI) + ' / yr';
+        el('totalOutflowsDisplay').textContent    = fmt(annExp + annEMI + annSIP) + ' / yr';
 
         // Results — current
         setFmt('r-totalAssets', curr.assets);
@@ -493,49 +576,133 @@
         bar.appendChild(pills);
     }
 
+    // ─── Hierarchy Rendering ─────────────────────────────────────────
+    function renderSubcategory(subcat) {
+        var cfg = ROW_CONFIG[subcat.rowType];
+
+        var wrapper = document.createElement('div');
+        wrapper.className = 'subcat-wrapper';
+
+        // Collapsible header
+        var subcatHeader = document.createElement('div');
+        subcatHeader.className = 'subcat-header';
+
+        var toggleBtn = document.createElement('button');
+        toggleBtn.type = 'button';
+        toggleBtn.className = 'subcat-toggle';
+        toggleBtn.setAttribute('aria-expanded', 'true');
+
+        var arrow = document.createElement('span');
+        arrow.className = 'subcat-arrow';
+        arrow.textContent = '\u25be'; // ▾
+
+        var nameSpan = document.createElement('span');
+        nameSpan.textContent = subcat.name;
+
+        toggleBtn.appendChild(arrow);
+        toggleBtn.appendChild(nameSpan);
+        subcatHeader.appendChild(toggleBtn);
+        wrapper.appendChild(subcatHeader);
+
+        // Collapsible body
+        var body = document.createElement('div');
+        body.className = 'subcat-body';
+
+        var rowList = document.createElement('div');
+        rowList.className = 'row-list subcat-rows-' + subcat.rowType;
+        rowList.id = 'rows-' + subcat.id;
+
+        rowList.appendChild(header(cfg.headerClass, cfg.cols));
+
+        subcat.sections.forEach(function(sec) {
+            rowList.appendChild(makeRow(subcat.rowType, sec, false));
+        });
+
+        body.appendChild(rowList);
+
+        var addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'add-row-btn';
+        addBtn.textContent = cfg.addLabel;
+        addBtn.addEventListener('click', function() {
+            rowList.appendChild(makeRow(subcat.rowType, {}, true));
+            recalc();
+        });
+        body.appendChild(addBtn);
+
+        wrapper.appendChild(body);
+
+        toggleBtn.addEventListener('click', function() {
+            var isExpanded = body.style.display !== 'none';
+            body.style.display = isExpanded ? 'none' : '';
+            toggleBtn.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
+            arrow.textContent = isExpanded ? '\u25b8' : '\u25be'; // ▸ / ▾
+        });
+
+        return wrapper;
+    }
+
+    function renderCategory(cat) {
+        var card = document.createElement('div');
+        card.className = 'calc-card';
+        card.id = 'card-' + cat.id;
+
+        var cardHeader = document.createElement('div');
+        cardHeader.className = 'calc-card-header';
+
+        // Clickable title row (arrow + h2)
+        var titleRow = document.createElement('div');
+        titleRow.className = 'cat-title-row';
+
+        var arrow = document.createElement('span');
+        arrow.className = 'cat-arrow';
+        arrow.textContent = '\u25be'; // ▾
+
+        var titleEl = document.createElement('h2');
+        titleEl.className = 'calc-card-title';
+        titleEl.textContent = cat.name;
+
+        titleRow.appendChild(arrow);
+        titleRow.appendChild(titleEl);
+        cardHeader.appendChild(titleRow);
+
+        // Category total badge
+        if (cat.totalId) {
+            var total = document.createElement('span');
+            total.className = 'calc-card-total' + (cat.totalClass ? ' ' + cat.totalClass : '');
+            total.id = cat.totalId;
+            total.textContent = activeCurrency.symbol + '0' + cat.totalSuffix;
+            cardHeader.appendChild(total);
+        }
+
+        card.appendChild(cardHeader);
+
+        // Collapsible body containing all subcategories
+        var body = document.createElement('div');
+        body.className = 'cat-body';
+
+        cat.subcategories.forEach(function(subcat) {
+            body.appendChild(renderSubcategory(subcat));
+        });
+
+        card.appendChild(body);
+
+        titleRow.addEventListener('click', function() {
+            var isExpanded = body.style.display !== 'none';
+            body.style.display = isExpanded ? 'none' : '';
+            arrow.textContent = isExpanded ? '\u25b8' : '\u25be'; // ▸ / ▾
+        });
+
+        return card;
+    }
+
     // ─── Init ────────────────────────────────────────────────────────
     function init() {
         renderCurrencySelector();
-        var aRows = el('assetRows');
-        aRows.appendChild(header('rh-asset', ['Name', 'Amount ({SYM})', 'Growth %', '']));
-        DEF_ASSETS.forEach(function(a) { aRows.appendChild(assetRow(a.name, a.amount, a.growth, false)); });
 
-        var lRows = el('liabilityRows');
-        lRows.appendChild(header('rh-asset', ['Name', 'Amount ({SYM})', 'Change % /yr', '']));
-        DEF_LIABILITIES.forEach(function(l) { lRows.appendChild(liabilityRow(l.name, l.amount, l.rate, false)); });
-
-        var iRows = el('incomeRows');
-        iRows.appendChild(header('rh-stream', ['Name', 'Monthly ({SYM})', 'Hike %', '']));
-        DEF_INCOME.forEach(function(i) { iRows.appendChild(incomeRow(i.name, i.monthly, i.hike, false)); });
-
-        var eRows = el('expenseRows');
-        eRows.appendChild(header('rh-stream', ['Name', 'Monthly ({SYM})', 'Inflation %', '']));
-        DEF_EXPENSES.forEach(function(e) { eRows.appendChild(expenseRow(e.name, e.monthly, e.infl, false)); });
-
-        var sRows = el('sipRows');
-        sRows.appendChild(header('rh-sip', ['Name', 'Monthly ({SYM})', 'Step-up %', 'Return %', '']));
-
-        var mRows = el('emiRows');
-        mRows.appendChild(header('rh-emi', ['Name', 'Monthly ({SYM})', 'End Year', 'End Month', '']));
-
-        // Add-row buttons
-        el('addAssetBtn').addEventListener('click', function() {
-            aRows.appendChild(assetRow('', '', '', true)); recalc();
-        });
-        el('addLiabilityBtn').addEventListener('click', function() {
-            lRows.appendChild(liabilityRow('', '', '', true)); recalc();
-        });
-        el('addIncomeBtn').addEventListener('click', function() {
-            iRows.appendChild(incomeRow('', '', '', true)); recalc();
-        });
-        el('addExpenseBtn').addEventListener('click', function() {
-            eRows.appendChild(expenseRow('', '', '', true)); recalc();
-        });
-        el('addSipBtn').addEventListener('click', function() {
-            sRows.appendChild(sipRow('', '', '', '', true)); recalc();
-        });
-        el('addEmiBtn').addEventListener('click', function() {
-            mRows.appendChild(emiRow('', '', '', '', true)); recalc();
+        var calcCards = el('calcCards');
+        HIERARCHY.forEach(function(cat) {
+            calcCards.appendChild(renderCategory(cat));
         });
 
         el('projectionYears').addEventListener('input', function() {
@@ -543,7 +710,6 @@
             recalc();
         });
 
-        // Reset: clear numeric inputs in default rows, remove all custom and SIP rows
         el('resetBtn').addEventListener('click', function() {
             document.querySelectorAll('.nw-row, .str-row, .sip-row, .emi-row').forEach(function(row) {
                 if (row.dataset.custom) {
@@ -552,8 +718,6 @@
                     row.querySelectorAll('input[type="number"]').forEach(function(i) { i.value = ''; });
                 }
             });
-            sRows.querySelectorAll('.sip-row').forEach(function(r) { r.remove(); });
-            mRows.querySelectorAll('.emi-row').forEach(function(r) { r.remove(); });
             el('projectionYears').value = '10';
             el('projectionYearsDisplay').textContent = '10';
             recalc();

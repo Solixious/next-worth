@@ -37,6 +37,68 @@
     .nw-summary-sticky .result-highlights { margin-bottom: 16px; }
 }
 
+/* ===== Category collapse (title row) ===== */
+.cat-title-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    user-select: none;
+}
+.cat-title-row:hover .calc-card-title { color: var(--color-primary); }
+.cat-arrow {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* ===== Subcategory ===== */
+.subcat-wrapper {
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+.subcat-wrapper:last-child { margin-bottom: 0; }
+
+.subcat-header {
+    background: var(--color-bg-light);
+}
+.subcat-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 9px 14px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.12s;
+}
+.subcat-toggle:hover { background: rgba(0, 0, 0, 0.04); }
+[data-theme="dark"] .subcat-toggle:hover { background: rgba(255, 255, 255, 0.06); }
+.subcat-arrow {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+    line-height: 1;
+}
+.subcat-body {
+    padding: 14px 14px 10px;
+}
+.subcat-body .row-list {
+    margin-bottom: 10px;
+}
+.subcat-body .add-row-btn {
+    font-size: 0.82rem;
+    padding: 7px 12px;
+}
+
 /* ===== Cards ===== */
 .calc-card {
     background: var(--color-bg-white);

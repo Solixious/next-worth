@@ -12,7 +12,7 @@
 <header th:replace="~{fragments/header :: header}"></header>
 
 <!-- Page-specific stylesheet -->
-<link rel="stylesheet" th:href="@{/css/net-worth.css(v=9)}">
+<link rel="stylesheet" th:href="@{/css/net-worth.css(v=10)}">
 
 <main>
 
@@ -42,65 +42,8 @@
         <!-- Currency selector -->
         <div class="currency-bar" id="currencyBar"></div>
 
-        <!-- Assets -->
-        <div class="calc-card">
-            <div class="calc-card-header">
-                <h2 class="calc-card-title">Assets</h2>
-                <span class="calc-card-total" id="totalAssetsDisplay">&#8377;0</span>
-            </div>
-            <div class="row-list" id="assetRows"></div>
-            <button class="add-row-btn" id="addAssetBtn" type="button">+ Add Asset</button>
-        </div>
-
-        <!-- Liabilities -->
-        <div class="calc-card">
-            <div class="calc-card-header">
-                <h2 class="calc-card-title">Liabilities</h2>
-                <span class="calc-card-total nw-negative" id="totalLiabilitiesDisplay">&#8377;0</span>
-            </div>
-            <div class="row-list" id="liabilityRows"></div>
-            <button class="add-row-btn" id="addLiabilityBtn" type="button">+ Add Liability</button>
-        </div>
-
-        <!-- Income -->
-        <div class="calc-card">
-            <div class="calc-card-header">
-                <h2 class="calc-card-title">Income Streams</h2>
-                <span class="calc-card-total" id="totalIncomeDisplay">&#8377;0 / yr</span>
-            </div>
-            <div class="row-list" id="incomeRows"></div>
-            <button class="add-row-btn" id="addIncomeBtn" type="button">+ Add Income Stream</button>
-        </div>
-
-        <!-- Expenses -->
-        <div class="calc-card">
-            <div class="calc-card-header">
-                <h2 class="calc-card-title">Recurring Expenses</h2>
-                <span class="calc-card-total nw-negative" id="totalExpensesDisplay">&#8377;0 / yr</span>
-            </div>
-            <div class="row-list" id="expenseRows"></div>
-            <button class="add-row-btn" id="addExpenseBtn" type="button">+ Add Expense</button>
-        </div>
-
-        <!-- SIP -->
-        <div class="calc-card">
-            <div class="calc-card-header">
-                <h2 class="calc-card-title">SIP / Investments</h2>
-                <span class="calc-card-subtitle">Ongoing monthly investment contributions</span>
-            </div>
-            <div class="row-list" id="sipRows"></div>
-            <button class="add-row-btn" id="addSipBtn" type="button">+ Add SIP</button>
-        </div>
-
-        <!-- EMI / Loan Payments -->
-        <div class="calc-card">
-            <div class="calc-card-header">
-                <h2 class="calc-card-title">EMI / Loan Payments</h2>
-                <span class="calc-card-total nw-negative" id="totalEMIDisplay">&#8377;0 / yr</span>
-            </div>
-            <div class="row-list" id="emiRows"></div>
-            <button class="add-row-btn" id="addEmiBtn" type="button">+ Add EMI</button>
-        </div>
+        <!-- Category cards rendered by JS from HIERARCHY -->
+        <div id="calcCards"></div>
 
         <!-- Projection slider -->
         <div class="proj-slider-bar">
@@ -295,7 +238,7 @@
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 
-<script th:src="@{/js/net-worth.js(v=9)}"></script>
+<script th:src="@{/js/net-worth.js(v=10)}"></script>
 
 </body>
 </html>
