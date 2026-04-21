@@ -111,7 +111,7 @@
         liability: { headerClass: 'rh-asset',  cols: ['Name', 'Amount ({SYM})', 'Change % /yr', ''],           addLabel: '+ Add Liability' },
         income:    { headerClass: 'rh-stream', cols: ['Name', 'Monthly ({SYM})', 'Hike %', ''],                addLabel: '+ Add Income Source' },
         expense:   { headerClass: 'rh-stream', cols: ['Name', 'Monthly ({SYM})', 'Inflation %', ''],           addLabel: '+ Add Expense' },
-        sip:       { headerClass: 'rh-sip',    cols: ['Name', 'Monthly ({SYM})', 'Step-up %', 'Return %', ''], addLabel: '+ Add SIP' },
+        sip:       { headerClass: 'rh-sip',    cols: ['Name', 'Monthly ({SYM})', 'Return %', 'Step-up %', ''], addLabel: '+ Add SIP' },
         emi:       { headerClass: 'rh-emi',    cols: ['Name', 'Monthly ({SYM})', 'End Year', 'End Month', ''], addLabel: '+ Add EMI' }
     };
 
@@ -281,7 +281,7 @@
         rb.disabled = !custom;
         if (custom) rb.addEventListener('click', function() { row.remove(); recalc(); });
         row.appendChild(lbl); row.appendChild(mo);
-        row.appendChild(su);  row.appendChild(rt); row.appendChild(rb);
+        row.appendChild(rt);  row.appendChild(su); row.appendChild(rb);
         row.addEventListener('input', recalc);
         return row;
     }
@@ -337,7 +337,7 @@
     }
     function getSIPs() {
         return collectFromContainers('subcat-rows-sip', 'sip-row', 3).map(function(r) {
-            return { name: r.name, monthly: r.vals[0], stepup: r.vals[1], ret: r.vals[2] };
+            return { name: r.name, monthly: r.vals[0], ret: r.vals[1], stepup: r.vals[2] };
         });
     }
     function getEMIs() {
