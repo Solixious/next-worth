@@ -124,6 +124,10 @@
     ];
     var activeCurrency = CURRENCIES[0];
 
+    // ─── Chart state ─────────────────────────────────────────────────
+    var nwCharts    = { growth: null, assets: null, future: null };
+    var nwLastTheme = null;
+
     // ─── Utilities ───────────────────────────────────────────────────
     function num(v)  { var n = parseFloat(String(v).replace(/,/g, '')); return isNaN(n) ? 0 : n; }
     function el(id)  { return document.getElementById(id); }
@@ -573,6 +577,9 @@
             p.textContent = m;
             inEl.appendChild(p);
         });
+
+        updateAllCharts(assets, liabilities, sips, emis, income, expenses, years,
+                        fAssets, fLiabs, sipFV, surplusAccum);
     }
 
     // ─── Currency ────────────────────────────────────────────────────
@@ -734,6 +741,270 @@
         return card;
     }
 
+    // ─── Charts ──────────────────────────────────────────────────────
+
+    function isDarkTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'dark';
+    }
+
+    function chartPalette() {
+        return isDarkTheme()
+            ? ['#7cb3ff', '#4ade80', '#22d3ee', '#a78bfa', '#fbbf24', '#fb923c']
+            : ['#1d4ed8', '#15803d', '#0891b2', '#7c3aed', '#b45309', '#c2410c'];
+    }
+
+    function chartTheme() {
+        var dark = isDarkTheme();
+        return {
+            text:        dark ? '#a1a1aa' : '#71717a',
+            grid:        dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)',
+            primary:     dark ? '#7cb3ff' : '#1d4ed8',
+            green:       dark ? '#4ade80' : '#15803d',
+            red:         dark ? '#f87171' : '#ef4444',
+            primaryFill: dark ? 'rgba(124,179,255,0.12)' : 'rgba(29,78,216,0.09)'
+        };
+    }
+
+    function fmtShort(v) {
+        if (!isFinite(v)) return '';
+        var n = Math.abs(v), sign = v < 0 ? '-' : '', sym = activeCurrency.symbol;
+        if (activeCurrency.code === 'INR') {
+            if (n >= 10000000) return sign + sym + (n / 10000000).toFixed(1) + 'Cr';
+            if (n >= 100000)   return sign + sym + (n / 100000).toFixed(1)   + 'L';
+            if (n >= 1000)     return sign + sym + (n / 1000).toFixed(0)     + 'K';
+        } else {
+            if (n >= 1000000)  return sign + sym + (n / 1000000).toFixed(1)  + 'M';
+            if (n >= 1000)     return sign + sym + (n / 1000).toFixed(0)     + 'K';
+        }
+        return sign + sym + Math.round(n);
+    }
+
+    function destroyCharts() {
+        ['growth', 'assets', 'future'].forEach(function(k) {
+            if (nwCharts[k]) { nwCharts[k].destroy(); nwCharts[k] = null; }
+        });
+    }
+
+    function buildGrowthData(assets, liabilities, sips, emis, income, expenses, years) {
+        var now = new Date();
+        var curYear = now.getFullYear(), curMonth = now.getMonth() + 1;
+        var labels = [], nwPts = [], wealthPts = [], liabPts = [];
+
+        for (var y = 0; y <= years; y++) {
+            labels.push(y === 0 ? 'Now' : String(curYear + y));
+
+            var fA = assets.reduce(function(s, a) {
+                return s + a.amount * Math.pow(1 + a.growth / 100, y);
+            }, 0);
+            var fL = liabilities.reduce(function(s, l) {
+                return s + (l.rate > 0 ? Math.max(0, l.amount * (1 - l.rate / 100 * y)) : l.amount);
+            }, 0);
+            var sipV = sipFutureValue(sips, y);
+
+            var projMo = y * 12;
+            var emiOut = emis.reduce(function(s, emi) {
+                var moLeft = (emi.endYear - curYear) * 12 + (emi.endMonth - curMonth);
+                return s + Math.min(Math.max(0, moLeft), projMo) * emi.monthly;
+            }, 0);
+            var totInc = income.reduce(function(s, i)   { return s + geometricSum(i.monthly * 12, i.hike, y); }, 0);
+            var totExp = expenses.reduce(function(s, e)  { return s + geometricSum(e.monthly * 12, e.infl, y); }, 0);
+            var totSIP = sips.reduce(function(s, sp)    { return s + geometricSum(sp.monthly * 12, sp.stepup, y); }, 0);
+            var surp = totInc - totExp - emiOut - totSIP;
+
+            nwPts.push(Math.round(fA + sipV + surp - fL));
+            wealthPts.push(Math.round(fA + sipV + Math.max(0, surp)));
+            liabPts.push(Math.round(fL));
+        }
+        return { labels: labels, nw: nwPts, wealth: wealthPts, liabilities: liabPts };
+    }
+
+    function updateGrowthChart(data) {
+        if (typeof Chart === 'undefined') return;
+        var canvas = el('chartGrowth');
+        if (!canvas) return;
+        var ct = chartTheme();
+
+        var datasets = [
+            {
+                label: 'Net Worth',
+                data: data.nw,
+                borderColor: ct.primary,
+                backgroundColor: ct.primaryFill,
+                fill: true, borderWidth: 2,
+                pointRadius: data.labels.length > 20 ? 0 : 2,
+                tension: 0.35
+            },
+            {
+                label: 'Gross Wealth',
+                data: data.wealth,
+                borderColor: ct.green,
+                backgroundColor: 'transparent',
+                borderWidth: 1.5, borderDash: [5, 3],
+                pointRadius: 0, tension: 0.35
+            },
+            {
+                label: 'Liabilities',
+                data: data.liabilities,
+                borderColor: ct.red,
+                backgroundColor: 'transparent',
+                borderWidth: 1.5, borderDash: [5, 3],
+                pointRadius: 0, tension: 0.35
+            }
+        ];
+
+        var scaleBase = {
+            grid: { color: ct.grid },
+            ticks: { color: ct.text, font: { size: 10 } }
+        };
+        var opts = {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: ct.text, font: { size: 11 }, boxWidth: 12, padding: 12 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) { return '  ' + ctx.dataset.label + ': ' + fmt(ctx.parsed.y); }
+                    }
+                }
+            },
+            scales: {
+                x: Object.assign({}, scaleBase, {
+                    ticks: Object.assign({}, scaleBase.ticks, { maxTicksLimit: 8, maxRotation: 0 })
+                }),
+                y: Object.assign({}, scaleBase, {
+                    ticks: Object.assign({}, scaleBase.ticks, {
+                        maxTicksLimit: 5,
+                        callback: function(v) { return fmtShort(v); }
+                    })
+                })
+            }
+        };
+
+        if (nwCharts.growth) {
+            nwCharts.growth.data.labels   = data.labels;
+            nwCharts.growth.data.datasets = datasets;
+            nwCharts.growth.options       = opts;
+            nwCharts.growth.update('none');
+        } else {
+            nwCharts.growth = new Chart(canvas, { type: 'line', data: { labels: data.labels, datasets: datasets }, options: opts });
+        }
+    }
+
+    function updateAssetsChart(assets) {
+        if (typeof Chart === 'undefined') return;
+        var card = el('chartAssetsCard');
+        var canvas = el('chartAssets');
+        if (!canvas) return;
+        var valid = assets.filter(function(a) { return a.amount > 0; });
+        if (!valid.length) { if (card) card.style.display = 'none'; return; }
+        if (card) card.style.display = '';
+        var palette = chartPalette();
+        var ct = chartTheme();
+        var donutData = {
+            labels: valid.map(function(a) { return a.name; }),
+            datasets: [{
+                data: valid.map(function(a) { return a.amount; }),
+                backgroundColor: valid.map(function(_, i) { return palette[i % palette.length]; }),
+                borderWidth: 0, hoverOffset: 8
+            }]
+        };
+        var donutOpts = {
+            responsive: true, maintainAspectRatio: false, cutout: '60%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: ct.text, font: { size: 11 }, boxWidth: 10, padding: 8 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) { return '  ' + ctx.label + ': ' + fmt(ctx.raw); }
+                    }
+                }
+            }
+        };
+        if (nwCharts.assets) {
+            nwCharts.assets.data    = donutData;
+            nwCharts.assets.options = donutOpts;
+            nwCharts.assets.update('none');
+        } else {
+            nwCharts.assets = new Chart(canvas, { type: 'doughnut', data: donutData, options: donutOpts });
+        }
+    }
+
+    function updateFutureChart(fAssets, fLiabs, sipFV, surplusAccum) {
+        if (typeof Chart === 'undefined') return;
+        var card = el('chartFutureCard');
+        var canvas = el('chartFuture');
+        if (!canvas) return;
+        var palette = chartPalette();
+        var ct = chartTheme();
+        var segments = [
+            { label: 'Projected Assets', value: Math.max(0, fAssets),      color: palette[0] },
+            { label: 'SIP Corpus',        value: Math.max(0, sipFV),        color: palette[1] },
+            { label: 'Surplus (cash)',    value: Math.max(0, surplusAccum), color: palette[2] },
+            { label: 'Liabilities',       value: Math.max(0, fLiabs),       color: ct.red }
+        ].filter(function(s) { return s.value > 0; });
+        if (!segments.length) { if (card) card.style.display = 'none'; return; }
+        if (card) card.style.display = '';
+        var donutData = {
+            labels: segments.map(function(s) { return s.label; }),
+            datasets: [{
+                data: segments.map(function(s) { return s.value; }),
+                backgroundColor: segments.map(function(s) { return s.color; }),
+                borderWidth: 0, hoverOffset: 8
+            }]
+        };
+        var donutOpts = {
+            responsive: true, maintainAspectRatio: false, cutout: '60%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: ct.text, font: { size: 11 }, boxWidth: 10, padding: 8 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) { return '  ' + ctx.label + ': ' + fmt(ctx.raw); }
+                    }
+                }
+            }
+        };
+        if (nwCharts.future) {
+            nwCharts.future.data    = donutData;
+            nwCharts.future.options = donutOpts;
+            nwCharts.future.update('none');
+        } else {
+            nwCharts.future = new Chart(canvas, { type: 'doughnut', data: donutData, options: donutOpts });
+        }
+    }
+
+    function updateAllCharts(assets, liabilities, sips, emis, income, expenses, years, fAssets, fLiabs, sipFV, surplusAccum) {
+        if (typeof Chart === 'undefined') return;
+        var currentTheme = isDarkTheme() ? 'dark' : 'light';
+        if (currentTheme !== nwLastTheme) {
+            destroyCharts();
+            nwLastTheme = currentTheme;
+        }
+        var hasData = assets.some(function(a) { return a.amount > 0; }) ||
+                      liabilities.some(function(l) { return l.amount > 0; }) ||
+                      income.some(function(i) { return i.monthly > 0; }) ||
+                      sips.some(function(s) { return s.monthly > 0; });
+        var emptyEl = el('nwChartsEmpty');
+        var gridEl  = el('nwChartsGrid');
+        if (!hasData) {
+            if (emptyEl) emptyEl.style.display = '';
+            if (gridEl)  gridEl.style.display  = 'none';
+            return;
+        }
+        if (emptyEl) emptyEl.style.display = 'none';
+        if (gridEl)  gridEl.style.display  = '';
+        updateGrowthChart(buildGrowthData(assets, liabilities, sips, emis, income, expenses, years));
+        updateAssetsChart(assets);
+        updateFutureChart(fAssets, fLiabs, sipFV, surplusAccum);
+    }
+
     // ─── Init ────────────────────────────────────────────────────────
     function init() {
         renderCurrencySelector();
@@ -762,6 +1033,10 @@
         });
 
         recalc();
+
+        // Re-render charts when theme toggles so colours stay consistent.
+        new MutationObserver(function() { destroyCharts(); recalc(); })
+            .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
         // Fix: position: fixed; bottom: 0 is anchored to the layout viewport,
         // not the visual viewport. On mobile browsers the bottom toolbar lives

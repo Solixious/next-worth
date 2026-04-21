@@ -12,7 +12,7 @@
 <header th:replace="~{fragments/header :: header}"></header>
 
 <!-- Page-specific stylesheet -->
-<link rel="stylesheet" th:href="@{/css/net-worth.css(v=10)}">
+<link rel="stylesheet" th:href="@{/css/net-worth.css(v=11)}">
 
 <main>
 
@@ -141,6 +141,27 @@
     </div><!-- /nw-summary-col -->
 
 </div><!-- /nw-layout -->
+
+<!-- ===== Charts ===== -->
+<div class="nw-charts-section">
+    <h2 class="nw-charts-heading">Projections &amp; Distribution</h2>
+    <p class="nw-charts-empty" id="nwChartsEmpty">Add your financial data above to see charts.</p>
+    <div class="nw-charts-grid" id="nwChartsGrid" style="display:none">
+        <div class="nw-chart-card nw-chart-card-full">
+            <p class="nw-chart-title">Net Worth Over Time</p>
+            <div class="nw-chart-wrap"><canvas id="chartGrowth"></canvas></div>
+        </div>
+        <div class="nw-chart-card" id="chartAssetsCard">
+            <p class="nw-chart-title">Current Asset Distribution</p>
+            <div class="nw-chart-wrap"><canvas id="chartAssets"></canvas></div>
+        </div>
+        <div class="nw-chart-card" id="chartFutureCard">
+            <p class="nw-chart-title">Future Wealth Breakdown</p>
+            <div class="nw-chart-wrap"><canvas id="chartFuture"></canvas></div>
+        </div>
+    </div>
+</div>
+
 </div><!-- /container -->
 </section>
 
@@ -244,7 +265,8 @@
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 
-<script th:src="@{/js/net-worth.js(v=10)}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:src="@{/js/net-worth.js(v=11)}"></script>
 
 </body>
 </html>
