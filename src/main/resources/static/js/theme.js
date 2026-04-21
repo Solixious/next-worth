@@ -15,41 +15,20 @@
         return localStorage.getItem(STORAGE_KEY) || "light";
     }
 
-    function getToggleLabel(theme) {
-        return theme === DARK_THEME ? "Light Mode" : "Dark Mode";
-    }
-
-    function updateToggleButton() {
-        const toggleButton = document.getElementById("themeToggle");
-        if (!toggleButton) {
-            return;
-        }
-
-        const currentTheme = root.getAttribute("data-theme") === DARK_THEME ? DARK_THEME : "light";
-        toggleButton.textContent = getToggleLabel(currentTheme);
-    }
-
     function toggleTheme() {
         const currentTheme = root.getAttribute("data-theme") === DARK_THEME ? DARK_THEME : "light";
         const nextTheme = currentTheme === DARK_THEME ? "light" : DARK_THEME;
-
         applyTheme(nextTheme);
         localStorage.setItem(STORAGE_KEY, nextTheme);
-        updateToggleButton();
     }
 
     function initializeTheme() {
-        const savedTheme = getSavedTheme();
-        applyTheme(savedTheme);
+        applyTheme(getSavedTheme());
     }
 
     function initializeThemeToggle() {
         const toggleButton = document.getElementById("themeToggle");
-        if (!toggleButton) {
-            return;
-        }
-
-        updateToggleButton();
+        if (!toggleButton) return;
         toggleButton.addEventListener("click", toggleTheme);
     }
 

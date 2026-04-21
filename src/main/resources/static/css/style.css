@@ -463,18 +463,29 @@ section {
     background: transparent;
     border: 1px solid var(--color-border);
     color: var(--color-text-light);
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    flex-shrink: 0;
 }
 
 .theme-toggle:hover {
     border-color: var(--color-primary);
     color: var(--color-primary);
 }
+
+/* Light mode: show moon, hide sun */
+.theme-icon-sun  { display: none; }
+.theme-icon-moon { display: block; }
+
+/* Dark mode: show sun, hide moon */
+[data-theme="dark"] .theme-icon-sun  { display: block; }
+[data-theme="dark"] .theme-icon-moon { display: none; }
 
 .tool-card,
 .category-card,
@@ -541,8 +552,8 @@ section {
     }
 
     .theme-toggle {
-        font-size: 0.8rem;
-        padding: 7px 10px;
+        width: 32px;
+        height: 32px;
     }
 
     .footer-inner {
