@@ -139,10 +139,25 @@ ul {
 }
 
 .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: -0.02em;
     color: var(--color-primary);
+    text-decoration: none;
+}
+
+.logo-img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.logo-text {
+    line-height: 1;
 }
 
 .main-nav ul {
@@ -486,6 +501,14 @@ section {
 /* Dark mode: show sun, hide moon */
 [data-theme="dark"] .theme-icon-sun  { display: block; }
 [data-theme="dark"] .theme-icon-moon { display: none; }
+
+/* Light mode: show light logo, hide dark logo */
+.logo-img-light { display: block; }
+.logo-img-dark  { display: none; }
+
+/* Dark mode: show dark logo, hide light logo */
+[data-theme="dark"] .logo-img-light { display: none; }
+[data-theme="dark"] .logo-img-dark  { display: block; }
 
 .tool-card,
 .category-card,
