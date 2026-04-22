@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    'Home - NextWorth',
+    'Free net worth calculator and financial tools for India. Track assets and liabilities, project your future net worth, calculate EMI, SIP returns, and FD maturity — all in your browser.',
+    'net worth calculator, net worth calculator India, assets liabilities calculator, SIP calculator, EMI calculator, FD calculator, personal finance tools India, wealth tracker'
+)}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<link rel="stylesheet" th:href="@{/css/tools.css(v=3)}">
+
+<main>
+
+<!-- ===== Hero ===== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <p class="eyebrow">Free Financial Calculator — No Sign-up Required</p>
+            <h1>Free Net Worth Calculator &amp; Financial Tools</h1>
+            <p class="hero-subtitle">
+                Calculate your net worth for free in minutes. Add your assets, liabilities,
+                investments, and loans — and instantly see your financial health today
+                and where you'll stand years from now.
+            </p>
+            <div class="hero-trust-badges">
+                <span class="hero-trust-badge">&#128274; Nothing is stored or shared</span>
+                <span class="hero-trust-badge">&#9989; 100% free, no sign-up</span>
+                <span class="hero-trust-badge">&#128187; Runs entirely in your browser</span>
+            </div>
+            <div class="hero-actions">
+                <a th:href="@{/net-worth-calculator}" class="btn btn-primary">Calculate My Net Worth — Free</a>
+                <a href="#tools" class="btn btn-secondary">Explore All Tools &#8595;</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== What is Net Worth ===== -->
+<section class="home-networth-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>What Is Net Worth — and Why Does It Matter?</h2>
+            <p>
+                Net worth is the single most important number in personal finance. It tells you
+                exactly where you stand by subtracting everything you owe from everything you own.
+            </p>
+        </div>
+
+        <div class="home-formula-box">
+            <span class="home-formula-label">The Formula</span>
+            <p class="home-formula-text">Net Worth = Total Assets &minus; Total Liabilities</p>
+            <p class="home-formula-sub">
+                A positive net worth means your assets exceed your debts. Growing it consistently
+                over time is the foundation of long-term financial security.
+            </p>
+        </div>
+
+        <h3 class="home-steps-heading">How to Calculate Your Net Worth — Step by Step</h3>
+
+        <div class="home-steps">
+            <div class="home-step">
+                <div class="home-step-num">1</div>
+                <div class="home-step-body">
+                    <h4>List all your assets</h4>
+                    <p>Write down everything you own that has monetary value — savings account balance, FDs, mutual fund portfolio, stocks, real estate market value, PPF/EPF corpus, gold, and vehicle resale value.</p>
+                </div>
+            </div>
+            <div class="home-step">
+                <div class="home-step-num">2</div>
+                <div class="home-step-body">
+                    <h4>Add up the total asset value</h4>
+                    <p>Sum every asset. Don't use purchase price — use the current market or liquidation value. For real estate, use a realistic resale estimate, not the price you paid.</p>
+                </div>
+            </div>
+            <div class="home-step">
+                <div class="home-step-num">3</div>
+                <div class="home-step-body">
+                    <h4>List all your liabilities</h4>
+                    <p>Write down every outstanding debt — home loan balance, car loan balance, personal loan, education loan, credit card dues, and any informal borrowings.</p>
+                </div>
+            </div>
+            <div class="home-step">
+                <div class="home-step-num">4</div>
+                <div class="home-step-body">
+                    <h4>Add up the total liabilities</h4>
+                    <p>Sum the outstanding principal on every debt. Use the current outstanding balance, not the original loan amount.</p>
+                </div>
+            </div>
+            <div class="home-step">
+                <div class="home-step-num">5</div>
+                <div class="home-step-body">
+                    <h4>Subtract liabilities from assets</h4>
+                    <p>Net Worth = Total Assets &minus; Total Liabilities. The result is your net worth. A positive number means you own more than you owe. A negative number means the reverse — but that's fixable.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="home-example-box">
+            <span class="home-formula-label">Worked Example</span>
+            <div class="home-example-grid">
+                <div class="home-example-col">
+                    <p class="home-example-col-title assets-title">Assets</p>
+                    <div class="home-example-row"><span>Savings account</span><span>&#8377;3,00,000</span></div>
+                    <div class="home-example-row"><span>Mutual funds (SIP portfolio)</span><span>&#8377;8,50,000</span></div>
+                    <div class="home-example-row"><span>Fixed deposit</span><span>&#8377;5,00,000</span></div>
+                    <div class="home-example-row"><span>Flat (market value)</span><span>&#8377;65,00,000</span></div>
+                    <div class="home-example-row home-example-total"><span>Total Assets</span><span>&#8377;81,50,000</span></div>
+                </div>
+                <div class="home-example-col">
+                    <p class="home-example-col-title liabs-title">Liabilities</p>
+                    <div class="home-example-row"><span>Home loan outstanding</span><span>&#8377;42,00,000</span></div>
+                    <div class="home-example-row"><span>Car loan outstanding</span><span>&#8377;3,20,000</span></div>
+                    <div class="home-example-row"><span>Credit card dues</span><span>&#8377;30,000</span></div>
+                    <div class="home-example-row home-example-spacer"><span>&nbsp;</span><span>&nbsp;</span></div>
+                    <div class="home-example-row home-example-total"><span>Total Liabilities</span><span>&#8377;45,50,000</span></div>
+                </div>
+            </div>
+            <div class="home-example-result">
+                <span>Net Worth</span>
+                <span class="home-example-result-value">&#8377;36,00,000</span>
+            </div>
+        </div>
+
+        <div class="home-benefit-grid">
+            <div class="home-benefit-card">
+                <div class="home-benefit-icon">&#9650;</div>
+                <h3>Track Real Progress</h3>
+                <p>
+                    Monthly income and savings alone don't reveal the full picture.
+                    Net worth shows whether you're actually building wealth — or just
+                    running in place.
+                </p>
+            </div>
+            <div class="home-benefit-card">
+                <div class="home-benefit-icon">&#128200;</div>
+                <h3>Project the Future</h3>
+                <p>
+                    See where you'll stand in 5, 10, or 20 years based on your SIP contributions,
+                    loan repayments, income growth, and surplus savings.
+                </p>
+            </div>
+            <div class="home-benefit-card">
+                <div class="home-benefit-icon">&#9997;</div>
+                <h3>Make Smarter Decisions</h3>
+                <p>
+                    Understand which assets are compounding your wealth and which liabilities
+                    are dragging it down — so every financial choice is an informed one.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Assets vs Liabilities ===== -->
+<section class="home-avl-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>What Counts as Assets and Liabilities?</h2>
+            <p>
+                Use the net worth calculator to enter everything you own and everything you owe.
+                Here's what typically goes in each column.
+            </p>
+        </div>
+
+        <div class="home-avl-grid">
+            <div class="home-avl-card home-avl-assets">
+                <div class="home-avl-card-header">
+                    <span class="home-avl-dot assets-dot"></span>
+                    <h3>Assets — What You Own</h3>
+                </div>
+                <ul class="home-avl-list">
+                    <li>Savings &amp; current account balances</li>
+                    <li>Fixed deposits (FDs)</li>
+                    <li>Mutual funds &amp; SIP portfolio value</li>
+                    <li>Stocks &amp; equity holdings</li>
+                    <li>Real estate (market value)</li>
+                    <li>PPF, EPF, NPS corpus</li>
+                    <li>Gold, jewellery &amp; other valuables</li>
+                    <li>Vehicle (resale value)</li>
+                </ul>
+            </div>
+            <div class="home-avl-card home-avl-liabs">
+                <div class="home-avl-card-header">
+                    <span class="home-avl-dot liabs-dot"></span>
+                    <h3>Liabilities — What You Owe</h3>
+                </div>
+                <ul class="home-avl-list">
+                    <li>Home loan outstanding balance</li>
+                    <li>Car loan outstanding balance</li>
+                    <li>Personal loan balance</li>
+                    <li>Education loan balance</li>
+                    <li>Credit card dues</li>
+                    <li>Buy-now-pay-later (BNPL) balances</li>
+                    <li>Loans from family or friends</li>
+                    <li>Any other outstanding debt</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Tools ===== -->
+<section class="tools-section" id="tools">
+<div class="container">
+
+    <div class="section-header">
+        <h2>All Financial Tools</h2>
+        <p>Simple calculators covering every major area of personal finance — loans, investments, savings, and wealth tracking.</p>
+    </div>
+
+    <!-- ── Wealth Tracking ── -->
+    <div class="tools-category">
+        <div class="tools-cat-header">
+            <div class="tools-cat-title-row">
+                <span class="tools-cat-pip cat-wealth"></span>
+                <h2 class="tools-cat-title">Wealth Tracking</h2>
+                <span class="tools-cat-badge">1 of 3 live</span>
+            </div>
+            <p class="tools-cat-desc">Understand where you stand today and plan where you want to be tomorrow.</p>
+        </div>
+
+        <div class="tools-grid">
+
+            <!-- Net Worth Calculator -->
+            <a th:href="@{/net-worth-calculator}" class="tools-item live">
+                <div class="tools-item-icon cat-wealth">NW</div>
+                <div class="tools-item-content">
+                    <h3 class="tools-item-name">Net Worth Calculator</h3>
+                    <p class="tools-item-desc">
+                        Track your total assets and liabilities. Understand your current financial
+                        position and project where you'll stand in the future.
+                    </p>
+                </div>
+                <div class="tools-item-footer">
+                    <span class="tools-badge live">Live</span>
+                    <span class="tools-item-link">Open Tool &#8594;</span>
+                </div>
+            </a>
+
+            <!-- Retirement Calculator -->
+            <div class="tools-item upcoming">
+                <div class="tools-item-icon upcoming">RC</div>
+                <div class="tools-item-content">
+                    <h3 class="tools-item-name">Retirement Calculator</h3>
+                    <p class="tools-item-desc">
+                        Estimate the corpus you need to retire comfortably based on your expected
+                        expenses, inflation, and investment returns.
+                    </p>
+                </div>
+                <div class="tools-item-footer">
+                    <span class="tools-badge upcoming">Coming Soon</span>
+                </div>
+            </div>
+
+            <!-- Goal Corpus Calculator -->
+            <div class="tools-item upcoming">
+                <div class="tools-item-icon upcoming">GC</div>
+                <div class="tools-item-content">
+                    <h3 class="tools-item-name">Goal Corpus Calculator</h3>
+                    <p class="tools-item-desc">
+                        Find out exactly how much to save each month to reach any financial goal —
+                        a home, education fund, or a major purchase.
+                    </p>
+                </div>
+                <div class="tools-item-footer">
+                    <span class="tools-badge upcoming">Coming Soon</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ── Loans & Borrowing ── -->
+    <div class="tools-category">
+        <div class="tools-cat-header">
+            <div class="tools-cat-title-row">
+                <span class="tools-cat-pip cat-loans"></span>
+                <h2 class="tools-cat-title">Loans &amp; Borrowing</h2>
+                <span class="tools-cat-badge">1 of 4 live</span>
+            </div>
+            <p class="tools-cat-desc">Plan and manage loans — from calculating monthly payments to deciding what you can afford.</p>
+        </div>
+
+        <div class="tools-grid">
+
+            <!-- EMI Calculator -->
+            <a th:href="@{/emi-calculator}" class="tools-item live">
+                <div class="tools-item-icon cat-loans">EMI</div>
+                <div class="tools-item-content">
+                    <h3 class="tools-item-name">EMI Calculator</h3>
+                    <p class="tools-item-desc">
+                        Calculate your monthly loan payment, total interest payable, and total
+                        repayment amount for home, car, or personal loans.
+                    </p>
+                </div>
+                <div class="tools-item-footer">
+                    <span class="tools-badge live">Live</span>
+                    <span class="tools-item-link">Open Tool &#8594;</span>
+                </div>
+            </a>
+
+            <!-- Loan Prepayment Calculator -->
+            <div class="tools-item upcoming">
+                <div class="tools-item-icon upcoming">LP</div>
+                <div class="tools-item-content">
+                    <h3 class="tools-item-name">Loan Prepayment Calculator</h3>
+                    <p class="tools-item-desc">
+                        See how a lump-sum prepayment reduces your outstanding principal,
+                        total interest cost, and remaining loan tenure.
+                    </p>
+                </div>
+                <div class="tools-item-footer">
+                    <span class="tools-badge upcoming">Coming Soon</span>
+                </div>
+            </div>
+
+            <!-- Rent vs Buy Calculator -->
+            <div class="tools-item upcoming">
+                <div class="tools-item-icon upcoming">RvB</div>
+                <div class="tools-item-content">
+                    <h3 class="tools-item-name">Rent vs Buy Calculator</h3>
+                    <p class="tools-item-desc">
+                        Compare the long-term financial impact of renting versus buying a home,
+                        accounting for costs, appreciation, and opportunity returns.
+                    </p>
+                </div>
+                <div class="tools-item-footer">
+                    <span class="tools-badge upcoming">Coming Soon</span>
+                </div>
+            </div>
+
+            <!-- Affordability Calculator -->
+            <div class="tools-item upcoming">
+                <div class="tools-item-icon upcoming">AF</div>
+                <div class="tools-item-content">
+                    <h3 class="tools-item-name">Affordability Calculator</h3>
+                    <p class="tools-item-desc">
+                        Discover the maximum loan amount or property value you can comfortably
+                        afford based on your income, expenses, and existing obligations.
+                    </p>
+                </div>
+                <div class="tools-item-footer">
+                    <span class="tools-badge upcoming">Coming Soon</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ── Investments & Savings ── -->
+    <div class="tools-category">
+        <div class="tools-cat-header">
+            <div class="tools-cat-title-row">
+                <span class="tools-cat-pip cat-invest"></span>
+                <h2 class="tools-cat-title">Investments &amp; Savings</h2>
+                <span class="tools-cat-badge">2 of 3 live</span>
+            </div>
+            <p class="tools-cat-desc">Estimate how your money can grow and how much you need to save for a secure future.</p>
+        </div>
+
+        <div class="tools-grid">
+
+            <!-- SIP Calculator -->
+            <a th:href="@{/sip-calculator}" class="tools-item live">
+                <div class="tools-item-icon cat-invest">SIP</div>
+                <div class="tools-item-content">
+                    <h3 class="tools-item-name">SIP Calculator</h3>
+                    <p class="tools-item-desc">
+                        Project how your monthly systematic investment plan contributions can grow
+                        over time using the power of compounding.
+                    </p>
+                </div>
+                <div class="tools-item-footer">
+                    <span class="tools-badge live">Live</span>
+                    <span class="tools-item-link">Open Tool &#8594;</span>
+                </div>
+            </a>
+
+            <!-- FD Calculator -->
+            <a th:href="@{/fd-calculator}" class="tools-item live">
+                <div class="tools-item-icon cat-invest">FD</div>
+                <div class="tools-item-content">
+                    <h3 class="tools-item-name">FD Calculator</h3>
+                    <p class="tools-item-desc">
+                        Calculate the maturity value of your fixed deposit with any compounding
+                        frequency — monthly, quarterly, half-yearly, or yearly.
+                    </p>
+                </div>
+                <div class="tools-item-footer">
+                    <span class="tools-badge live">Live</span>
+                    <span class="tools-item-link">Open Tool &#8594;</span>
+                </div>
+            </a>
+
+            <!-- Emergency Fund Calculator -->
+            <div class="tools-item upcoming">
+                <div class="tools-item-icon upcoming">EF</div>
+                <div class="tools-item-content">
+                    <h3 class="tools-item-name">Emergency Fund Calculator</h3>
+                    <p class="tools-item-desc">
+                        Determine the right size of your emergency fund based on your monthly
+                        expenses, dependents, and personal risk comfort.
+                    </p>
+                </div>
+                <div class="tools-item-footer">
+                    <span class="tools-badge upcoming">Coming Soon</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</section>
+
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>
