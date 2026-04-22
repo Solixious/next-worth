@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head(
-    'Net Worth Calculator - NextWorth',
-    'Calculate your current net worth and project your future financial position. Track assets, liabilities, income, expenses, and SIP investments.',
-    'net worth calculator, future net worth, asset liability calculator, sip calculator, financial planning india'
+    'Free Net Worth Calculator — Track Assets &amp; Liabilities Online',
+    'Calculate your net worth for free. Track all assets and liabilities, project your future net worth with SIP and surplus growth, and understand your real financial position.',
+    'net worth calculator free, calculate net worth online, assets liabilities calculator India, future net worth calculator, financial health tracker, net worth calculator India'
 )}">
     <!-- page-specific stylesheet loaded after the fragment head -->
 </head>
@@ -20,12 +20,17 @@
 <section class="hero-section">
     <div class="container">
         <div class="hero-content">
-            <p class="eyebrow">Financial Tools</p>
-            <h1>Net Worth Calculator</h1>
+            <p class="eyebrow">Free Net Worth Calculator — No Sign-up Required</p>
+            <h1>Free Net Worth Calculator — Track Your Assets &amp; Liabilities</h1>
             <p class="hero-subtitle">
-                Enter your assets, liabilities, income, and investments.
-                See your current net worth and how it could grow over time.
+                Enter your assets, liabilities, income, and investments to instantly see
+                your current net worth and project exactly where you'll stand in the future.
             </p>
+            <div class="hero-trust-badges">
+                <span class="hero-trust-badge">&#128274; Nothing is stored or shared</span>
+                <span class="hero-trust-badge">&#9989; 100% free, no sign-up</span>
+                <span class="hero-trust-badge">&#128187; Runs entirely in your browser</span>
+            </div>
         </div>
     </div>
 </section>
@@ -165,10 +170,82 @@
 </div><!-- /container -->
 </section>
 
+<!-- ===== Intent hook ===== -->
+<div class="container">
+    <div class="calc-intent-hook">
+        <span class="calc-intent-hook-eyebrow">Related Tools</span>
+        <h3>Build the complete picture, one calculator at a time</h3>
+        <p>
+            Not sure what EMI to enter? Use the EMI Calculator to get the exact monthly payment
+            on any loan. Want to project your SIP growth in isolation first? The SIP Calculator
+            shows the maturity value of a single investment plan.
+        </p>
+        <div class="calc-intent-hook-actions">
+            <a th:href="@{/emi-calculator}" class="calc-intent-btn primary">EMI Calculator</a>
+            <a th:href="@{/sip-calculator}" class="calc-intent-btn">SIP Calculator</a>
+            <a th:href="@{/fd-calculator}" class="calc-intent-btn">FD Calculator</a>
+        </div>
+    </div>
+</div>
+
 <!-- ===== Content / FAQ ===== -->
 <section class="content-section">
 <div class="container">
 <div class="content-narrow">
+
+    <h2 class="calc-steps-title">How to Use This Net Worth Calculator — Step by Step</h2>
+
+    <div class="calc-steps">
+        <div class="calc-step">
+            <div class="calc-step-num">1</div>
+            <div class="calc-step-body">
+                <h4>Enter your assets</h4>
+                <p>Add each asset — savings, FDs, mutual funds, real estate, PPF/EPF, gold, vehicles — with its current market value and expected annual growth rate.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">2</div>
+            <div class="calc-step-body">
+                <h4>Add your liabilities</h4>
+                <p>Enter the outstanding balance on every loan — home loan, car loan, personal loan, credit card dues. Enter an annual reduction rate to model how the balance shrinks over time.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">3</div>
+            <div class="calc-step-body">
+                <h4>Enter your income and expenses</h4>
+                <p>Add all income streams (salary, rental, freelance) with expected annual hike rates. Add recurring expenses with an inflation rate to model their growth.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">4</div>
+            <div class="calc-step-body">
+                <h4>Add your SIP investments</h4>
+                <p>For each active SIP, enter the monthly amount, expected annual return, and step-up percentage (how much you increase the SIP amount each year).</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">5</div>
+            <div class="calc-step-body">
+                <h4>Set the projection period and read your results</h4>
+                <p>Drag the slider to 5, 10, or 20 years. The summary shows your current net worth, projected future net worth, SIP corpus, accumulated surplus, and net annual cashflow.</p>
+            </div>
+        </div>
+    </div>
+
+    <span class="calc-example-label">Worked Example — 10-Year Projection</span>
+
+    <div class="calc-example-box">
+        <p class="calc-example-scenario">Inputs: ₹60L assets, ₹40L liabilities, ₹5,000/month SIP at 12%, ₹80,000/month income, ₹50,000/month expenses</p>
+        <div class="calc-example-rows">
+            <div class="calc-example-row"><span>Current Net Worth</span><span>&#8377;20,00,000</span></div>
+            <div class="calc-example-row"><span>Projected Assets (10 yr @ 8% avg growth)</span><span>&#8377;1,29,53,000</span></div>
+            <div class="calc-example-row"><span>SIP Corpus (10 yr @ 12%)</span><span>&#8377;11,61,695</span></div>
+            <div class="calc-example-row"><span>Accumulated Surplus (cash)</span><span>&#8377;38,40,000</span></div>
+            <div class="calc-example-row"><span>Projected Liabilities (10 yr)</span><span>&minus;&#8377;40,00,000</span></div>
+            <div class="calc-example-row is-result"><span>Future Net Worth</span><span>&#8377;1,39,54,695</span></div>
+        </div>
+    </div>
 
     <h2>What is Net Worth?</h2>
     <p>
@@ -176,43 +253,22 @@
         It is the single most honest measure of your financial health because it reflects
         where you actually stand — not just how much you earn.
     </p>
-
-    <h2>How is Net Worth Calculated?</h2>
-    <p>The formula is straightforward:</p>
     <p class="formula-block">Net Worth = Total Assets &minus; Total Liabilities</p>
-    <p>
-        Assets include savings, investments, property, gold, fixed deposits, and anything
-        else of monetary value that you own. Liabilities include outstanding home loans,
-        car loans, personal loans, credit card dues, and any other debt.
-    </p>
 
     <h2>How is Future Net Worth Projected?</h2>
-    <p>This calculator builds your future net worth from four components:</p>
-    <p class="formula-block">Future Net Worth = Projected Assets + SIP Corpus + Accumulated Surplus &minus; Projected Liabilities</p>
+    <p class="formula-block">Future NW = Projected Assets + SIP Corpus + Accumulated Surplus &minus; Projected Liabilities</p>
     <ul class="content-list">
         <li><strong>Projected Assets:</strong> Each asset grows at its specified annual appreciation rate using compound growth.</li>
-        <li><strong>Projected Liabilities:</strong> Treated as outstanding at current value. Enter an annual reduction rate to model loan paydown.</li>
-        <li><strong>SIP Corpus:</strong> Monthly contributions with annual step-up, compounded at the expected annual return.</li>
-        <li><strong>Accumulated Surplus (cash):</strong> The total surplus cash saved over the projection period — income compounded by hike rate, minus expenses compounded by inflation, minus EMI payments made, minus SIP contributions. This is held as cash (0% return). Add surplus to SIPs above to earn returns on it.</li>
+        <li><strong>SIP Corpus:</strong> Monthly contributions with annual step-up, compounded at the expected return.</li>
+        <li><strong>Accumulated Surplus:</strong> Income minus expenses, EMIs, and SIP contributions — held as cash. Add it to a SIP to earn returns on it.</li>
+        <li><strong>Projected Liabilities:</strong> Outstanding balance reduced annually at the rate you specify.</li>
     </ul>
 
     <h2>How is Net Annual Surplus Calculated?</h2>
-    <p>The net annual surplus is what you have left after all outflows in a given year:</p>
     <p class="formula-block">Net Annual Surplus = Annual Income &minus; Annual Expenses &minus; EMI Payments &minus; SIP Contributions</p>
-    <p>
-        A positive surplus means you are living within your means. That surplus accumulates as cash in the
-        projection — add it as a SIP entry to put it to work and earn a return.
-    </p>
-
-    <h2>Why Does Future Net Worth Matter?</h2>
-    <p>
-        Knowing your current net worth is a starting point. Projecting it forward reveals whether
-        you are on track for your goals — retirement, financial independence, or simply outpacing inflation.
-        Small changes in savings rate or investment return assumptions can have dramatic long-run effects.
-    </p>
+    <p>A positive surplus means you are living within your means. Add it as a SIP entry above to put that cash to work.</p>
 
     <h2>Frequently Asked Questions</h2>
-
     <div class="faq-list">
         <article class="faq-item">
             <h3>Should I include my home as an asset?</h3>
@@ -224,13 +280,9 @@
         <article class="faq-item">
             <h3>What growth rate should I use for assets?</h3>
             <p>
-                Common assumptions: equity mutual funds at 10–12%, real estate at 5–8%,
-                gold at 7–8%, fixed deposits at 6–7%. Use realistic, not best-case, estimates.
+                Common assumptions: equity mutual funds 10–12%, real estate 5–8%,
+                gold 7–8%, fixed deposits 6–7%. Use realistic, not best-case, estimates.
             </p>
-        </article>
-        <article class="faq-item">
-            <h3>Is my data saved anywhere?</h3>
-            <p>No. All calculations happen entirely in your browser. Nothing is sent or stored.</p>
         </article>
         <article class="faq-item">
             <h3>What is a healthy net worth?</h3>
@@ -239,7 +291,12 @@
                 More important than any benchmark is a consistently growing net worth year over year.
             </p>
         </article>
+        <article class="faq-item">
+            <h3>Is my data saved anywhere?</h3>
+            <p>No. All calculations happen entirely in your browser. Nothing is sent or stored.</p>
+        </article>
     </div>
+
 
 </div>
 </div>

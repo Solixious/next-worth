@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head(
-    'FD Calculator - NextWorth',
-    'Calculate the maturity amount of your fixed deposit. Enter principal, interest rate, tenure and compounding frequency to see your total interest earned and maturity value.',
-    'FD calculator, fixed deposit calculator, FD maturity calculator, fixed deposit interest, bank FD India'
+    'Free FD Calculator — Calculate Fixed Deposit Maturity Value &amp; Interest',
+    'Calculate your fixed deposit maturity value for free. Enter principal, interest rate, tenure and compounding frequency to instantly see total interest earned and maturity amount.',
+    'FD calculator free, fixed deposit calculator India, FD maturity calculator, bank FD interest calculator, fixed deposit returns calculator, cumulative FD calculator'
 )}">
 </head>
 <body>
@@ -18,13 +18,18 @@
 <section class="hero-section">
     <div class="container">
         <div class="hero-content">
-            <p class="eyebrow">Financial Tools</p>
-            <h1>FD Calculator</h1>
+            <p class="eyebrow">Free Fixed Deposit Calculator — No Sign-up Required</p>
+            <h1>Free FD Calculator — Fixed Deposit Maturity Value &amp; Interest</h1>
             <p class="hero-subtitle">
-                Calculate the maturity value of your fixed deposit instantly.
-                Adjust the principal, interest rate, tenure, and compounding frequency
-                to see exactly how much your deposit will grow.
+                Calculate exactly how much your fixed deposit will grow. Adjust the principal,
+                interest rate, tenure, and compounding frequency to instantly see your
+                maturity amount and total interest earned.
             </p>
+            <div class="hero-trust-badges">
+                <span class="hero-trust-badge">&#128274; Nothing is stored or shared</span>
+                <span class="hero-trust-badge">&#9989; 100% free, no sign-up</span>
+                <span class="hero-trust-badge">&#128187; Runs entirely in your browser</span>
+            </div>
         </div>
     </div>
 </section>
@@ -161,67 +166,116 @@
 </div><!-- /container -->
 </section>
 
+<!-- ===== Intent hook ===== -->
+<div class="container">
+    <div class="calc-intent-hook">
+        <span class="calc-intent-hook-eyebrow">Take It Further</span>
+        <h3>Your FD is an asset — see it in your full financial picture</h3>
+        <p>
+            A fixed deposit is one of your safest assets. Add it to the Net Worth Calculator
+            alongside your investments, loans, and income to understand how your FD
+            contributes to your overall net worth and projected future wealth.
+        </p>
+        <div class="calc-intent-hook-actions">
+            <a th:href="@{/net-worth-calculator}" class="calc-intent-btn primary">Open Net Worth Calculator</a>
+            <a th:href="@{/sip-calculator}" class="calc-intent-btn">SIP Calculator</a>
+        </div>
+    </div>
+</div>
+
 <!-- ===== Content / FAQ ===== -->
 <section class="content-section">
 <div class="container">
 <div class="content-narrow">
 
+    <h2 class="calc-steps-title">How to Calculate FD Maturity Value — Step by Step</h2>
+
+    <div class="calc-steps">
+        <div class="calc-step">
+            <div class="calc-step-num">1</div>
+            <div class="calc-step-body">
+                <h4>Enter the principal amount</h4>
+                <p>This is the lump sum you plan to deposit. Enter the full amount you intend to lock in — this is your starting value before any interest is added.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">2</div>
+            <div class="calc-step-body">
+                <h4>Enter the annual interest rate</h4>
+                <p>Check your bank's current FD rate card for the tenure you plan to invest. Rates typically range from 6–9% in India. Senior citizens usually get an additional 0.25–0.5%.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">3</div>
+            <div class="calc-step-body">
+                <h4>Choose the tenure and compounding frequency</h4>
+                <p>Enter how long you will hold the FD. Then select how often interest is compounded — quarterly is standard for most Indian banks. More frequent compounding = slightly higher yield.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">4</div>
+            <div class="calc-step-body">
+                <h4>Read your maturity amount and interest earned</h4>
+                <p>The calculator shows total interest earned and the final maturity amount. Note: this is the pre-tax value — FD interest is taxable at your applicable income slab rate.</p>
+            </div>
+        </div>
+    </div>
+
+    <span class="calc-example-label">Worked Example</span>
+
+    <div class="calc-example-box">
+        <p class="calc-example-scenario">Principal: ₹5,00,000 &nbsp;|&nbsp; Rate: 7% p.a. &nbsp;|&nbsp; Tenure: 3 years &nbsp;|&nbsp; Quarterly compounding</p>
+        <div class="calc-example-rows">
+            <div class="calc-example-row"><span>Principal Deposited</span><span>&#8377;5,00,000</span></div>
+            <div class="calc-example-row"><span>Interest Earned (pre-tax)</span><span>&#8377;1,15,700</span></div>
+            <div class="calc-example-row is-result"><span>Maturity Amount</span><span>&#8377;6,15,700</span></div>
+        </div>
+    </div>
+
     <h2>What is a Fixed Deposit?</h2>
     <p>
-        A Fixed Deposit (FD) is a financial instrument offered by banks and NBFCs where you deposit
-        a lump sum for a fixed tenure at a predetermined interest rate. Unlike savings accounts,
-        the rate is locked in for the entire tenure, giving you predictable, guaranteed returns.
+        A Fixed Deposit (FD) is a financial instrument where you deposit a lump sum with a bank
+        or NBFC for a fixed tenure at a predetermined interest rate. Unlike savings accounts,
+        the rate is locked in for the entire tenure — giving you predictable, guaranteed returns
+        with no market risk.
     </p>
 
     <h2>How is FD Maturity Value Calculated?</h2>
     <p>FDs use the compound interest formula:</p>
-    <p class="formula-block">A = P &times; (1 + r/n)&sup;n&times;t&sup;</p>
-    <p>
-        Where <strong>P</strong> is the principal, <strong>r</strong> is the annual interest rate
-        (as a decimal), <strong>n</strong> is the number of times interest is compounded per year,
-        and <strong>t</strong> is the tenure in years. More frequent compounding yields a slightly
-        higher maturity value for the same nominal rate.
-    </p>
+    <p class="formula-block">A = P &times; (1 + r/n)&sup;(n&times;t)</p>
+    <p>Where <strong>P</strong> = principal, <strong>r</strong> = annual rate (decimal), <strong>n</strong> = compounding frequency per year, <strong>t</strong> = tenure in years. More frequent compounding gives a slightly higher effective yield for the same nominal rate.</p>
 
     <h2>Compounding Frequency Explained</h2>
     <ul class="content-list">
-        <li><strong>Monthly (12&times;/yr):</strong> Interest is calculated and added to principal every month — highest effective yield.</li>
-        <li><strong>Quarterly (4&times;/yr):</strong> The most common frequency for bank FDs in India.</li>
-        <li><strong>Half-yearly (2&times;/yr):</strong> Interest compounded every six months.</li>
+        <li><strong>Monthly (12&times;/yr):</strong> Interest added every month — highest effective yield of the four options.</li>
+        <li><strong>Quarterly (4&times;/yr):</strong> The standard compounding frequency for most bank FDs in India.</li>
+        <li><strong>Half-yearly (2&times;/yr):</strong> Interest added every six months.</li>
         <li><strong>Yearly (1&times;/yr):</strong> Interest added once a year — lowest effective yield for the same nominal rate.</li>
     </ul>
 
     <h2>Frequently Asked Questions</h2>
     <div class="faq-list">
         <article class="faq-item">
-            <h3>What interest rate should I use?</h3>
-            <p>
-                Check your bank's current FD rate card for the tenure you plan to invest.
-                Rates in India typically range from 5.5% to 9% depending on the bank, tenure,
-                and whether you are a senior citizen (who often get an additional 0.25&ndash;0.5%).
-            </p>
-        </article>
-        <article class="faq-item">
             <h3>Is FD interest taxable?</h3>
             <p>
-                Yes. FD interest is added to your income and taxed at your applicable slab rate.
-                Banks deduct TDS at 10% if total interest in a financial year exceeds ₹40,000
-                (₹50,000 for senior citizens). This calculator shows pre-tax maturity values.
+                Yes. FD interest is added to your income and taxed at your slab rate. Banks deduct TDS
+                at 10% if total annual FD interest exceeds ₹40,000 (₹50,000 for senior citizens).
+                This calculator shows pre-tax maturity values.
             </p>
         </article>
         <article class="faq-item">
             <h3>What is the difference between cumulative and non-cumulative FDs?</h3>
             <p>
-                In a cumulative FD, interest is compounded and paid at maturity (what this calculator
-                shows). In a non-cumulative FD, interest is paid out periodically — monthly,
-                quarterly, or annually — making it suitable for regular income needs.
+                Cumulative FDs compound interest and pay the full amount at maturity — what this
+                calculator shows. Non-cumulative FDs pay interest periodically (monthly, quarterly)
+                and suit those who need regular income.
             </p>
         </article>
         <article class="faq-item">
             <h3>Can I break an FD before maturity?</h3>
             <p>
-                Most banks allow premature withdrawal with a small penalty (typically 0.5&ndash;1%
-                reduction in the applicable rate). The maturity value will be lower than projected.
+                Most banks allow premature withdrawal with a penalty of 0.5–1% reduction in the
+                applicable rate. The actual maturity value will be lower than projected.
             </p>
         </article>
         <article class="faq-item">
@@ -229,6 +283,7 @@
             <p>No. All calculations happen in your browser. Nothing is sent to any server or stored.</p>
         </article>
     </div>
+
 
 </div>
 </div>

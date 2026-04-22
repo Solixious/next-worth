@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head(
-    'SIP Calculator - NextWorth',
-    'Calculate the future value of your SIP investments. Enter monthly investment, expected return rate and duration to see your maturity amount and estimated gains.',
-    'SIP calculator, systematic investment plan, mutual fund SIP, SIP returns calculator, investment calculator India'
+    'Free SIP Calculator — Calculate Mutual Fund SIP Returns &amp; Maturity Value',
+    'Calculate SIP returns for free. Enter your monthly investment, expected return rate and duration to instantly see the maturity value, total invested, and estimated gains.',
+    'SIP calculator free, mutual fund SIP calculator India, SIP returns calculator, systematic investment plan calculator, SIP maturity value calculator'
 )}">
 </head>
 <body>
@@ -18,13 +18,18 @@
 <section class="hero-section">
     <div class="container">
         <div class="hero-content">
-            <p class="eyebrow">Financial Tools</p>
-            <h1>SIP Calculator</h1>
+            <p class="eyebrow">Free Investment Calculator — No Sign-up Required</p>
+            <h1>Free SIP Calculator — Project Your Mutual Fund Returns</h1>
             <p class="hero-subtitle">
-                Estimate how your monthly SIP investments can grow over time.
-                Adjust the amount, expected return, and duration to instantly see your
-                maturity value and total gains.
+                See exactly how much your monthly SIP investments can grow over time.
+                Adjust the amount, expected return rate, and duration to instantly see
+                your maturity value, total gains, and how compounding builds wealth.
             </p>
+            <div class="hero-trust-badges">
+                <span class="hero-trust-badge">&#128274; Nothing is stored or shared</span>
+                <span class="hero-trust-badge">&#9989; 100% free, no sign-up</span>
+                <span class="hero-trust-badge">&#128187; Runs entirely in your browser</span>
+            </div>
         </div>
     </div>
 </section>
@@ -148,33 +153,90 @@
 </div><!-- /container -->
 </section>
 
+<!-- ===== Intent hook ===== -->
+<div class="container">
+    <div class="calc-intent-hook">
+        <span class="calc-intent-hook-eyebrow">Take It Further</span>
+        <h3>See how your SIP grows your net worth over time</h3>
+        <p>
+            This calculator projects a single SIP in isolation. The Net Worth Calculator lets you
+            add multiple SIPs alongside your assets, liabilities, income, and expenses — and shows
+            the full picture of your financial future with step-up support.
+        </p>
+        <div class="calc-intent-hook-actions">
+            <a th:href="@{/net-worth-calculator}" class="calc-intent-btn primary">Open Net Worth Calculator</a>
+            <a th:href="@{/fd-calculator}" class="calc-intent-btn">FD Calculator</a>
+        </div>
+    </div>
+</div>
+
 <!-- ===== Content / FAQ ===== -->
 <section class="content-section">
 <div class="container">
 <div class="content-narrow">
 
+    <h2 class="calc-steps-title">How to Calculate SIP Returns — Step by Step</h2>
+
+    <div class="calc-steps">
+        <div class="calc-step">
+            <div class="calc-step-num">1</div>
+            <div class="calc-step-body">
+                <h4>Enter your monthly SIP amount</h4>
+                <p>How much do you plan to invest each month? You can start as low as ₹500. Enter the amount you intend to maintain consistently throughout the investment duration.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">2</div>
+            <div class="calc-step-body">
+                <h4>Enter the expected annual return rate</h4>
+                <p>Use 10–12% for large-cap equity mutual funds, 12–15% for mid/small-cap funds, and 6–8% for debt funds. Use a conservative estimate for planning — actual returns vary year to year.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">3</div>
+            <div class="calc-step-body">
+                <h4>Enter the investment duration</h4>
+                <p>Choose how many years (or months) you plan to keep the SIP running. Compounding rewards longer durations — small differences in time have a dramatic effect on final corpus.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">4</div>
+            <div class="calc-step-body">
+                <h4>Read your maturity value and gains</h4>
+                <p>The calculator shows total amount invested, estimated returns from compounding, and the final maturity value. The bar shows what fraction of your corpus came from your contributions vs market growth.</p>
+            </div>
+        </div>
+    </div>
+
+    <span class="calc-example-label">Worked Example</span>
+
+    <div class="calc-example-box">
+        <p class="calc-example-scenario">Monthly SIP: ₹10,000 &nbsp;|&nbsp; Return: 12% p.a. &nbsp;|&nbsp; Duration: 15 years</p>
+        <div class="calc-example-rows">
+            <div class="calc-example-row"><span>Total Amount Invested</span><span>&#8377;18,00,000</span></div>
+            <div class="calc-example-row"><span>Estimated Returns (compounding)</span><span>&#8377;32,46,000</span></div>
+            <div class="calc-example-row is-result"><span>Maturity Value</span><span>&#8377;50,46,000</span></div>
+        </div>
+    </div>
+
     <h2>What is a SIP?</h2>
     <p>
-        A Systematic Investment Plan (SIP) lets you invest a fixed amount in a mutual fund
-        at regular intervals — typically monthly. Instead of timing the market with a lump sum,
-        SIPs spread your investment over time, averaging out the purchase cost and reducing risk.
+        A Systematic Investment Plan (SIP) lets you invest a fixed amount in a mutual fund every month.
+        Instead of timing the market with a lump sum, SIPs spread your investment over time —
+        buying more units when prices fall and fewer when they rise, averaging out your cost.
     </p>
 
     <h2>How is SIP Maturity Value Calculated?</h2>
-    <p>The future value of a SIP is calculated using the compound interest formula for an annuity:</p>
-    <p class="formula-block">FV = P &times; ((1 + r)&sup;n&sup; &minus; 1) / r &times; (1 + r)</p>
-    <p>
-        Where <strong>P</strong> is the monthly investment, <strong>r</strong> is the monthly
-        rate (annual return &divide; 12 &divide; 100), and <strong>n</strong> is the total number
-        of months. All calculations run in your browser — nothing is sent or stored.
-    </p>
+    <p>The future value uses the annuity-due formula:</p>
+    <p class="formula-block">FV = P &times; ((1 + r)&sup;n &minus; 1) / r &times; (1 + r)</p>
+    <p>Where <strong>P</strong> = monthly investment, <strong>r</strong> = monthly rate (annual &divide; 12 &divide; 100), <strong>n</strong> = total months.</p>
 
-    <h2>The Power of Long-Term SIP</h2>
+    <h2>Why Long-Term SIPs Build More Wealth</h2>
     <ul class="content-list">
-        <li><strong>Rupee cost averaging:</strong> Buying more units when prices are low and fewer when high, reducing average cost over time.</li>
-        <li><strong>Compounding:</strong> Returns earned each period are reinvested, so your corpus grows exponentially over long durations.</li>
-        <li><strong>Discipline:</strong> Automating a fixed monthly investment removes the temptation to time the market.</li>
-        <li><strong>Flexibility:</strong> You can start with as little as ₹500/month and increase the amount as your income grows.</li>
+        <li><strong>Compounding:</strong> Returns are reinvested each month, so your corpus grows exponentially — not linearly.</li>
+        <li><strong>Rupee cost averaging:</strong> You automatically buy more units when markets dip, reducing the average purchase cost over time.</li>
+        <li><strong>Discipline:</strong> Automating a fixed monthly amount removes the temptation to time the market.</li>
+        <li><strong>Time beats amount:</strong> ₹5,000/month for 30 years typically beats ₹20,000/month for 10 years at the same return rate.</li>
     </ul>
 
     <h2>Frequently Asked Questions</h2>
@@ -182,32 +244,23 @@
         <article class="faq-item">
             <h3>What return rate should I use?</h3>
             <p>
-                Common assumptions: large-cap equity funds at 10&ndash;12%, mid/small-cap at 12&ndash;15%,
-                debt funds at 6&ndash;8%. Use conservative estimates for long-term planning — actual returns
-                will vary year to year.
+                Large-cap equity funds: 10–12%. Mid/small-cap: 12–15%. Debt funds: 6–8%.
+                Use conservative estimates for long-term planning — actual returns vary year to year.
             </p>
         </article>
         <article class="faq-item">
-            <h3>Does this account for step-up SIPs?</h3>
+            <h3>Does this support step-up SIPs?</h3>
             <p>
-                This calculator assumes a fixed monthly amount throughout the tenure.
-                For step-up SIPs (where you increase the amount annually), use the SIP entry
-                in the Net Worth Calculator which supports annual step-up rates.
+                This calculator uses a fixed monthly amount. For step-up SIPs — where you increase
+                contributions annually — use the SIP entry in the Net Worth Calculator which
+                supports an annual step-up percentage.
             </p>
         </article>
         <article class="faq-item">
-            <h3>Does duration matter more than the amount?</h3>
+            <h3>Does duration matter more than amount?</h3>
             <p>
-                Both matter, but time has a disproportionate effect because of compounding.
-                Investing ₹5,000/month for 30 years typically generates far more wealth than
-                ₹20,000/month for 10 years at the same return rate.
-            </p>
-        </article>
-        <article class="faq-item">
-            <h3>Is this applicable to mutual funds only?</h3>
-            <p>
-                The formula works for any investment with regular periodic contributions and a
-                compounded return — mutual fund SIPs, recurring deposits, PPF top-ups, and so on.
+                Both matter, but time has a disproportionate effect. ₹5,000/month for 30 years
+                typically generates far more wealth than ₹20,000/month for 10 years at the same rate.
             </p>
         </article>
         <article class="faq-item">
@@ -215,6 +268,7 @@
             <p>No. All calculations happen in your browser. Nothing is sent to any server or stored.</p>
         </article>
     </div>
+
 
 </div>
 </div>

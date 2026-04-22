@@ -584,3 +584,229 @@ section {
         text-align: center;
     }
 }
+
+/* ===== Hero trust badges (shared across all pages) ===== */
+
+.hero-trust-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 28px;
+}
+.hero-trust-badge {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 20px;
+    padding: 5px 13px;
+    white-space: nowrap;
+}
+
+/* ===== Shared content section (all calculator pages) ===== */
+
+.content-section { padding: 60px 0; background: var(--color-bg-light); }
+.content-narrow { max-width: 760px; }
+.content-narrow h2 { font-size: 1.35rem; margin: 36px 0 10px; color: var(--color-text-main); font-weight: 700; }
+.content-narrow h2:first-child { margin-top: 0; }
+.content-narrow p { font-size: 0.93rem; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 10px; }
+.formula-block {
+    background: var(--color-bg-white);
+    border-left: 3px solid var(--color-primary);
+    padding: 11px 18px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.97rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.content-list {
+    list-style: disc;
+    padding-left: 20px;
+    color: var(--color-text-muted);
+    font-size: 0.93rem;
+    line-height: 1.8;
+    margin-bottom: 12px;
+}
+.content-list li { margin-bottom: 4px; }
+.faq-list { margin-top: 10px; }
+.faq-item { margin-bottom: 20px; border-bottom: 1px solid var(--color-border); padding-bottom: 20px; }
+.faq-item:last-child { border-bottom: none; padding-bottom: 0; }
+.faq-item h3 { font-size: 0.97rem; font-weight: 700; margin-bottom: 6px; color: var(--color-text-main); }
+.faq-item p { font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.65; margin: 0; }
+
+/* ===== Calculator step-by-step guide ===== */
+
+.calc-steps-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    margin: 28px 0 16px;
+}
+.calc-steps-title:first-child { margin-top: 0; }
+
+.calc-steps {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 32px;
+}
+.calc-step {
+    display: flex;
+    gap: 18px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-white);
+    align-items: flex-start;
+}
+.calc-step:last-child { border-bottom: none; }
+.calc-step-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+.calc-step-body h4 {
+    font-size: 0.93rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    margin-bottom: 4px;
+}
+.calc-step-body p {
+    font-size: 0.86rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ===== Worked example box ===== */
+
+.calc-example-box {
+    background: var(--color-bg-white);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 32px;
+}
+.calc-example-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    display: block;
+    margin-bottom: 14px;
+}
+.calc-example-scenario {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+}
+.calc-example-rows { margin-bottom: 0; }
+.calc-example-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.86rem;
+    color: var(--color-text-muted);
+    gap: 16px;
+}
+.calc-example-row:last-child { border-bottom: none; }
+.calc-example-row span:last-child {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--color-text-main);
+}
+.calc-example-row.is-result {
+    margin-top: 4px;
+    padding: 10px 14px;
+    background: var(--color-primary);
+    border-radius: 8px;
+    border-bottom: none;
+    color: rgba(255,255,255,0.9);
+    font-weight: 700;
+}
+.calc-example-row.is-result span:last-child {
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+/* ===== Intent hook (cross-link CTA) ===== */
+
+.calc-intent-hook {
+    background: linear-gradient(135deg, var(--color-hero-start), var(--color-hero-end));
+    border-radius: 16px;
+    padding: 28px 30px;
+    margin: 32px 0 40px;
+    color: var(--color-hero-text);
+}
+.calc-intent-hook-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 8px;
+}
+.calc-intent-hook h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-hero-text);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+}
+.calc-intent-hook p {
+    font-size: 0.88rem;
+    color: var(--color-hero-text-muted);
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+.calc-intent-hook-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.calc-intent-btn {
+    display: inline-block;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+}
+.calc-intent-btn:hover { background: rgba(255,255,255,0.25); }
+.calc-intent-btn.primary {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-hero-start);
+}
+.calc-intent-btn.primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+@media (max-width: 600px) {
+    .calc-intent-hook { padding: 22px 20px; }
+    .calc-example-box { padding: 18px 16px; }
+}

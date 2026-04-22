@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head(
-    'EMI Calculator - NextWorth',
-    'Calculate your monthly loan EMI instantly. Enter loan amount, interest rate and tenure to find your monthly payment, total interest, and total amount payable.',
-    'EMI calculator, loan EMI, home loan calculator, car loan EMI, personal loan calculator, India'
+    'Free EMI Calculator — Calculate Home, Car &amp; Personal Loan EMI',
+    'Calculate your loan EMI for free. Enter loan amount, interest rate and tenure to instantly see your monthly payment, total interest payable, and total repayment amount.',
+    'EMI calculator free, loan EMI calculator India, home loan EMI calculator, car loan EMI, personal loan EMI calculator, monthly instalment calculator'
 )}">
 </head>
 <body>
@@ -18,12 +18,18 @@
 <section class="hero-section">
     <div class="container">
         <div class="hero-content">
-            <p class="eyebrow">Financial Tools</p>
-            <h1>EMI Calculator</h1>
+            <p class="eyebrow">Free Loan Calculator — No Sign-up Required</p>
+            <h1>Free EMI Calculator — Home, Car &amp; Personal Loan EMI</h1>
             <p class="hero-subtitle">
                 Calculate your monthly loan EMI in seconds. Adjust the loan amount,
-                interest rate, and tenure to instantly see your monthly payment and total interest cost.
+                interest rate, and tenure to instantly see your monthly payment, total interest,
+                and total repayment amount for any loan.
             </p>
+            <div class="hero-trust-badges">
+                <span class="hero-trust-badge">&#128274; Nothing is stored or shared</span>
+                <span class="hero-trust-badge">&#9989; 100% free, no sign-up</span>
+                <span class="hero-trust-badge">&#128187; Runs entirely in your browser</span>
+            </div>
         </div>
     </div>
 </section>
@@ -147,33 +153,96 @@
 </div><!-- /container -->
 </section>
 
+<!-- ===== Intent hook ===== -->
+<div class="container">
+    <div class="calc-intent-hook">
+        <span class="calc-intent-hook-eyebrow">Take It Further</span>
+        <h3>See how your loan fits into your overall financial picture</h3>
+        <p>
+            An EMI reduces your monthly surplus and adds to your liabilities. Add all your loans
+            to the Net Worth Calculator to see how they impact your current net worth and your
+            projected financial position over the next 10–20 years.
+        </p>
+        <div class="calc-intent-hook-actions">
+            <a th:href="@{/net-worth-calculator}" class="calc-intent-btn primary">Open Net Worth Calculator</a>
+            <a th:href="@{/sip-calculator}" class="calc-intent-btn">SIP Calculator</a>
+        </div>
+    </div>
+</div>
+
 <!-- ===== Content / FAQ ===== -->
 <section class="content-section">
 <div class="container">
 <div class="content-narrow">
 
+    <h2 class="calc-steps-title">How to Calculate Your Loan EMI — Step by Step</h2>
+
+    <div class="calc-steps">
+        <div class="calc-step">
+            <div class="calc-step-num">1</div>
+            <div class="calc-step-body">
+                <h4>Enter the loan amount</h4>
+                <p>This is the principal — the total amount you want to borrow. For a home loan, enter the loan amount after your down payment. Use the slider or type directly in the field.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">2</div>
+            <div class="calc-step-body">
+                <h4>Enter the annual interest rate</h4>
+                <p>Use the rate quoted in your loan offer letter. For floating-rate loans (like most home loans in India), use the current rate as a starting point and re-run the calculator if the rate changes.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">3</div>
+            <div class="calc-step-body">
+                <h4>Enter the loan tenure</h4>
+                <p>Choose the repayment period in years or months. A longer tenure lowers your EMI but increases total interest paid. Toggle between Years and Months to compare.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">4</div>
+            <div class="calc-step-body">
+                <h4>Read the results</h4>
+                <p>The calculator instantly shows your monthly EMI, total interest payable, and total repayment amount. The principal vs interest bar shows what fraction of your total payment is interest.</p>
+            </div>
+        </div>
+    </div>
+
+    <span class="calc-example-label">Worked Example — Home Loan</span>
+
+    <div class="calc-example-box">
+        <p class="calc-example-scenario">Loan: ₹50,00,000 &nbsp;|&nbsp; Rate: 8.5% p.a. &nbsp;|&nbsp; Tenure: 20 years</p>
+        <div class="calc-example-rows">
+            <div class="calc-example-row"><span>Principal (Loan Amount)</span><span>&#8377;50,00,000</span></div>
+            <div class="calc-example-row"><span>Monthly EMI</span><span>&#8377;43,391</span></div>
+            <div class="calc-example-row"><span>Total Interest Payable</span><span>&#8377;54,13,840</span></div>
+            <div class="calc-example-row is-result"><span>Total Amount Payable</span><span>&#8377;1,04,13,840</span></div>
+        </div>
+    </div>
+
     <h2>What is an EMI?</h2>
     <p>
         An Equated Monthly Instalment (EMI) is the fixed amount you pay your lender every month
         until the loan is fully repaid. Each payment covers a portion of the principal and the
-        interest accrued during that month.
+        interest accrued during that month. Early payments are mostly interest; later payments
+        are mostly principal — this is called loan amortisation.
     </p>
 
     <h2>How is EMI Calculated?</h2>
     <p>The standard EMI formula is:</p>
-    <p class="formula-block">EMI = P &times; r &times; (1 + r)&sup;n&sup; / ((1 + r)&sup;n&sup; &minus; 1)</p>
+    <p class="formula-block">EMI = P &times; r &times; (1 + r)&sup;n / ((1 + r)&sup;n &minus; 1)</p>
     <p>
-        Where <strong>P</strong> is the principal loan amount, <strong>r</strong> is the monthly
-        interest rate (annual rate &divide; 12 &divide; 100), and <strong>n</strong> is the number
-        of monthly instalments. All calculations run entirely in your browser — nothing is sent or stored.
+        Where <strong>P</strong> is the principal, <strong>r</strong> is the monthly interest rate
+        (annual rate &divide; 12 &divide; 100), and <strong>n</strong> is the total number of
+        monthly instalments.
     </p>
 
-    <h2>How to Lower Your EMI?</h2>
+    <h2>How to Lower Your EMI</h2>
     <ul class="content-list">
-        <li><strong>Increase the tenure:</strong> Spreading repayment over more months reduces each instalment, though total interest paid goes up.</li>
-        <li><strong>Make a larger down payment:</strong> A smaller principal directly reduces the EMI.</li>
-        <li><strong>Negotiate a lower rate:</strong> Even a 0.5% reduction can meaningfully cut both monthly payments and total interest.</li>
-        <li><strong>Make prepayments:</strong> Lump-sum payments reduce outstanding principal and can shorten the loan term.</li>
+        <li><strong>Make a larger down payment</strong> — a smaller principal directly reduces the EMI.</li>
+        <li><strong>Negotiate a lower rate</strong> — even a 0.5% reduction meaningfully cuts both EMI and total interest.</li>
+        <li><strong>Increase the tenure</strong> — lower EMI, but more total interest over the loan life.</li>
+        <li><strong>Make prepayments</strong> — lump-sum payments reduce outstanding principal and can shorten the tenure.</li>
     </ul>
 
     <h2>Frequently Asked Questions</h2>
@@ -181,33 +250,22 @@
         <article class="faq-item">
             <h3>What factors affect my EMI?</h3>
             <p>
-                Three things determine your EMI: the loan amount (higher = higher EMI),
-                the interest rate (higher = higher EMI), and the tenure (longer = lower EMI
-                but higher total interest paid over the life of the loan).
+                Three things: the loan amount (higher = higher EMI), the interest rate (higher = higher EMI),
+                and the tenure (longer = lower EMI but more total interest paid).
             </p>
         </article>
         <article class="faq-item">
             <h3>Does a longer tenure always mean a lower EMI?</h3>
             <p>
-                Yes, but at a cost. While a longer tenure reduces your monthly payment, you end up
-                paying significantly more total interest. Use the calculator to compare the trade-off
-                between EMI and total interest for different tenures.
-            </p>
-        </article>
-        <article class="faq-item">
-            <h3>Can I reduce my EMI after taking a loan?</h3>
-            <p>
-                Lump-sum prepayments reduce the outstanding principal, which decreases future interest.
-                You can either let the EMI stay the same (shortening the tenure) or request your lender
-                to recalculate a lower EMI.
+                Yes, but you pay significantly more total interest. Use the calculator to compare the
+                EMI vs total interest trade-off across different tenures before deciding.
             </p>
         </article>
         <article class="faq-item">
             <h3>Does this work for all loan types?</h3>
             <p>
                 Yes — the formula applies to home loans, car loans, personal loans, and any fixed-rate
-                instalment loan. Floating-rate loans will see their EMI change whenever the base
-                interest rate is revised.
+                instalment loan. Floating-rate loans will see their EMI change when the base rate is revised.
             </p>
         </article>
         <article class="faq-item">
@@ -215,6 +273,7 @@
             <p>No. All calculations happen in your browser. Nothing is sent to any server or stored.</p>
         </article>
     </div>
+
 
 </div>
 </div>
