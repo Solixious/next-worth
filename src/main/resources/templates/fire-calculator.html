@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    'Free FIRE Calculator — Calculate Your FIRE Number &amp; Retirement Age | NextWorth',
+    'Calculate your FIRE number for free. Enter your expenses, corpus, monthly savings and expected returns to find out when you can retire early and achieve financial independence.',
+    'FIRE calculator India, financial independence retire early calculator, FIRE number calculator, retirement calculator India, early retirement calculator, FIRE number India'
+)}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<link rel="stylesheet" th:href="@{/css/fire-calculator.css(v=1)}">
+
+<main>
+
+<!-- ===== Hero ===== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <p class="eyebrow">Free FIRE Calculator — No Sign-up Required</p>
+            <h1>Free FIRE Calculator — Find Your FIRE Number &amp; Retirement Age</h1>
+            <p class="hero-subtitle">
+                Enter your monthly expenses, current corpus, monthly investments, and expected
+                returns to instantly calculate your FIRE number and see exactly when you can
+                achieve financial independence and retire early.
+            </p>
+            <div class="hero-trust-badges">
+                <span class="hero-trust-badge">&#128274; Nothing is stored or shared</span>
+                <span class="hero-trust-badge">&#9989; 100% free, no sign-up</span>
+                <span class="hero-trust-badge">&#128187; Runs entirely in your browser</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Calculator ===== -->
+<section class="fire-section">
+<div class="container">
+<div class="fire-layout">
+
+    <!-- ── Left column: inputs ── -->
+    <div class="fire-inputs-col">
+
+        <!-- Currency selector -->
+        <div class="currency-bar" id="currencyBar"></div>
+
+        <!-- Pre-fill notice (shown when URL params present) -->
+        <div class="fire-prefill-banner" id="prefillBanner" style="display:none">
+            &#9889; Pre-filled from your Net Worth Calculator results. Adjust any value below.
+        </div>
+
+        <!-- Ages -->
+        <div class="fire-card">
+            <div class="fire-card-header">
+                <span class="fire-card-label">Age</span>
+            </div>
+            <div class="fire-age-row">
+                <div class="fire-age-field">
+                    <label class="fire-age-label" for="currentAge">Current Age</label>
+                    <input type="number" id="currentAge" class="fire-age-input"
+                           value="30" min="18" max="70" step="1"
+                           aria-label="Current age">
+                </div>
+                <div class="fire-age-field">
+                    <label class="fire-age-label" for="targetAge">Target Retirement Age <span style="font-weight:400;color:var(--color-text-muted)">(optional)</span></label>
+                    <input type="number" id="targetAge" class="fire-age-input"
+                           value="" min="25" max="80" step="1" placeholder="e.g. 45"
+                           aria-label="Target retirement age">
+                    <span class="fire-age-hint">Set to see monthly investment needed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Expenses in Retirement -->
+        <div class="fire-card">
+            <div class="fire-card-header">
+                <span class="fire-card-label">Monthly Expenses in Retirement</span>
+                <input type="number" id="monthlyExpenses" class="fire-manual-input"
+                       value="60000" min="0" max="500000" step="1000"
+                       aria-label="Monthly expenses in retirement">
+            </div>
+            <div class="fire-display-val" id="display-expenses">&#8377;60,000</div>
+            <input type="range" id="expenses-slider" class="fire-slider"
+                   min="0" max="500000" step="1000" value="60000"
+                   aria-label="Monthly expenses slider">
+            <div class="fire-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;1.25L</span><span>&#8377;2.5L</span><span>&#8377;3.75L</span><span>&#8377;5L</span>
+            </div>
+        </div>
+
+        <!-- Current Invested Corpus -->
+        <div class="fire-card">
+            <div class="fire-card-header">
+                <span class="fire-card-label">Current Invested Corpus</span>
+                <input type="number" id="currentCorpus" class="fire-manual-input"
+                       value="2000000" min="0" max="100000000" step="50000"
+                       aria-label="Current invested corpus">
+            </div>
+            <div class="fire-display-val" id="display-corpus">&#8377;20,00,000</div>
+            <input type="range" id="corpus-slider" class="fire-slider"
+                   min="0" max="100000000" step="50000" value="2000000"
+                   aria-label="Corpus slider">
+            <div class="fire-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;2.5Cr</span><span>&#8377;5Cr</span><span>&#8377;7.5Cr</span><span>&#8377;10Cr</span>
+            </div>
+        </div>
+
+        <!-- Monthly Investment -->
+        <div class="fire-card">
+            <div class="fire-card-header">
+                <span class="fire-card-label">Monthly Investment / Savings</span>
+                <input type="number" id="monthlyInvestment" class="fire-manual-input"
+                       value="50000" min="0" max="500000" step="1000"
+                       aria-label="Monthly investment">
+            </div>
+            <div class="fire-display-val" id="display-invest">&#8377;50,000</div>
+            <input type="range" id="invest-slider" class="fire-slider"
+                   min="0" max="500000" step="1000" value="50000"
+                   aria-label="Monthly investment slider">
+            <div class="fire-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;1.25L</span><span>&#8377;2.5L</span><span>&#8377;3.75L</span><span>&#8377;5L</span>
+            </div>
+        </div>
+
+        <!-- Returns & Inflation -->
+        <div class="fire-card">
+            <div class="fire-card-header">
+                <span class="fire-card-label">Expected Annual Return</span>
+                <input type="number" id="returnRate" class="fire-manual-input"
+                       value="12" min="1" max="30" step="0.1"
+                       aria-label="Expected annual return">
+            </div>
+            <div class="fire-display-val" id="display-return">12.0%</div>
+            <input type="range" id="return-slider" class="fire-slider"
+                   min="1" max="30" step="0.1" value="12"
+                   aria-label="Return slider">
+            <div class="fire-slider-ticks">
+                <span>1%</span><span>8%</span><span>15%</span><span>22%</span><span>30%</span>
+            </div>
+        </div>
+
+        <div class="fire-card">
+            <div class="fire-card-header">
+                <span class="fire-card-label">Annual Inflation Rate</span>
+                <input type="number" id="inflationRate" class="fire-manual-input"
+                       value="6" min="1" max="15" step="0.1"
+                       aria-label="Annual inflation rate">
+            </div>
+            <div class="fire-display-val" id="display-inflation">6.0%</div>
+            <input type="range" id="inflation-slider" class="fire-slider"
+                   min="1" max="15" step="0.1" value="6"
+                   aria-label="Inflation slider">
+            <div class="fire-slider-ticks">
+                <span>1%</span><span>4.5%</span><span>8%</span><span>11.5%</span><span>15%</span>
+            </div>
+        </div>
+
+        <!-- Safe Withdrawal Rate -->
+        <div class="fire-card">
+            <div class="fire-card-header">
+                <span class="fire-card-label">Safe Withdrawal Rate (SWR)</span>
+            </div>
+            <p style="font-size:0.82rem;color:var(--color-text-muted);margin-bottom:10px;">
+                The % of your corpus you withdraw annually in retirement. 4% is the classic rule; use 3–3.5% for a longer horizon or early retirement.
+            </p>
+            <div class="fire-swr-group">
+                <button type="button" class="fire-swr-btn" data-swr="3">3%</button>
+                <button type="button" class="fire-swr-btn" data-swr="3.5">3.5%</button>
+                <button type="button" class="fire-swr-btn active" data-swr="4">4%</button>
+                <button type="button" class="fire-swr-btn" data-swr="4.5">4.5%</button>
+                <button type="button" class="fire-swr-btn" data-swr="5">5%</button>
+            </div>
+        </div>
+
+    </div><!-- /fire-inputs-col -->
+
+    <!-- ── Right column: sticky results ── -->
+    <div class="fire-results-col">
+        <div class="fire-sticky" id="fireResultsAnchor">
+            <div class="fire-results-card">
+
+                <p class="fire-results-label">Your FIRE Number</p>
+                <div class="fire-number-value" id="r-fireNumber">&#8377;0</div>
+
+                <div class="fire-progress-wrap">
+                    <div class="fire-progress-header">
+                        <span class="fire-progress-title">FIRE Progress</span>
+                        <span class="fire-progress-pct" id="r-progressPct">0%</span>
+                    </div>
+                    <div class="fire-progress-track">
+                        <div class="fire-progress-fill" id="fireProgressFill" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <div class="fire-stat-rows">
+                    <div class="fire-stat-row">
+                        <span class="fire-stat-label">Current Corpus</span>
+                        <span class="fire-stat-value" id="r-corpus">&#8377;0</span>
+                    </div>
+                    <div class="fire-stat-row">
+                        <span class="fire-stat-label">Years to FIRE</span>
+                        <span class="fire-stat-value" id="r-yearsToFire">—</span>
+                    </div>
+                    <div class="fire-stat-row fire-stat-row-highlight">
+                        <span class="fire-stat-label">Retirement Age</span>
+                        <span class="fire-stat-value" id="r-retireAge">—</span>
+                    </div>
+                    <div class="fire-stat-row fire-stat-row-highlight">
+                        <span class="fire-stat-label">Retirement Year</span>
+                        <span class="fire-stat-value" id="r-retireYear">—</span>
+                    </div>
+                </div>
+
+                <div class="fire-target-section" id="targetAgeSection" style="display:none">
+                    <p class="fire-target-title">For Target Retirement Age</p>
+                    <div class="fire-stat-rows">
+                        <div class="fire-stat-row">
+                            <span class="fire-stat-label">Monthly Investment Needed</span>
+                            <span class="fire-stat-value" id="r-neededMonthly">—</span>
+                        </div>
+                    </div>
+                    <span id="r-targetGap" class="fire-gap-text"></span>
+                </div>
+
+            </div>
+        </div>
+    </div><!-- /fire-results-col -->
+
+</div><!-- /fire-layout -->
+</div><!-- /container -->
+</section>
+
+<!-- ===== Intent hook ===== -->
+<div class="container">
+    <div class="calc-intent-hook">
+        <span class="calc-intent-hook-eyebrow">Complete Your Financial Picture</span>
+        <h3>Track all assets, liabilities, and investments in one place</h3>
+        <p>
+            Your FIRE number is only as accurate as your financial inputs. Use the Net Worth
+            Calculator to enter every asset and liability you own — then come back here with
+            the pre-filled corpus and monthly surplus to get a precise retirement timeline.
+        </p>
+        <div class="calc-intent-hook-actions">
+            <a th:href="@{/net-worth-calculator}" class="calc-intent-btn primary">Open Net Worth Calculator</a>
+            <a th:href="@{/sip-calculator}" class="calc-intent-btn">SIP Calculator</a>
+            <a th:href="@{/emi-calculator}" class="calc-intent-btn">EMI Calculator</a>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Content / FAQ ===== -->
+<section class="content-section">
+<div class="container">
+<div class="content-narrow">
+
+    <h2 class="calc-steps-title">How to Calculate Your FIRE Number — Step by Step</h2>
+
+    <div class="calc-steps">
+        <div class="calc-step">
+            <div class="calc-step-num">1</div>
+            <div class="calc-step-body">
+                <h4>Estimate your monthly expenses in retirement</h4>
+                <p>Think about what you'd spend each month if you stopped working — housing, food, healthcare, travel, and lifestyle. Use today's values; the calculator adjusts for inflation automatically.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">2</div>
+            <div class="calc-step-body">
+                <h4>Enter your current invested corpus</h4>
+                <p>This is the total value of investments you already have — mutual funds, stocks, PPF, EPF, FDs. Do not include your home (unless you plan to sell it) or other illiquid assets.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">3</div>
+            <div class="calc-step-body">
+                <h4>Enter your monthly investment / savings</h4>
+                <p>How much do you actively invest each month? Include SIP contributions, recurring deposits, and any other savings that go into market-linked instruments.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">4</div>
+            <div class="calc-step-body">
+                <h4>Set return, inflation, and safe withdrawal rate</h4>
+                <p>Use 12% for equity-heavy portfolios, 6% for inflation, and 4% SWR for standard FIRE. If you plan to retire before 40, consider 3–3.5% SWR for a longer 40–50 year horizon.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">5</div>
+            <div class="calc-step-body">
+                <h4>Read your FIRE number, progress, and retirement date</h4>
+                <p>The calculator shows your FIRE target, how far along you are, and the projected year you'll reach it. Optionally, enter a target retirement age to see the exact monthly investment needed.</p>
+            </div>
+        </div>
+    </div>
+
+    <span class="calc-example-label">Worked Example</span>
+
+    <div class="calc-example-box">
+        <p class="calc-example-scenario">Age: 30 &nbsp;|&nbsp; Monthly expenses: ₹60,000 &nbsp;|&nbsp; Corpus: ₹20L &nbsp;|&nbsp; Monthly investment: ₹50,000 &nbsp;|&nbsp; Return: 12% &nbsp;|&nbsp; Inflation: 6% &nbsp;|&nbsp; SWR: 4%</p>
+        <div class="calc-example-rows">
+            <div class="calc-example-row"><span>Annual Expenses (today)</span><span>&#8377;7,20,000</span></div>
+            <div class="calc-example-row"><span>FIRE Number (today's money)</span><span>&#8377;1,80,00,000</span></div>
+            <div class="calc-example-row"><span>Real Return (inflation-adjusted)</span><span>5.66% p.a.</span></div>
+            <div class="calc-example-row"><span>Current Progress</span><span>11% of FIRE</span></div>
+            <div class="calc-example-row"><span>Years to FIRE</span><span>~15 years</span></div>
+            <div class="calc-example-row is-result"><span>Retirement Age</span><span>~45 years</span></div>
+        </div>
+    </div>
+
+    <h2>What is FIRE?</h2>
+    <p>
+        FIRE stands for <strong>Financial Independence, Retire Early</strong>. The goal is to accumulate
+        enough invested wealth that the passive returns alone can cover your living expenses for the rest
+        of your life — giving you the freedom to stop working on your own timeline, not someone else's.
+    </p>
+
+    <h2>What is a FIRE Number?</h2>
+    <p>Your FIRE number is the total invested corpus you need to sustain your lifestyle indefinitely:</p>
+    <p class="formula-block">FIRE Number = Annual Expenses &divide; Safe Withdrawal Rate</p>
+    <p>
+        At a 4% SWR, you need 25&times; your annual expenses. At 3.5%, you need ~28.5&times;, and at 3%,
+        you need ~33&times;. This calculator uses inflation-adjusted (real) returns so all projections
+        are in today's purchasing power.
+    </p>
+
+    <h2>The 4% Rule — Explained</h2>
+    <p>
+        The 4% rule originated from the 1994 Trinity Study, which found that a portfolio of 50–75%
+        equities could sustain 4% annual withdrawals for 30 years across nearly all historical market
+        cycles. For India-based FIRE with a longer 40–50 year horizon, many planners prefer 3–3.5%
+        to add a larger safety buffer.
+    </p>
+
+    <h2>Real Returns vs Nominal Returns</h2>
+    <p>
+        This calculator uses <strong>real (inflation-adjusted) returns</strong> and expresses your
+        FIRE number in today's purchasing power. Real return = (1 + nominal) &divide; (1 + inflation) &minus; 1.
+        This avoids the common mistake of projecting a large future corpus but ignoring that ₹1 crore
+        in 20 years buys far less than ₹1 crore today.
+    </p>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+        <article class="faq-item">
+            <h3>Should I include my home value in the corpus?</h3>
+            <p>
+                Only if you plan to sell it and live off the proceeds or downsize in retirement.
+                Your primary residence doesn't generate income or withdrawals, so it generally
+                should not count toward your FIRE corpus.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>What return rate should I use for Indian equity?</h3>
+            <p>
+                The Nifty 50 has delivered roughly 12–14% CAGR over long periods. A blended
+                portfolio (equity + debt) typically returns 10–12%. Use conservative estimates —
+                the goal is to never run out of money, not to optimise for the best-case scenario.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Does this account for taxes on withdrawals?</h3>
+            <p>
+                No. Long-term capital gains, dividend income, and debt fund returns are all
+                taxable. Your effective withdrawal will be lower after tax. Factor in a 10–15%
+                tax buffer by targeting a slightly higher FIRE number.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>What is the difference between Lean FIRE, Fat FIRE, and Barista FIRE?</h3>
+            <p>
+                <strong>Lean FIRE</strong> — retire on a minimal budget (lower FIRE number).
+                <strong>Fat FIRE</strong> — retire with generous lifestyle spending (higher FIRE number).
+                <strong>Barista FIRE</strong> — retire from full-time work but earn small supplementary
+                income to reduce withdrawal pressure on the corpus.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Is my data saved anywhere?</h3>
+            <p>No. All calculations happen in your browser. Nothing is sent to any server or stored.</p>
+        </article>
+    </div>
+
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- ===== Mobile compact bar ===== -->
+<div class="fire-mobile-bar" id="fireMobileBar" aria-label="FIRE quick summary">
+    <div class="fire-mobile-bar-content">
+        <div class="fire-mobile-bar-item">
+            <span class="fire-mobile-bar-label">FIRE Number</span>
+            <span class="fire-mobile-bar-value" id="mb-fireNumber">&#8377;0</span>
+        </div>
+        <div class="fire-mobile-bar-item">
+            <span class="fire-mobile-bar-label">Retire Age</span>
+            <span class="fire-mobile-bar-value" id="mb-retireAge">—</span>
+        </div>
+        <a href="#fireResultsAnchor" class="fire-mobile-bar-link">Details &#8594;</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/js/fire-calculator.js(v=1)}"></script>
+
+<script>
+    // Show pre-fill banner if URL params present
+    (function () {
+        var p = new URLSearchParams(window.location.search);
+        if (p.get('corpus') || p.get('monthly') || p.get('expenses')) {
+            var b = document.getElementById('prefillBanner');
+            if (b) b.style.display = 'flex';
+        }
+    })();
+</script>
+
+<script>
+    // Sync mobile bar
+    (function () {
+        var obs = new MutationObserver(function () {
+            var fn = document.getElementById('r-fireNumber');
+            var ra = document.getElementById('r-retireAge');
+            var mbFn = document.getElementById('mb-fireNumber');
+            var mbRa = document.getElementById('mb-retireAge');
+            if (fn && mbFn) mbFn.textContent = fn.textContent;
+            if (ra && mbRa) mbRa.textContent = ra.textContent;
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            var card = document.getElementById('fireResultsAnchor');
+            if (card) obs.observe(card, { childList: true, subtree: true, characterData: true });
+        });
+    })();
+</script>
+
+</body>
+</html>

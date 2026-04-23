@@ -585,6 +585,56 @@ section {
     }
 }
 
+/* ===== Currency bar (shared across all calculator pages) ===== */
+
+.currency-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.currency-bar-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+}
+.currency-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.currency-btn,
+.currency-pill {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-white);
+    color: var(--color-text-light);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: var(--shadow-soft);
+}
+.currency-btn:hover,
+.currency-pill:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+.currency-btn.active,
+.currency-pill.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+    box-shadow: none;
+}
+[data-theme="dark"] .currency-btn.active,
+[data-theme="dark"] .currency-pill.active { color: var(--color-bg-main); }
+
 /* ===== Hero trust badges (shared across all pages) ===== */
 
 .hero-trust-badges {

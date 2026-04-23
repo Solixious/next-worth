@@ -31,7 +31,14 @@
 
     <url>
         <loc>https://nextworth.in/fd-calculator</loc>
-        <lastmod>2026-04-22</lastmod>
+        <lastmod>2026-04-23</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://nextworth.in/fire-calculator</loc>
+        <lastmod>2026-04-23</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>

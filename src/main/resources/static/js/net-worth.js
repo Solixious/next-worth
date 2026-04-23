@@ -580,6 +580,17 @@
 
         updateAllCharts(assets, liabilities, sips, emis, income, expenses, years,
                         fAssets, fLiabs, sipFV, surplusAccum);
+
+        // Update FIRE calculator deep-link with current results
+        var fireLink = el('nwFireLink');
+        if (fireLink) {
+            var fireCorpus   = Math.max(0, Math.round(curr.nw));
+            var fireMonthly  = Math.max(0, Math.round(surplus / 12));
+            var fireExpenses = Math.max(0, Math.round(annExp / 12));
+            fireLink.href = '/fire-calculator?corpus=' + fireCorpus +
+                            '&monthly=' + fireMonthly +
+                            '&expenses=' + fireExpenses;
+        }
     }
 
     // ─── Currency ────────────────────────────────────────────────────

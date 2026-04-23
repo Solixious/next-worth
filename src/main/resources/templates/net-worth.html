@@ -173,17 +173,17 @@
 <!-- ===== Intent hook ===== -->
 <div class="container">
     <div class="calc-intent-hook">
-        <span class="calc-intent-hook-eyebrow">Related Tools</span>
-        <h3>Build the complete picture, one calculator at a time</h3>
+        <span class="calc-intent-hook-eyebrow">Plan for Financial Independence</span>
+        <h3>Know your net worth — now find out when you can retire</h3>
         <p>
-            Not sure what EMI to enter? Use the EMI Calculator to get the exact monthly payment
-            on any loan. Want to project your SIP growth in isolation first? The SIP Calculator
-            shows the maturity value of a single investment plan.
+            Your current net worth and monthly surplus are exactly what the FIRE Calculator needs.
+            Click below to open it with your results pre-filled and instantly see your FIRE number
+            and projected retirement age.
         </p>
         <div class="calc-intent-hook-actions">
-            <a th:href="@{/emi-calculator}" class="calc-intent-btn primary">EMI Calculator</a>
+            <a href="/fire-calculator" id="nwFireLink" class="calc-intent-btn primary">Calculate My FIRE Number &#8594;</a>
+            <a th:href="@{/emi-calculator}" class="calc-intent-btn">EMI Calculator</a>
             <a th:href="@{/sip-calculator}" class="calc-intent-btn">SIP Calculator</a>
-            <a th:href="@{/fd-calculator}" class="calc-intent-btn">FD Calculator</a>
         </div>
     </div>
 </div>
@@ -323,7 +323,7 @@
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script th:src="@{/js/net-worth.js(v=11)}"></script>
+<script th:src="@{/js/net-worth.js(v=12)}"></script>
 
 </body>
 </html>
