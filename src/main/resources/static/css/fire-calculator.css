@@ -70,6 +70,15 @@
     font-variant-numeric: tabular-nums;
 }
 
+.fire-card-hint {
+    font-size: 0.79rem;
+    color: var(--color-text-muted);
+    margin-top: 10px;
+    line-height: 1.5;
+}
+
+.fire-stat-accent { color: var(--color-accent); }
+
 /* ===== Slider ===== */
 
 .fire-slider {

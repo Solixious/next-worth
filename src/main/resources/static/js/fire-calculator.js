@@ -47,6 +47,7 @@
         try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({
                 monthlyExpenses:   el('monthlyExpenses')   ? el('monthlyExpenses').value   : '',
+                monthlyPassive:    el('monthlyPassive')    ? el('monthlyPassive').value    : '',
                 currentCorpus:     el('currentCorpus')     ? el('currentCorpus').value     : '',
                 monthlyInvestment: el('monthlyInvestment') ? el('monthlyInvestment').value : '',
                 returnRate:        el('returnRate')        ? el('returnRate').value        : '',
@@ -71,12 +72,13 @@
 
                 var sliderMap = {
                     monthlyExpenses:   'expenses-slider',
+                    monthlyPassive:    'passive-slider',
                     currentCorpus:     'corpus-slider',
                     monthlyInvestment: 'invest-slider',
                     returnRate:        'return-slider',
                     inflationRate:     'inflation-slider'
                 };
-                ['monthlyExpenses', 'currentCorpus', 'monthlyInvestment',
+                ['monthlyExpenses', 'monthlyPassive', 'currentCorpus', 'monthlyInvestment',
                  'returnRate', 'inflationRate', 'currentAge', 'targetAge'].forEach(function (id) {
                     if (s[id] === undefined || s[id] === null) return;
                     var inp = el(id);
@@ -113,7 +115,15 @@
             if (es) es.value = Math.min(ex, parseFloat(es.max));
         }
 
-        if (pCorpus || pMonthly || pExpenses) {
+        var pPassive  = getParam('passive');
+        if (pPassive && !isNaN(pPassive)) {
+            var pa = Math.max(0, Math.round(parseFloat(pPassive)));
+            var pai = el('monthlyPassive'), pas = el('passive-slider');
+            if (pai) pai.value = pa;
+            if (pas) pas.value = Math.min(pa, parseFloat(pas.max));
+        }
+
+        if (pCorpus || pMonthly || pExpenses || pPassive) {
             var banner = el('prefillBanner');
             if (banner) banner.style.display = '';
         }
@@ -126,6 +136,7 @@
             if (s && d) d.textContent = fmt(parseFloat(s.value) || 0);
         }
         one('expenses-slider', 'display-expenses', function (v) { return sym + Math.round(v).toLocaleString('en-IN'); });
+        one('passive-slider',  'display-passive',  function (v) { return sym + Math.round(v).toLocaleString('en-IN'); });
         one('corpus-slider',   'display-corpus',   function (v) { return sym + Math.round(v).toLocaleString('en-IN'); });
         one('invest-slider',   'display-invest',   function (v) { return sym + Math.round(v).toLocaleString('en-IN'); });
         one('return-slider',   'display-return',   function (v) { return parseFloat(v).toFixed(1) + '%'; });
@@ -216,15 +227,18 @@
         var currentAge      = val('currentAge')  || 30;
         var targetAge       = val('targetAge')   || 0;
         var monthlyExp      = val('monthlyExpenses');
+        var monthlyPassive  = val('monthlyPassive');
         var annualReturn    = val('returnRate') / 100;
         var inflation       = val('inflationRate') / 100;
         var corpus          = val('currentCorpus');
         var monthlyInvest   = val('monthlyInvestment');
         var swr             = activeSWR / 100;
 
-        var annualExp       = monthlyExp * 12;
+        // Passive income reduces what the corpus needs to cover
+        var effectiveMonthly = Math.max(0, monthlyExp - monthlyPassive);
+        var annualExp        = effectiveMonthly * 12;
 
-        // FIRE number in today's money (real-return approach)
+        // FIRE number in today's money (real-return approach), net of passive income
         var fireNumber = annualExp > 0 ? annualExp / swr : 0;
 
         // Real (inflation-adjusted) return
@@ -254,6 +268,19 @@
 
         // FIRE number
         setText('r-fireNumber', fmt(fireNumber));
+
+        // Passive income rows — only visible when passive income is set
+        var passiveRow   = el('r-passiveRow');
+        var effectiveRow = el('r-effectiveRow');
+        if (monthlyPassive > 0) {
+            setText('r-passiveIncome', fmt(monthlyPassive));
+            setText('r-effectiveNeed', fmt(effectiveMonthly));
+            if (passiveRow)   passiveRow.style.display   = '';
+            if (effectiveRow) effectiveRow.style.display = '';
+        } else {
+            if (passiveRow)   passiveRow.style.display   = 'none';
+            if (effectiveRow) effectiveRow.style.display = 'none';
+        }
 
         // Progress bar
         var pctRounded = Math.round(progress);
@@ -335,6 +362,8 @@
 
         // Bind sliders
         bindSlider('expenses-slider', 'monthlyExpenses', 'display-expenses',
+            function (v) { return activeCurrency.symbol + Math.round(v).toLocaleString('en-IN'); });
+        bindSlider('passive-slider', 'monthlyPassive', 'display-passive',
             function (v) { return activeCurrency.symbol + Math.round(v).toLocaleString('en-IN'); });
         bindSlider('corpus-slider', 'currentCorpus', 'display-corpus',
             function (v) { return activeCurrency.symbol + Math.round(v).toLocaleString('en-IN'); });

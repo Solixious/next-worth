@@ -63,18 +63,18 @@
             totalId: 'totalIncomeDisplay', totalSuffix: ' / yr', totalClass: '',
             subcategories: [
                 {
-                    id: 'primary-income', name: 'Primary Income', rowType: 'income',
+                    id: 'active-income', name: 'Active Income', rowType: 'income',
                     sections: [
                         { name: 'Salary',          monthly: '', hike: '8' },
                         { name: 'Business Income', monthly: '', hike: '' }
                     ]
                 },
                 {
-                    id: 'other-income', name: 'Other Income', rowType: 'income',
+                    id: 'passive-income', name: 'Passive Income', rowType: 'income',
                     sections: [
-                        { name: 'Rental Income', monthly: '', hike: '5' },
-                        { name: 'Dividends',     monthly: '', hike: '' },
-                        { name: 'Side Hustle',   monthly: '', hike: '' }
+                        { name: 'Rental Income',  monthly: '', hike: '5' },
+                        { name: 'Dividends',      monthly: '', hike: '' },
+                        { name: 'Interest / FD',  monthly: '', hike: '' }
                     ]
                 }
             ]
@@ -352,6 +352,32 @@
     }
     function getYears() {
         return Math.max(1, Math.min(40, num(el('projectionYears').value) || 10));
+    }
+
+    // Sum of passive income subcategory for FIRE pre-fill
+    function getLiquidPassiveIncome() {
+        var total = 0;
+        var container = el('rows-passive-income');
+        if (!container) return 0;
+        container.querySelectorAll('.str-row').forEach(function (row) {
+            var nums = row.querySelectorAll('input[type="number"]');
+            if (nums[0]) total += num(nums[0].value);
+        });
+        return total;
+    }
+
+    // Only liquid/investable assets (Cash & Savings + Investments) for FIRE corpus
+    function getLiquidAssetsTotal() {
+        var total = 0;
+        ['cash-savings', 'investments'].forEach(function (subcatId) {
+            var container = el('rows-' + subcatId);
+            if (!container) return;
+            container.querySelectorAll('.nw-row').forEach(function (row) {
+                var nums = row.querySelectorAll('input[type="number"]');
+                if (nums[0]) total += num(nums[0].value);
+            });
+        });
+        return total;
     }
 
     // ─── Financial Calculations ───────────────────────────────────────
@@ -680,14 +706,18 @@
                         fAssets, fLiabs, sipFV, surplusAccum);
 
         // Update FIRE calculator deep-link with current results
+        // Corpus = liquid assets only (Cash & Savings + Investments); property excluded
+        // Passive income reduces the corpus the investments need to cover
         var fireLink = el('nwFireLink');
         if (fireLink) {
-            var fireCorpus   = Math.max(0, Math.round(curr.nw));
+            var fireCorpus   = Math.max(0, Math.round(getLiquidAssetsTotal()));
             var fireMonthly  = Math.max(0, Math.round(surplus / 12));
             var fireExpenses = Math.max(0, Math.round(annExp / 12));
-            fireLink.href = '/fire-calculator?corpus=' + fireCorpus +
-                            '&monthly=' + fireMonthly +
-                            '&expenses=' + fireExpenses;
+            var firePassive  = Math.max(0, Math.round(getLiquidPassiveIncome()));
+            fireLink.href = '/fire-calculator?corpus='   + fireCorpus  +
+                            '&monthly='  + fireMonthly  +
+                            '&expenses=' + fireExpenses +
+                            '&passive='  + firePassive;
         }
 
         saveState();
