@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    'Free Goal Corpus Calculator — How Much to Save for Any Financial Goal | NextWorth',
+    'Calculate exactly how much to save each month for your financial goal. Enter the target amount, time horizon, expected return and inflation to instantly see the required monthly SIP and lump sum.',
+    'goal corpus calculator, how much to save for goal India, target corpus calculator, SIP for goal planning, financial goal calculator free, goal planning calculator India'
+)}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<link rel="stylesheet" th:href="@{/css/goal-corpus.css(v=1)}">
+
+<main>
+
+<!-- ===== Hero ===== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <p class="eyebrow">Free Goal Planning Calculator — No Sign-up Required</p>
+            <h1>Goal Corpus Calculator — Find Your Monthly SIP Target</h1>
+            <p class="hero-subtitle">
+                Enter your financial goal, time horizon, expected return, and inflation rate to
+                instantly see exactly how much you need to invest every month — and whether your
+                existing savings already cover part of it.
+            </p>
+            <div class="hero-trust-badges">
+                <span class="hero-trust-badge">&#128274; Nothing is stored or shared</span>
+                <span class="hero-trust-badge">&#9989; 100% free, no sign-up</span>
+                <span class="hero-trust-badge">&#128187; Runs entirely in your browser</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Calculator ===== -->
+<section class="gc-section">
+<div class="container">
+<div class="gc-layout">
+
+    <!-- ── Left column: inputs ── -->
+    <div class="gc-inputs-col">
+
+        <!-- Currency selector -->
+        <div class="currency-bar" id="currencyBar"></div>
+
+        <!-- Goal Amount -->
+        <div class="gc-card">
+            <div class="gc-card-header">
+                <span class="gc-card-label">Goal Amount (Today's Value)</span>
+                <input type="number" id="goalAmount" class="gc-manual-input"
+                       value="5000000" min="100000" max="100000000" step="100000"
+                       aria-label="Goal amount in today's value">
+            </div>
+            <div class="gc-display-val" id="display-goal">&#8377;50,00,000</div>
+            <input type="range" id="goal-slider" class="gc-slider"
+                   min="100000" max="100000000" step="100000" value="5000000"
+                   aria-label="Goal amount slider">
+            <div class="gc-slider-ticks">
+                <span>&#8377;1L</span><span>&#8377;2.5Cr</span><span>&#8377;5Cr</span><span>&#8377;7.5Cr</span><span>&#8377;10Cr</span>
+            </div>
+            <p class="gc-card-hint">Enter the cost of your goal in today's money — the calculator adjusts for inflation automatically.</p>
+        </div>
+
+        <!-- Time Horizon -->
+        <div class="gc-card">
+            <div class="gc-card-header">
+                <span class="gc-card-label">Time Horizon</span>
+                <input type="number" id="timeHorizon" class="gc-manual-input"
+                       value="10" min="1" max="30" step="1"
+                       aria-label="Time horizon in years">
+            </div>
+            <div class="gc-display-val" id="display-horizon">10 Years</div>
+            <input type="range" id="horizon-slider" class="gc-slider"
+                   min="1" max="30" step="1" value="10"
+                   aria-label="Time horizon slider">
+            <div class="gc-slider-ticks">
+                <span>1 yr</span><span>8 yrs</span><span>15 yrs</span><span>22 yrs</span><span>30 yrs</span>
+            </div>
+        </div>
+
+        <!-- Expected Return -->
+        <div class="gc-card">
+            <div class="gc-card-header">
+                <span class="gc-card-label">Expected Annual Return</span>
+                <input type="number" id="returnRate" class="gc-manual-input"
+                       value="12" min="1" max="30" step="0.1"
+                       aria-label="Expected annual return rate">
+            </div>
+            <div class="gc-display-val" id="display-return">12.0%</div>
+            <input type="range" id="return-slider" class="gc-slider"
+                   min="1" max="30" step="0.1" value="12"
+                   aria-label="Return rate slider">
+            <div class="gc-slider-ticks">
+                <span>1%</span><span>8%</span><span>15%</span><span>22%</span><span>30%</span>
+            </div>
+            <p class="gc-card-hint">Use 10–12% for equity mutual funds, 6–8% for debt, 7–9% for a balanced portfolio.</p>
+        </div>
+
+        <!-- Inflation Rate -->
+        <div class="gc-card">
+            <div class="gc-card-header">
+                <span class="gc-card-label">Expected Inflation Rate</span>
+                <input type="number" id="inflationRate" class="gc-manual-input"
+                       value="6" min="0" max="15" step="0.1"
+                       aria-label="Expected inflation rate">
+            </div>
+            <div class="gc-display-val" id="display-inflation">6.0%</div>
+            <input type="range" id="inflation-slider" class="gc-slider"
+                   min="0" max="15" step="0.1" value="6"
+                   aria-label="Inflation slider">
+            <div class="gc-slider-ticks">
+                <span>0%</span><span>4%</span><span>7.5%</span><span>11%</span><span>15%</span>
+            </div>
+            <p class="gc-card-hint">India's long-run CPI inflation has averaged 5–7%. Use 0% for goals with a fixed future cost.</p>
+        </div>
+
+        <!-- Existing Corpus -->
+        <div class="gc-card">
+            <div class="gc-card-header">
+                <span class="gc-card-label">Existing Savings Toward This Goal</span>
+                <input type="number" id="existingCorpus" class="gc-manual-input"
+                       value="0" min="0" max="100000000" step="100000"
+                       aria-label="Existing corpus already saved toward this goal">
+            </div>
+            <div class="gc-display-val" id="display-existing">&#8377;0</div>
+            <input type="range" id="existing-slider" class="gc-slider"
+                   min="0" max="100000000" step="100000" value="0"
+                   aria-label="Existing corpus slider">
+            <div class="gc-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;2.5Cr</span><span>&#8377;5Cr</span><span>&#8377;7.5Cr</span><span>&#8377;10Cr</span>
+            </div>
+            <p class="gc-card-hint">Any amount already invested specifically for this goal. It earns returns and reduces the SIP you need.</p>
+        </div>
+
+    </div><!-- /gc-inputs-col -->
+
+    <!-- ── Right column: sticky results ── -->
+    <div class="gc-results-col">
+        <div class="gc-sticky" id="gcResultsAnchor">
+            <div class="gc-results-card">
+
+                <p class="gc-results-label">Monthly SIP Required</p>
+                <div class="gc-monthly-sip-value" id="gc-monthly-sip">&#8377;0</div>
+                <span class="gc-on-track-badge" id="gc-on-track-badge" style="display:none">&#10003; Already on track!</span>
+
+                <div class="gc-progress-wrap">
+                    <div class="gc-progress-label">
+                        <span>Progress toward goal</span>
+                        <strong id="gc-progress-pct">0% funded</strong>
+                    </div>
+                    <div class="gc-progress-track">
+                        <div class="gc-progress-fill" id="gc-progress-fill" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <div class="gc-stat-rows">
+                    <div class="gc-stat-row">
+                        <span class="gc-stat-label">Goal (Today's Value)</span>
+                        <span class="gc-stat-value" id="r-goalToday">&#8377;0</span>
+                    </div>
+                    <div class="gc-stat-row">
+                        <span class="gc-stat-label">Inflation-Adjusted Goal</span>
+                        <span class="gc-stat-value gc-accent" id="r-futureGoal">&#8377;0</span>
+                    </div>
+                    <div class="gc-stat-row">
+                        <span class="gc-stat-label">Existing Savings (Future Value)</span>
+                        <span class="gc-stat-value" id="r-existingFV">&#8377;0</span>
+                    </div>
+                    <div class="gc-stat-row">
+                        <span class="gc-stat-label">Remaining Gap</span>
+                        <span class="gc-stat-value" id="r-gap">&#8377;0</span>
+                    </div>
+                    <div class="gc-stat-row gc-stat-row-bold">
+                        <span class="gc-stat-label">Lump Sum Alternative</span>
+                        <span class="gc-stat-value" id="r-lumpSum">&#8377;0</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div><!-- /gc-results-col -->
+
+</div><!-- /gc-layout -->
+
+<!-- ===== Chart ===== -->
+<div class="gc-chart-section">
+    <h2 class="gc-chart-heading">Corpus Growth vs Goal</h2>
+    <p class="gc-chart-subheading">See how your corpus (existing savings + SIP) tracks against the inflation-adjusted target each year.</p>
+    <div class="gc-chart-card">
+        <p class="gc-chart-title">Corpus Growth Over Time</p>
+        <div class="gc-chart-wrap"><canvas id="chartGrowth"></canvas></div>
+    </div>
+</div>
+
+</div><!-- /container -->
+</section>
+
+<!-- ===== Intent hook ===== -->
+<div class="container">
+    <div class="calc-intent-hook">
+        <span class="calc-intent-hook-eyebrow">Build the Full Picture</span>
+        <h3>Track all your goals alongside your complete net worth</h3>
+        <p>
+            The Net Worth Calculator shows your total assets, liabilities, SIP corpus, and projected
+            future net worth in one view. Add your monthly surplus as a SIP here to see whether you're
+            on track — or use the FIRE Calculator to find your retirement date.
+        </p>
+        <div class="calc-intent-hook-actions">
+            <a th:href="@{/net-worth-calculator}" class="calc-intent-btn primary">Net Worth Calculator &#8594;</a>
+            <a th:href="@{/sip-calculator}" class="calc-intent-btn">SIP Calculator</a>
+            <a th:href="@{/fire-calculator}" class="calc-intent-btn">FIRE Calculator</a>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Content / FAQ ===== -->
+<section class="content-section">
+<div class="container">
+<div class="content-narrow">
+
+    <h2 class="calc-steps-title">How to Use This Goal Corpus Calculator — Step by Step</h2>
+
+    <div class="calc-steps">
+        <div class="calc-step">
+            <div class="calc-step-num">1</div>
+            <div class="calc-step-body">
+                <h4>Enter your goal amount in today's money</h4>
+                <p>How much does your goal cost right now? Enter the current price — not the future inflated cost. The calculator compounds inflation over your time horizon automatically.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">2</div>
+            <div class="calc-step-body">
+                <h4>Set your time horizon</h4>
+                <p>How many years until you need the money? A child's college fund in 15 years, a home down payment in 5 years, a wedding in 3 years — each requires a different monthly commitment.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">3</div>
+            <div class="calc-step-body">
+                <h4>Enter expected return and inflation rates</h4>
+                <p>Use 10–12% for equity mutual funds and 6% for inflation as a conservative baseline. The gap between return and inflation determines how hard your money works for you.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">4</div>
+            <div class="calc-step-body">
+                <h4>Add existing savings toward this goal</h4>
+                <p>Already set aside some money? Enter it here. That amount compounds at your expected return and directly reduces the monthly SIP you need to start today.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">5</div>
+            <div class="calc-step-body">
+                <h4>Read your results and act</h4>
+                <p>The results card shows the inflation-adjusted future goal, how much your existing savings grow to, the remaining gap, the monthly SIP required, and a lump sum alternative. The chart shows your corpus tracking against the target year by year.</p>
+            </div>
+        </div>
+    </div>
+
+    <span class="calc-example-label">Worked Example — Child's Education Fund</span>
+
+    <div class="calc-example-box">
+        <p class="calc-example-scenario">Goal: &#8377;50L today &nbsp;|&nbsp; Time: 10 years &nbsp;|&nbsp; Return: 12% &nbsp;|&nbsp; Inflation: 6% &nbsp;|&nbsp; Existing: &#8377;5L</p>
+        <div class="calc-example-rows">
+            <div class="calc-example-row"><span>Inflation-Adjusted Goal (10 yr @ 6%)</span><span>&#8377;89,54,238</span></div>
+            <div class="calc-example-row"><span>Existing &#8377;5L grows to (10 yr @ 12%)</span><span>&#8377;15,52,924</span></div>
+            <div class="calc-example-row"><span>Remaining Gap</span><span>&#8377;74,01,314</span></div>
+            <div class="calc-example-row"><span>Lump Sum Alternative Today</span><span>&#8377;23,83,000</span></div>
+            <div class="calc-example-row is-result"><span>Monthly SIP Required</span><span>&#8377;33,000 / month</span></div>
+        </div>
+    </div>
+
+    <h2>How is the Required SIP Calculated?</h2>
+    <p>The calculator uses three steps:</p>
+    <ol class="content-list">
+        <li><strong>Inflation-adjust the goal:</strong> Future Goal = Goal Today &times; (1 + Inflation)^Years</li>
+        <li><strong>Grow existing savings:</strong> Existing FV = Existing &times; (1 + Monthly Rate)^Months</li>
+        <li><strong>Solve for SIP:</strong> Using the annuity-due formula — Monthly SIP = Gap &times; r &divide; ((1 + r)^n &minus; 1) &divide; (1 + r)</li>
+    </ol>
+    <p>Where <strong>r</strong> = monthly return rate (annual rate &divide; 12 &divide; 100) and <strong>n</strong> = total months.</p>
+
+    <h2>What is the Lump Sum Alternative?</h2>
+    <p>
+        The lump sum shows the single amount you would need to invest today (instead of monthly SIPs)
+        to reach the same inflated goal. It is the present value of the remaining gap:
+    </p>
+    <p class="formula-block">Lump Sum = Remaining Gap &divide; (1 + Monthly Rate)^Months</p>
+    <p>If you have a bonus or inheritance, compare this to the monthly SIP — the lump sum is usually much smaller but requires the capital upfront.</p>
+
+    <h2>Why Plan for Inflation?</h2>
+    <p>
+        A goal that costs &#8377;50L today will cost &#8377;89.5L in 10 years at 6% inflation.
+        Planning for the nominal (today's) amount leaves you &#8377;39.5L short.
+        For goals like education, healthcare, and weddings — which often inflate faster than CPI — use a
+        slightly higher rate (7–9%) to stay conservative.
+    </p>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+        <article class="faq-item">
+            <h3>What return rate should I use?</h3>
+            <p>
+                Equity mutual funds: 10–12%. Balanced / hybrid funds: 8–10%. Debt funds / FDs: 6–7%.
+                Use a blended rate that matches your actual asset allocation.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>What inflation rate should I use?</h3>
+            <p>
+                India's long-run CPI averages 5–7%. For education and healthcare goals, 7–9% is more
+                realistic. For a goal with a fixed future price (e.g., buying a specific property at
+                an agreed amount), set inflation to 0%.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Should I count all my savings or only savings for this goal?</h3>
+            <p>
+                Only count savings specifically earmarked for this goal. Emergency funds, retirement
+                corpus, and general investments serving other purposes should not be included —
+                mixing them will understate the SIP you actually need.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>What if I can't afford the required SIP right now?</h3>
+            <p>
+                Start with whatever you can afford and increase it annually (step-up SIP).
+                Even a &#8377;5,000/month start that grows 10% per year covers far more ground than
+                waiting until you can afford the full amount. Use the Net Worth Calculator to
+                model a step-up SIP alongside your other finances.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Is my data saved anywhere?</h3>
+            <p>No. All calculations happen entirely in your browser. Nothing is sent to any server.</p>
+        </article>
+    </div>
+
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- ===== Mobile compact bar ===== -->
+<div class="gc-mobile-bar" id="gcMobileBar" aria-label="Goal corpus quick summary">
+    <div class="gc-mobile-bar-content">
+        <div class="gc-mobile-bar-item">
+            <span class="gc-mobile-bar-label">Monthly SIP</span>
+            <span class="gc-mobile-bar-value" id="mb-sip">&#8377;0</span>
+        </div>
+        <a href="#gcResultsAnchor" class="gc-mobile-bar-link">Details &#8594;</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:src="@{/js/goal-corpus.js(v=1)}"></script>
+
+</body>
+</html>
