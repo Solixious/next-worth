@@ -10,6 +10,7 @@
         { code: 'GBP', symbol: '£', label: '£ GBP' }
     ];
     var activeCurrency = CURRENCIES[0];
+    var STORAGE_KEY = 'nw_fire_v1';
 
     function buildCurrencyBar() {
         var bar = document.getElementById('currencyBar');
@@ -34,12 +35,101 @@
         return activeCurrency.symbol + Math.round(Math.abs(n)).toLocaleString('en-IN');
     }
 
-    // ─── URL param pre-fill ───────────────────────────────────────────────────
+    // ─── Persistence & URL param pre-fill ────────────────────────────────────
 
     function getParam(name) {
         try {
             return new URLSearchParams(window.location.search).get(name);
         } catch (e) { return null; }
+    }
+
+    function saveState() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                monthlyExpenses:   el('monthlyExpenses')   ? el('monthlyExpenses').value   : '',
+                currentCorpus:     el('currentCorpus')     ? el('currentCorpus').value     : '',
+                monthlyInvestment: el('monthlyInvestment') ? el('monthlyInvestment').value : '',
+                returnRate:        el('returnRate')        ? el('returnRate').value        : '',
+                inflationRate:     el('inflationRate')     ? el('inflationRate').value     : '',
+                currentAge:        el('currentAge')        ? el('currentAge').value        : '',
+                targetAge:         el('targetAge')         ? el('targetAge').value         : '',
+                swr:               activeSWR,
+                currencyCode:      activeCurrency.code
+            }));
+        } catch (e) {}
+    }
+
+    function loadState() {
+        // 1. Restore from localStorage
+        try {
+            var s = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            if (s) {
+                var cur = CURRENCIES.filter(function (c) { return c.code === s.currencyCode; })[0];
+                if (cur) activeCurrency = cur;
+
+                if (s.swr) activeSWR = parseFloat(s.swr);
+
+                var sliderMap = {
+                    monthlyExpenses:   'expenses-slider',
+                    currentCorpus:     'corpus-slider',
+                    monthlyInvestment: 'invest-slider',
+                    returnRate:        'return-slider',
+                    inflationRate:     'inflation-slider'
+                };
+                ['monthlyExpenses', 'currentCorpus', 'monthlyInvestment',
+                 'returnRate', 'inflationRate', 'currentAge', 'targetAge'].forEach(function (id) {
+                    if (s[id] === undefined || s[id] === null) return;
+                    var inp = el(id);
+                    if (inp) inp.value = s[id];
+                    if (sliderMap[id]) {
+                        var sl = el(sliderMap[id]);
+                        if (sl) sl.value = Math.min(Math.max(parseFloat(s[id]) || 0, parseFloat(sl.min)), parseFloat(sl.max));
+                    }
+                });
+            }
+        } catch (e) {}
+
+        // 2. URL params override saved values (net-worth deep-link)
+        var pCorpus   = getParam('corpus');
+        var pMonthly  = getParam('monthly');
+        var pExpenses = getParam('expenses');
+
+        if (pCorpus && !isNaN(pCorpus)) {
+            var c = Math.max(0, Math.round(parseFloat(pCorpus)));
+            var ci = el('currentCorpus'),  cs = el('corpus-slider');
+            if (ci) ci.value = c;
+            if (cs) cs.value = Math.min(c, parseFloat(cs.max));
+        }
+        if (pMonthly && !isNaN(pMonthly)) {
+            var m = Math.max(0, Math.round(parseFloat(pMonthly)));
+            var mi = el('monthlyInvestment'), ms = el('invest-slider');
+            if (mi) mi.value = m;
+            if (ms) ms.value = Math.min(m, parseFloat(ms.max));
+        }
+        if (pExpenses && !isNaN(pExpenses)) {
+            var ex = Math.max(0, Math.round(parseFloat(pExpenses)));
+            var ei = el('monthlyExpenses'), es = el('expenses-slider');
+            if (ei) ei.value = ex;
+            if (es) es.value = Math.min(ex, parseFloat(es.max));
+        }
+
+        if (pCorpus || pMonthly || pExpenses) {
+            var banner = el('prefillBanner');
+            if (banner) banner.style.display = '';
+        }
+    }
+
+    function syncDisplays() {
+        var sym = activeCurrency.symbol;
+        function one(slId, dispId, fmt) {
+            var s = el(slId), d = el(dispId);
+            if (s && d) d.textContent = fmt(parseFloat(s.value) || 0);
+        }
+        one('expenses-slider', 'display-expenses', function (v) { return sym + Math.round(v).toLocaleString('en-IN'); });
+        one('corpus-slider',   'display-corpus',   function (v) { return sym + Math.round(v).toLocaleString('en-IN'); });
+        one('invest-slider',   'display-invest',   function (v) { return sym + Math.round(v).toLocaleString('en-IN'); });
+        one('return-slider',   'display-return',   function (v) { return parseFloat(v).toFixed(1) + '%'; });
+        one('inflation-slider','display-inflation',function (v) { return parseFloat(v).toFixed(1) + '%'; });
     }
 
     // ─── DOM helpers ─────────────────────────────────────────────────────────
@@ -220,46 +310,28 @@
             if (progress >= 100) bar.classList.add('fire-progress-done');
             else if (progress >= 50) bar.classList.add('fire-progress-mid');
         }
+
+        saveState();
     }
 
     // ─── Init ─────────────────────────────────────────────────────────────────
 
     function init() {
+        loadState(); // restores saved values; URL params override saved corpus/monthly/expenses
+
         buildCurrencyBar();
+
+        // Sync currency bar button active state after loadState may have changed activeCurrency
+        document.querySelectorAll('#currencyBar .currency-btn').forEach(function (btn) {
+            btn.classList.toggle('active', btn.textContent.indexOf(activeCurrency.code) !== -1);
+        });
+
         bindSWRButtons();
 
-        // Pre-fill from URL params (passed by net-worth calculator)
-        var pCorpus   = getParam('corpus');
-        var pMonthly  = getParam('monthly');
-        var pExpenses = getParam('expenses');
-
-        if (pCorpus && !isNaN(pCorpus)) {
-            var c = Math.max(0, Math.round(parseFloat(pCorpus)));
-            var corpusInput  = el('currentCorpus');
-            var corpusSlider = el('corpus-slider');
-            if (corpusInput)  corpusInput.value  = c;
-            if (corpusSlider) corpusSlider.value  = Math.min(c, parseFloat(corpusSlider.max));
-            var corpusDisp = el('display-corpus');
-            if (corpusDisp) corpusDisp.textContent = '₹' + c.toLocaleString('en-IN');
-        }
-        if (pMonthly && !isNaN(pMonthly)) {
-            var m = Math.max(0, Math.round(parseFloat(pMonthly)));
-            var investInput  = el('monthlyInvestment');
-            var investSlider = el('invest-slider');
-            if (investInput)  investInput.value  = m;
-            if (investSlider) investSlider.value  = Math.min(m, parseFloat(investSlider.max));
-            var investDisp = el('display-invest');
-            if (investDisp) investDisp.textContent = '₹' + m.toLocaleString('en-IN');
-        }
-        if (pExpenses && !isNaN(pExpenses)) {
-            var ex = Math.max(0, Math.round(parseFloat(pExpenses)));
-            var expInput  = el('monthlyExpenses');
-            var expSlider = el('expenses-slider');
-            if (expInput)  expInput.value  = ex;
-            if (expSlider) expSlider.value  = Math.min(ex, parseFloat(expSlider.max));
-            var expDisp = el('display-expenses');
-            if (expDisp) expDisp.textContent = '₹' + ex.toLocaleString('en-IN');
-        }
+        // Sync SWR button active state after loadState may have changed activeSWR
+        document.querySelectorAll('.fire-swr-btn').forEach(function (btn) {
+            btn.classList.toggle('active', parseFloat(btn.dataset.swr) === activeSWR);
+        });
 
         // Bind sliders
         bindSlider('expenses-slider', 'monthlyExpenses', 'display-expenses',
@@ -278,6 +350,8 @@
             var inp = el(id);
             if (inp) inp.addEventListener('input', recalc);
         });
+
+        syncDisplays(); // update slider display labels from restored values
 
         recalc();
     }

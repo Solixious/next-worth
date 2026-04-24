@@ -8,6 +8,7 @@
     ];
     var activeCurrency = CURRENCIES[0];
     var tenureMode = 'years';
+    var STORAGE_KEY = 'nw_emi_v1';
 
     function el(id) { return document.getElementById(id); }
     function num(v) { var n = parseFloat(String(v).replace(/,/g, '')); return isNaN(n) ? 0 : n; }
@@ -31,6 +32,55 @@
         var pct = ((parseFloat(slider.value) - min) / (max - min)) * 100;
         slider.style.background =
             'linear-gradient(to right, var(--color-primary) ' + pct + '%, var(--color-bg-light) ' + pct + '%)';
+    }
+
+    function saveState() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                loanAmount:   el('loanAmount').value,
+                interestRate: el('interestRate').value,
+                tenure:       el('tenure').value,
+                tenureMode:   tenureMode,
+                currencyCode: activeCurrency.code
+            }));
+        } catch (e) {}
+    }
+
+    function loadState() {
+        try {
+            var s = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            if (!s) return;
+
+            var cur = CURRENCIES.filter(function (c) { return c.code === s.currencyCode; })[0];
+            if (cur) activeCurrency = cur;
+
+            if (s.tenureMode === 'months') {
+                tenureMode = 'months';
+                var tsl = el('tenure-slider'), tinp = el('tenure');
+                if (tsl)  { tsl.min = 1; tsl.max = 360; tsl.step = 1; }
+                if (tinp) { tinp.min = 1; tinp.max = 360; }
+                var yb = el('tenure-years-btn'), mb = el('tenure-months-btn');
+                if (yb) yb.classList.remove('active');
+                if (mb) mb.classList.add('active');
+                updateTenureTicks();
+            }
+
+            if (s.loanAmount !== undefined) {
+                el('loanAmount').value = s.loanAmount;
+                var ls = el('loan-slider');
+                if (ls) ls.value = Math.min(parseFloat(s.loanAmount) || 0, parseFloat(ls.max));
+            }
+            if (s.interestRate !== undefined) {
+                el('interestRate').value = s.interestRate;
+                var rs = el('rate-slider');
+                if (rs) rs.value = s.interestRate;
+            }
+            if (s.tenure !== undefined) {
+                el('tenure').value = s.tenure;
+                var ts = el('tenure-slider');
+                if (ts) ts.value = Math.min(parseFloat(s.tenure) || 0, parseFloat(ts.max));
+            }
+        } catch (e) {}
     }
 
     function recalc() {
@@ -61,6 +111,8 @@
 
         var mb = el('mb-emi');
         if (mb) mb.textContent = fmt(emi);
+
+        saveState();
     }
 
     function clampToSlider(v, slider) {
@@ -181,6 +233,7 @@
     }
 
     function init() {
+        loadState();
         renderCurrencySelector();
         bindSliderInput('loan-slider', 'loanAmount');
         bindSliderInput('rate-slider', 'interestRate');

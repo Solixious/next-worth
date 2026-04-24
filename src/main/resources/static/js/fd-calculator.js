@@ -9,6 +9,7 @@
     var activeCurrency = CURRENCIES[0];
     var tenureMode     = 'years';
     var compFreq       = 4; // quarterly by default
+    var STORAGE_KEY    = 'nw_fd_v1';
 
     function el(id) { return document.getElementById(id); }
     function num(v) { var n = parseFloat(String(v).replace(/,/g, '')); return isNaN(n) ? 0 : n; }
@@ -16,6 +17,63 @@
     function fmt(n) {
         if (!isFinite(n) || n < 0) return activeCurrency.symbol + '0';
         return activeCurrency.symbol + Math.round(n).toLocaleString(activeCurrency.locale);
+    }
+
+    function saveState() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                principal:    el('principal').value,
+                interestRate: el('interestRate').value,
+                tenure:       el('tenure').value,
+                tenureMode:   tenureMode,
+                compFreq:     compFreq,
+                currencyCode: activeCurrency.code
+            }));
+        } catch (e) {}
+    }
+
+    function loadState() {
+        try {
+            var s = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            if (!s) return;
+
+            var cur = CURRENCIES.filter(function (c) { return c.code === s.currencyCode; })[0];
+            if (cur) activeCurrency = cur;
+
+            if (s.compFreq) {
+                compFreq = parseInt(s.compFreq, 10);
+                document.querySelectorAll('.freq-btn').forEach(function (btn) {
+                    btn.classList.toggle('active', parseInt(btn.getAttribute('data-freq'), 10) === compFreq);
+                });
+            }
+
+            if (s.tenureMode === 'months') {
+                tenureMode = 'months';
+                var tsl = el('tenure-slider'), tinp = el('tenure');
+                if (tsl)  { tsl.min = 1; tsl.max = 120; tsl.step = 1; }
+                if (tinp) { tinp.min = 1; tinp.max = 120; }
+                var yb = el('tenure-years-btn'), mb = el('tenure-months-btn');
+                if (yb) yb.classList.remove('active');
+                if (mb) mb.classList.add('active');
+                updateTenureTicks();
+            }
+
+            if (s.principal !== undefined) {
+                el('principal').value = s.principal;
+                var ps = el('principal-slider');
+                if (ps) ps.value = Math.min(parseFloat(s.principal) || 0, parseFloat(ps.max));
+            }
+            if (s.interestRate !== undefined) {
+                el('interestRate').value = s.interestRate;
+                var rs = el('rate-slider');
+                if (rs) rs.value = s.interestRate;
+            }
+            if (s.tenure !== undefined) {
+                el('tenure').value = s.tenure;
+                var ts = el('tenure-slider');
+                if (ts) ts.value = Math.min(parseFloat(s.tenure) || 0, parseFloat(ts.max));
+            }
+        } catch (e) {}
     }
 
     // Compound interest FD formula: A = P × (1 + r/n)^(n×t)
@@ -63,6 +121,8 @@
 
         var mb = el('mb-maturity');
         if (mb) mb.textContent = fmt(maturity);
+
+        saveState();
     }
 
     function clampToSlider(v, slider) {
@@ -193,6 +253,7 @@
     }
 
     function init() {
+        loadState();
         renderCurrencySelector();
         bindSliderInput('principal-slider', 'principal');
         bindSliderInput('rate-slider', 'interestRate');

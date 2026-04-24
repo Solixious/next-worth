@@ -8,6 +8,7 @@
     ];
     var activeCurrency = CURRENCIES[0];
     var durationMode = 'years';
+    var STORAGE_KEY = 'nw_sip_v1';
 
     function el(id) { return document.getElementById(id); }
     function num(v) { var n = parseFloat(String(v).replace(/,/g, '')); return isNaN(n) ? 0 : n; }
@@ -15,6 +16,55 @@
     function fmt(n) {
         if (!isFinite(n) || n < 0) return activeCurrency.symbol + '0';
         return activeCurrency.symbol + Math.round(n).toLocaleString(activeCurrency.locale);
+    }
+
+    function saveState() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                monthlyAmount: el('monthlyAmount').value,
+                returnRate:    el('returnRate').value,
+                duration:      el('duration').value,
+                durationMode:  durationMode,
+                currencyCode:  activeCurrency.code
+            }));
+        } catch (e) {}
+    }
+
+    function loadState() {
+        try {
+            var s = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            if (!s) return;
+
+            var cur = CURRENCIES.filter(function (c) { return c.code === s.currencyCode; })[0];
+            if (cur) activeCurrency = cur;
+
+            if (s.durationMode === 'months') {
+                durationMode = 'months';
+                var dsl = el('duration-slider'), dinp = el('duration');
+                if (dsl)  { dsl.min = 1; dsl.max = 480; dsl.step = 1; }
+                if (dinp) { dinp.min = 1; dinp.max = 480; }
+                var yb = el('duration-years-btn'), mb = el('duration-months-btn');
+                if (yb) yb.classList.remove('active');
+                if (mb) mb.classList.add('active');
+                updateDurationTicks();
+            }
+
+            if (s.monthlyAmount !== undefined) {
+                el('monthlyAmount').value = s.monthlyAmount;
+                var as = el('amount-slider');
+                if (as) as.value = Math.min(parseFloat(s.monthlyAmount) || 0, parseFloat(as.max));
+            }
+            if (s.returnRate !== undefined) {
+                el('returnRate').value = s.returnRate;
+                var rs = el('rate-slider');
+                if (rs) rs.value = s.returnRate;
+            }
+            if (s.duration !== undefined) {
+                el('duration').value = s.duration;
+                var ds = el('duration-slider');
+                if (ds) ds.value = Math.min(parseFloat(s.duration) || 0, parseFloat(ds.max));
+            }
+        } catch (e) {}
     }
 
     // SIP future value — annuity-due (investment at start of each period)
@@ -61,6 +111,8 @@
 
         var mb = el('mb-maturity');
         if (mb) mb.textContent = fmt(maturity);
+
+        saveState();
     }
 
     function clampToSlider(v, slider) {
@@ -181,6 +233,7 @@
     }
 
     function init() {
+        loadState();
         renderCurrencySelector();
         bindSliderInput('amount-slider', 'monthlyAmount');
         bindSliderInput('rate-slider', 'returnRate');

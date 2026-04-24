@@ -123,6 +123,7 @@
         { code: 'EUR', symbol: '\u20ac', name: 'Euro',         locale: 'de-DE' }
     ];
     var activeCurrency = CURRENCIES[0];
+    var NW_STORAGE_KEY = 'nw_networth_v1';
 
     // ─── Chart state ─────────────────────────────────────────────────
     var nwCharts    = { growth: null, assets: null, future: null };
@@ -457,6 +458,103 @@
         return msgs;
     }
 
+    // ─── Persistence ─────────────────────────────────────────────────
+
+    function saveState() {
+        try {
+            var subcats = {};
+            HIERARCHY.forEach(function (cat) {
+                cat.subcategories.forEach(function (subcat) {
+                    var container = el('rows-' + subcat.id);
+                    if (!container) return;
+                    var rowSel = { asset: '.nw-row', liability: '.nw-row', income: '.str-row',
+                                   expense: '.str-row', sip: '.sip-row', emi: '.emi-row' }[subcat.rowType];
+                    var rows = [];
+                    container.querySelectorAll(rowSel).forEach(function (row) {
+                        var nums    = row.querySelectorAll('input[type="number"]');
+                        var textInp = row.querySelector('input[type="text"]');
+                        var isCustom = !!row.dataset.custom;
+                        var r = { custom: isCustom, v: [] };
+                        nums.forEach(function (n) { r.v.push(n.value); });
+                        if (isCustom && textInp) r.name = textInp.value;
+                        rows.push(r);
+                    });
+                    subcats[subcat.id] = rows;
+                });
+            });
+            var pyEl = el('projectionYears');
+            localStorage.setItem(NW_STORAGE_KEY, JSON.stringify({
+                v:        1,
+                currency: activeCurrency.code,
+                years:    pyEl ? pyEl.value : '10',
+                subcats:  subcats
+            }));
+        } catch (e) {}
+    }
+
+    function loadState() {
+        try {
+            var s = JSON.parse(localStorage.getItem(NW_STORAGE_KEY));
+            if (!s || s.v !== 1 || !s.subcats) return null;
+
+            var cur = CURRENCIES.filter(function (c) { return c.code === s.currency; })[0];
+            if (cur) activeCurrency = cur;
+
+            // Patch HIERARCHY sections with saved non-custom row values
+            HIERARCHY.forEach(function (cat) {
+                cat.subcategories.forEach(function (subcat) {
+                    var savedRows = s.subcats[subcat.id];
+                    if (!savedRows) return;
+                    var defaultCount = subcat.sections.length;
+                    for (var i = 0; i < defaultCount; i++) {
+                        var r = savedRows[i];
+                        if (!r || r.custom) continue;
+                        var sec = subcat.sections[i];
+                        var v = r.v;
+                        switch (subcat.rowType) {
+                            case 'asset':     sec.amount = v[0] || ''; sec.growth  = v[1] || ''; break;
+                            case 'liability': sec.amount = v[0] || ''; sec.rate    = v[1] || ''; break;
+                            case 'income':    sec.monthly = v[0] || ''; sec.hike   = v[1] || ''; break;
+                            case 'expense':   sec.monthly = v[0] || ''; sec.infl   = v[1] || ''; break;
+                            case 'sip':       sec.monthly = v[0] || ''; sec.ret    = v[1] || ''; sec.stepup = v[2] || ''; break;
+                            case 'emi':       sec.monthly = v[0] || ''; sec.endYear = v[1] || ''; sec.endMonth = v[2] || ''; break;
+                        }
+                    }
+                });
+            });
+
+            return s; // return for custom row + years restoration after render
+        } catch (e) { return null; }
+    }
+
+    function restoreCustomRows(saved) {
+        if (!saved || !saved.subcats) return;
+        HIERARCHY.forEach(function (cat) {
+            cat.subcategories.forEach(function (subcat) {
+                var savedRows = saved.subcats[subcat.id];
+                if (!savedRows) return;
+                var container = el('rows-' + subcat.id);
+                if (!container) return;
+                var defaultCount = subcat.sections.length;
+                for (var i = defaultCount; i < savedRows.length; i++) {
+                    var r = savedRows[i];
+                    if (!r.custom) continue;
+                    var sec = { name: r.name || '' };
+                    var v = r.v || [];
+                    switch (subcat.rowType) {
+                        case 'asset':     sec.amount = v[0]; sec.growth  = v[1]; break;
+                        case 'liability': sec.amount = v[0]; sec.rate    = v[1]; break;
+                        case 'income':    sec.monthly = v[0]; sec.hike   = v[1]; break;
+                        case 'expense':   sec.monthly = v[0]; sec.infl   = v[1]; break;
+                        case 'sip':       sec.monthly = v[0]; sec.ret    = v[1]; sec.stepup = v[2]; break;
+                        case 'emi':       sec.monthly = v[0]; sec.endYear = v[1]; sec.endMonth = v[2]; break;
+                    }
+                    container.appendChild(makeRow(subcat.rowType, sec, true));
+                }
+            });
+        });
+    }
+
     // ─── DOM Update ──────────────────────────────────────────────────
     function setText(id, text) { el(id).textContent = text; }
     function setFmt(id, n)     { el(id).textContent = fmt(n); }
@@ -591,6 +689,8 @@
                             '&monthly=' + fireMonthly +
                             '&expenses=' + fireExpenses;
         }
+
+        saveState();
     }
 
     // ─── Currency ────────────────────────────────────────────────────
@@ -1018,17 +1118,37 @@
 
     // ─── Init ────────────────────────────────────────────────────────
     function init() {
+        // Load saved state — patches HIERARCHY sections before they are rendered
+        var savedState = loadState();
+
         renderCurrencySelector();
+
+        // Sync currency pill active state if currency was restored
+        document.querySelectorAll('#currencyBar .currency-pill').forEach(function (p) {
+            p.classList.toggle('active', p.textContent.indexOf(activeCurrency.code) !== -1);
+        });
 
         var calcCards = el('calcCards');
         HIERARCHY.forEach(function(cat) {
             calcCards.appendChild(renderCategory(cat));
         });
 
+        // Add back any custom rows that were saved
+        restoreCustomRows(savedState);
+
         el('projectionYears').addEventListener('input', function() {
             el('projectionYearsDisplay').textContent = this.value;
             recalc();
         });
+
+        // Restore projection years display
+        if (savedState && savedState.years) {
+            var pyEl = el('projectionYears');
+            if (pyEl) {
+                pyEl.value = savedState.years;
+                el('projectionYearsDisplay').textContent = savedState.years;
+            }
+        }
 
         el('resetBtn').addEventListener('click', function() {
             document.querySelectorAll('.nw-row, .str-row, .sip-row, .emi-row').forEach(function(row) {
@@ -1040,6 +1160,7 @@
             });
             el('projectionYears').value = '10';
             el('projectionYearsDisplay').textContent = '10';
+            try { localStorage.removeItem(NW_STORAGE_KEY); } catch(e) {}
             recalc();
         });
 
