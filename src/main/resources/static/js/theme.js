@@ -37,30 +37,83 @@
         const header = document.getElementById("siteHeader");
         if (!toggle || !header) return;
 
-        function close() {
+        function closeAllDropdowns() {
+            header.querySelectorAll(".nav-dropdown.open").forEach(function (dd) {
+                dd.classList.remove("open");
+                const btn = dd.querySelector(".nav-dropdown-trigger");
+                if (btn) btn.setAttribute("aria-expanded", "false");
+            });
+        }
+
+        function closeNav() {
             header.classList.remove("nav-open");
             toggle.setAttribute("aria-expanded", "false");
+            closeAllDropdowns();
+        }
+
+        function isMobileNav() {
+            return window.getComputedStyle(toggle).display !== "none";
         }
 
         toggle.addEventListener("click", function (e) {
             e.stopPropagation();
             const isOpen = header.classList.toggle("nav-open");
             toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+            if (!isOpen) closeAllDropdowns();
         });
 
-        // Close on any nav link click (handles SPA-style navigation)
-        document.querySelectorAll(".main-nav a").forEach(function (link) {
-            link.addEventListener("click", close);
+        // Dropdown trigger clicks — handle both mobile (accordion) and desktop (click-to-toggle)
+        header.querySelectorAll(".nav-dropdown-trigger").forEach(function (btn) {
+            btn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                const dd = btn.closest(".nav-dropdown");
+
+                if (isMobileNav()) {
+                    // Mobile: accordion — close siblings, toggle this one
+                    const isOpen = dd.classList.contains("open");
+                    closeAllDropdowns();
+                    if (!isOpen) {
+                        dd.classList.add("open");
+                        btn.setAttribute("aria-expanded", "true");
+                    }
+                } else {
+                    // Desktop: CSS hover handles visuals; JS tracks aria state only
+                    const isOpen = dd.classList.contains("open");
+                    closeAllDropdowns();
+                    if (!isOpen) {
+                        dd.classList.add("open");
+                        btn.setAttribute("aria-expanded", "true");
+                    }
+                }
+            });
+        });
+
+        // Close on any nav link click
+        header.querySelectorAll(".main-nav a").forEach(function (link) {
+            link.addEventListener("click", closeNav);
         });
 
         // Close when clicking outside the header
         document.addEventListener("click", function (e) {
-            if (!header.contains(e.target)) close();
+            if (!header.contains(e.target)) {
+                closeNav();
+            }
         });
 
         // Close on Escape key
         document.addEventListener("keydown", function (e) {
-            if (e.key === "Escape") close();
+            if (e.key === "Escape") closeNav();
+        });
+
+        // On desktop mouse-leave from a dropdown, clear the JS open class
+        header.querySelectorAll(".nav-dropdown").forEach(function (dd) {
+            dd.addEventListener("mouseleave", function () {
+                if (!isMobileNav()) {
+                    dd.classList.remove("open");
+                    const btn = dd.querySelector(".nav-dropdown-trigger");
+                    if (btn) btn.setAttribute("aria-expanded", "false");
+                }
+            });
         });
     }
 
