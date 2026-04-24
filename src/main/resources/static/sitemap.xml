@@ -45,6 +45,13 @@
 
 
     <url>
+        <loc>https://nextworth.in/emergency-fund-calculator</loc>
+        <lastmod>2026-04-24</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
         <loc>https://nextworth.in/goal-corpus-calculator</loc>
         <lastmod>2026-04-24</lastmod>
         <changefreq>weekly</changefreq>

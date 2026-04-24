@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    'Free Emergency Fund Calculator — How Much Do You Need? | NextWorth',
+    'Calculate the right size for your emergency fund based on monthly expenses and coverage period. See your funding gap, months to reach your goal, and build your financial safety net.',
+    'emergency fund calculator India, how much emergency fund do I need, emergency savings calculator, financial safety net calculator, 6 month emergency fund calculator'
+)}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<link rel="stylesheet" th:href="@{/css/emergency-fund.css(v=1)}">
+
+<main>
+
+<!-- ===== Hero ===== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <p class="eyebrow">Free Emergency Fund Calculator — No Sign-up Required</p>
+            <h1>Emergency Fund Calculator — Build Your Financial Safety Net</h1>
+            <p class="hero-subtitle">
+                Find out exactly how large your emergency fund should be, see how much
+                you've already covered, and know precisely when you'll be fully protected.
+            </p>
+            <div class="hero-trust-badges">
+                <span class="hero-trust-badge">&#128274; Nothing is stored or shared</span>
+                <span class="hero-trust-badge">&#9989; 100% free, no sign-up</span>
+                <span class="hero-trust-badge">&#128187; Runs entirely in your browser</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Calculator ===== -->
+<section class="ef-section">
+<div class="container">
+<div class="ef-layout">
+
+    <!-- ── Left column: inputs ── -->
+    <div class="ef-inputs-col">
+
+        <!-- Currency selector -->
+        <div class="currency-bar" id="currencyBar"></div>
+
+        <!-- Monthly Expenses -->
+        <div class="ef-card">
+            <div class="ef-card-header">
+                <span class="ef-card-label">Monthly Expenses</span>
+                <input type="number" id="monthlyExpenses" class="ef-manual-input"
+                       value="50000" min="0" max="500000" step="1000"
+                       aria-label="Monthly expenses">
+            </div>
+            <div class="ef-display-val" id="display-expenses">&#8377;50,000</div>
+            <input type="range" id="expenses-slider" class="ef-slider"
+                   min="0" max="500000" step="1000" value="50000"
+                   aria-label="Monthly expenses slider">
+            <div class="ef-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;1.25L</span><span>&#8377;2.5L</span><span>&#8377;3.75L</span><span>&#8377;5L</span>
+            </div>
+            <p class="ef-card-hint">Include rent, groceries, utilities, insurance premiums, and other fixed or semi-fixed costs — but not discretionary spending like dining out or holidays.</p>
+        </div>
+
+        <!-- Coverage Period -->
+        <div class="ef-card">
+            <div class="ef-card-header">
+                <span class="ef-card-label">Coverage Period</span>
+            </div>
+            <div class="ef-coverage-selector">
+                <button type="button" class="ef-coverage-btn" data-months="3">
+                    3 Months
+                    <span class="ef-coverage-sub">Lean</span>
+                </button>
+                <button type="button" class="ef-coverage-btn active" data-months="6">
+                    6 Months
+                    <span class="ef-coverage-sub">Recommended</span>
+                </button>
+                <button type="button" class="ef-coverage-btn" data-months="9">
+                    9 Months
+                    <span class="ef-coverage-sub">Comfortable</span>
+                </button>
+                <button type="button" class="ef-coverage-btn" data-months="12">
+                    12 Months
+                    <span class="ef-coverage-sub">Conservative</span>
+                </button>
+            </div>
+            <p class="ef-card-hint">Salaried employees in stable jobs can use 3–6 months. Self-employed, freelancers, or those with dependents should aim for 9–12 months.</p>
+        </div>
+
+        <!-- Existing Emergency Fund -->
+        <div class="ef-card">
+            <div class="ef-card-header">
+                <span class="ef-card-label">Existing Emergency Fund</span>
+                <input type="number" id="existingFund" class="ef-manual-input"
+                       value="0" min="0" max="5000000" step="10000"
+                       aria-label="Existing emergency fund">
+            </div>
+            <div class="ef-display-val" id="display-existing">&#8377;0</div>
+            <input type="range" id="existing-slider" class="ef-slider"
+                   min="0" max="5000000" step="10000" value="0"
+                   aria-label="Existing fund slider">
+            <div class="ef-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;12.5L</span><span>&#8377;25L</span><span>&#8377;37.5L</span><span>&#8377;50L</span>
+            </div>
+            <p class="ef-card-hint">Only count money that is liquid and easily accessible — savings account, liquid mutual funds, or short-term FDs. Do not include investments locked in equity or ELSS.</p>
+        </div>
+
+        <!-- Monthly Savings Toward Fund -->
+        <div class="ef-card">
+            <div class="ef-card-header">
+                <span class="ef-card-label">Monthly Savings Toward Fund</span>
+                <input type="number" id="monthlySavings" class="ef-manual-input"
+                       value="5000" min="0" max="200000" step="500"
+                       aria-label="Monthly savings toward emergency fund">
+            </div>
+            <div class="ef-display-val" id="display-savings">&#8377;5,000</div>
+            <input type="range" id="savings-slider" class="ef-slider"
+                   min="0" max="200000" step="500" value="5000"
+                   aria-label="Monthly savings slider">
+            <div class="ef-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;50K</span><span>&#8377;1L</span><span>&#8377;1.5L</span><span>&#8377;2L</span>
+            </div>
+            <p class="ef-card-hint">How much can you set aside each month specifically for your emergency fund until it's fully built?</p>
+        </div>
+
+    </div><!-- /ef-inputs-col -->
+
+    <!-- ── Right column: sticky results ── -->
+    <div class="ef-results-col">
+        <div class="ef-sticky" id="efResultsAnchor">
+            <div class="ef-results-card">
+
+                <p class="ef-results-label">Target Emergency Fund</p>
+                <div class="ef-target-value" id="ef-target-value">&#8377;0</div>
+                <span class="ef-funded-badge" id="ef-funded-badge" style="display:none">&#10003; Fully Funded!</span>
+
+                <div class="ef-progress-wrap">
+                    <div class="ef-progress-label">
+                        <span>Fund coverage</span>
+                        <strong id="ef-progress-pct">0% funded</strong>
+                    </div>
+                    <div class="ef-progress-track">
+                        <div class="ef-progress-fill" id="ef-progress-fill" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <div class="ef-stat-rows">
+                    <div class="ef-stat-row">
+                        <span class="ef-stat-label">Monthly Expenses</span>
+                        <span class="ef-stat-value" id="r-monthlyExp">&#8377;0</span>
+                    </div>
+                    <div class="ef-stat-row">
+                        <span class="ef-stat-label">Coverage Period</span>
+                        <span class="ef-stat-value ef-accent" id="r-coverage">6 months</span>
+                    </div>
+                    <div class="ef-stat-row">
+                        <span class="ef-stat-label">Target Fund</span>
+                        <span class="ef-stat-value" id="r-target">&#8377;0</span>
+                    </div>
+                    <div class="ef-stat-row">
+                        <span class="ef-stat-label">Existing Fund</span>
+                        <span class="ef-stat-value" id="r-existing">&#8377;0</span>
+                    </div>
+                    <div class="ef-stat-row">
+                        <span class="ef-stat-label">Remaining Gap</span>
+                        <span class="ef-stat-value" id="r-gap">&#8377;0</span>
+                    </div>
+                    <div class="ef-stat-row ef-stat-row-bold">
+                        <span class="ef-stat-label">Time to Goal</span>
+                        <span class="ef-stat-value ef-accent" id="r-timeline">—</span>
+                    </div>
+                </div>
+
+                <div class="ef-interpretation" id="ef-interpretation"></div>
+
+            </div>
+        </div>
+    </div><!-- /ef-results-col -->
+
+</div><!-- /ef-layout -->
+
+<!-- ===== Chart ===== -->
+<div class="ef-chart-section">
+    <h2 class="ef-chart-heading">Savings Progress</h2>
+    <p class="ef-chart-subheading">See your fund building month by month until it reaches the target.</p>
+    <div class="ef-chart-card">
+        <p class="ef-chart-title">Accumulated Fund vs Target</p>
+        <div class="ef-chart-wrap"><canvas id="chartProgress"></canvas></div>
+    </div>
+</div>
+
+</div><!-- /container -->
+</section>
+
+<!-- ===== Intent hook ===== -->
+<div class="container">
+    <div class="calc-intent-hook">
+        <span class="calc-intent-hook-eyebrow">Your Emergency Fund is the Foundation</span>
+        <h3>Once protected, grow the rest of your wealth</h3>
+        <p>
+            Your emergency fund is the first pillar of financial health. Once it's in place, use the
+            Net Worth Calculator to track all your assets and project your future wealth — or run the
+            FIRE Calculator to find out when your investments can replace your income entirely.
+        </p>
+        <div class="calc-intent-hook-actions">
+            <a th:href="@{/net-worth-calculator}" class="calc-intent-btn primary">Net Worth Calculator &#8594;</a>
+            <a th:href="@{/sip-calculator}" class="calc-intent-btn">SIP Calculator</a>
+            <a th:href="@{/fire-calculator}" class="calc-intent-btn">FIRE Calculator</a>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Content / FAQ ===== -->
+<section class="content-section">
+<div class="container">
+<div class="content-narrow">
+
+    <h2 class="calc-steps-title">How to Use This Emergency Fund Calculator — Step by Step</h2>
+
+    <div class="calc-steps">
+        <div class="calc-step">
+            <div class="calc-step-num">1</div>
+            <div class="calc-step-body">
+                <h4>Enter your monthly expenses</h4>
+                <p>Include rent or home loan EMI, groceries, utilities, insurance, subscriptions, and any other costs you must pay every month. Exclude discretionary spending like travel and entertainment — in a real emergency, those stop.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">2</div>
+            <div class="calc-step-body">
+                <h4>Choose your coverage period</h4>
+                <p>Select 3–6 months if you're salaried with a stable job and dual income in the household. Choose 9–12 months if you're self-employed, a freelancer, or have dependents with no other income source.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">3</div>
+            <div class="calc-step-body">
+                <h4>Enter your existing emergency fund</h4>
+                <p>Only count money that is accessible within 1–2 days — savings accounts, liquid mutual funds, or sweep FDs. Do not include equity investments, ELSS, or PPF that cannot be quickly liquidated.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">4</div>
+            <div class="calc-step-body">
+                <h4>Set your monthly savings target</h4>
+                <p>How much can you reliably set aside each month toward this fund? The calculator shows exactly how many months it will take to reach your target — and charts your progress visually.</p>
+            </div>
+        </div>
+    </div>
+
+    <span class="calc-example-label">Worked Example</span>
+
+    <div class="calc-example-box">
+        <p class="calc-example-scenario">Monthly expenses: &#8377;50,000 &nbsp;|&nbsp; Coverage: 6 months &nbsp;|&nbsp; Existing: &#8377;75,000 &nbsp;|&nbsp; Monthly savings: &#8377;15,000</p>
+        <div class="calc-example-rows">
+            <div class="calc-example-row"><span>Target Emergency Fund</span><span>&#8377;3,00,000</span></div>
+            <div class="calc-example-row"><span>Existing Fund</span><span>&#8377;75,000</span></div>
+            <div class="calc-example-row"><span>Remaining Gap</span><span>&#8377;2,25,000</span></div>
+            <div class="calc-example-row is-result"><span>Time to Goal</span><span>15 months</span></div>
+        </div>
+    </div>
+
+    <h2>What is an Emergency Fund?</h2>
+    <p>
+        An emergency fund is a dedicated pool of money set aside exclusively for genuine financial
+        emergencies — sudden job loss, a medical crisis, urgent home or vehicle repair, or any
+        unexpected event that disrupts your regular income. It is not an investment and should not
+        be treated as one. Its job is liquidity and safety, not returns.
+    </p>
+    <p class="formula-block">Target Emergency Fund = Monthly Expenses &times; Coverage Months</p>
+
+    <h2>How Much Should You Keep?</h2>
+    <ul class="content-list">
+        <li><strong>3 months:</strong> Minimum viable. Suitable only for those with very stable dual incomes, no dependents, and low fixed costs.</li>
+        <li><strong>6 months:</strong> The standard recommendation for most salaried employees in India. Covers the average job-search period after a layoff.</li>
+        <li><strong>9–12 months:</strong> Right for self-employed individuals, freelancers, single-income households, or anyone with significant dependents or health conditions.</li>
+    </ul>
+
+    <h2>Where Should You Keep Your Emergency Fund?</h2>
+    <ul class="content-list">
+        <li><strong>High-yield savings account:</strong> Instantly accessible. Good for the first 1–2 months of expenses.</li>
+        <li><strong>Liquid mutual funds:</strong> Redeemable within 1 business day (T+1). Typically earn 6–7% annually. Ideal for 2–4 months of the fund.</li>
+        <li><strong>Short-term FDs / Sweep-in FDs:</strong> Earn slightly more than savings accounts with near-instant access. Good for the remaining portion.</li>
+    </ul>
+    <p>Keep the entire fund out of equity, ELSS, PPF, or any investment that is locked or subject to market volatility.</p>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+        <article class="faq-item">
+            <h3>Should I build an emergency fund before investing?</h3>
+            <p>
+                Yes — always. Without an emergency fund, any market downturn or income disruption forces
+                you to sell investments at the worst possible time. Your emergency fund is the foundation
+                that allows all other financial planning to function correctly.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Should I include my home loan EMI in monthly expenses?</h3>
+            <p>
+                Yes. If your home loan EMI stops being paid during an emergency, the consequences are
+                severe. Include it — along with any other mandatory loan repayments — in your monthly
+                expenses figure.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Can I use a credit card as an emergency fund?</h3>
+            <p>
+                No. A credit card is borrowed money at 36–42% annual interest. Using it in an emergency
+                converts a short-term crisis into a long-term debt problem. An emergency fund eliminates
+                the need to borrow at all.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>What if I use part of my emergency fund?</h3>
+            <p>
+                Replenishing it immediately becomes the highest financial priority — above additional
+                investments, discretionary spending, and goal savings — until the fund is fully
+                restored to its target level.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Is my data saved anywhere?</h3>
+            <p>No. All calculations happen entirely in your browser. Nothing is sent to any server.</p>
+        </article>
+    </div>
+
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- ===== Mobile compact bar ===== -->
+<div class="ef-mobile-bar" id="efMobileBar" aria-label="Emergency fund quick summary">
+    <div class="ef-mobile-bar-content">
+        <div class="ef-mobile-bar-item">
+            <span class="ef-mobile-bar-label">Target Fund</span>
+            <span class="ef-mobile-bar-value" id="mb-target">&#8377;0</span>
+        </div>
+        <div class="ef-mobile-bar-sep"></div>
+        <div class="ef-mobile-bar-item">
+            <span class="ef-mobile-bar-label">Coverage</span>
+            <span class="ef-mobile-bar-value" id="mb-pct">0% funded</span>
+        </div>
+        <a href="#efResultsAnchor" class="ef-mobile-bar-link">Details &#8594;</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:src="@{/js/emergency-fund.js(v=1)}"></script>
+
+</body>
+</html>

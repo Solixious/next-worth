@@ -1,0 +1,365 @@
+/* ===== Emergency Fund Calculator — Page Styles ===== */
+
+.ef-section { padding: 48px 0 80px; }
+
+/* ===== Two-column layout ===== */
+.ef-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 28px;
+    align-items: start;
+}
+
+.ef-inputs-col  { min-width: 0; }
+.ef-results-col { min-width: 0; }
+
+/* Sticky results wrapper */
+.ef-sticky {
+    position: sticky;
+    top: 80px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    border-radius: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+.ef-sticky::-webkit-scrollbar       { width: 4px; }
+.ef-sticky::-webkit-scrollbar-track { background: transparent; }
+.ef-sticky::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 2px; }
+
+/* ===== Input Cards ===== */
+.ef-card {
+    background: var(--color-bg-main);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+}
+.ef-card:last-child { margin-bottom: 0; }
+
+.ef-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 12px;
+}
+
+.ef-card-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.ef-display-val {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 16px;
+}
+
+/* Manual number input */
+.ef-manual-input {
+    padding: 7px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-bg-white);
+    color: var(--color-text-main);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-align: right;
+    width: 110px;
+    flex-shrink: 0;
+    -moz-appearance: textfield;
+    transition: border-color 0.15s;
+}
+.ef-manual-input::-webkit-outer-spin-button,
+.ef-manual-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ef-manual-input:focus { outline: none; border-color: var(--color-primary); }
+
+.ef-card-hint {
+    font-size: 0.79rem;
+    color: var(--color-text-muted);
+    margin-top: 10px;
+    line-height: 1.5;
+}
+
+/* ===== Slider ===== */
+.ef-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-bg-light);
+    outline: none;
+    cursor: pointer;
+    display: block;
+    margin-top: 12px;
+}
+.ef-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 3px solid var(--color-bg-white);
+    box-shadow: 0 2px 8px rgba(29, 78, 216, 0.30);
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+}
+.ef-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.18);
+    box-shadow: 0 3px 12px rgba(29, 78, 216, 0.40);
+}
+.ef-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 3px solid var(--color-bg-white);
+    box-shadow: 0 2px 8px rgba(29, 78, 216, 0.30);
+    cursor: pointer;
+}
+.ef-slider::-webkit-slider-runnable-track { border-radius: 3px; }
+
+.ef-slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding: 0 2px;
+}
+.ef-slider-ticks span {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    letter-spacing: 0.01em;
+}
+
+/* ===== Coverage months pill selector ===== */
+.ef-coverage-selector {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.ef-coverage-btn {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-bg-white);
+    color: var(--color-text-muted);
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    line-height: 1.2;
+}
+.ef-coverage-btn .ef-coverage-sub {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 500;
+    margin-top: 2px;
+    opacity: 0.75;
+}
+.ef-coverage-btn:hover:not(.active) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+.ef-coverage-btn.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+}
+.ef-coverage-btn.active .ef-coverage-sub { opacity: 0.85; }
+[data-theme="dark"] .ef-coverage-btn.active { color: var(--color-bg-main); }
+
+/* ===== Results card ===== */
+.ef-results-card {
+    background: linear-gradient(135deg, var(--color-hero-start), var(--color-hero-end));
+    border-radius: 20px;
+    padding: 32px 28px;
+    color: var(--color-hero-text);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.ef-results-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    margin-bottom: 8px;
+}
+
+.ef-target-value {
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--color-hero-text);
+    margin-bottom: 6px;
+}
+
+.ef-funded-badge {
+    display: inline-block;
+    background: rgba(34, 197, 94, 0.2);
+    color: #86efac;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+}
+
+/* Progress bar */
+.ef-progress-wrap { margin-bottom: 22px; }
+.ef-progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+.ef-progress-label span { font-size: 0.78rem; color: var(--color-hero-text-muted); }
+.ef-progress-label strong { font-size: 0.78rem; color: var(--color-hero-text); }
+.ef-progress-track {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.14);
+    overflow: hidden;
+}
+.ef-progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--color-accent);
+    transition: width 0.4s ease;
+    max-width: 100%;
+}
+
+/* Stat rows */
+.ef-stat-rows { display: flex; flex-direction: column; margin-bottom: 20px; }
+.ef-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.ef-stat-row:last-child { border-bottom: none; }
+.ef-stat-label { font-size: 0.84rem; color: var(--color-hero-text-muted); flex-shrink: 0; }
+.ef-stat-value { font-size: 0.96rem; font-weight: 700; color: var(--color-hero-text); text-align: right; }
+.ef-stat-value.ef-accent { color: var(--color-accent); }
+.ef-stat-row-bold .ef-stat-label,
+.ef-stat-row-bold .ef-stat-value { font-weight: 700; font-size: 1rem; }
+
+/* Interpretation message */
+.ef-interpretation {
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 0.84rem;
+    color: var(--color-hero-text-muted);
+    line-height: 1.55;
+    border-left: 3px solid var(--color-accent);
+}
+
+/* ===== Chart section ===== */
+.ef-chart-section { margin-top: 48px; margin-bottom: 12px; }
+.ef-chart-heading { font-size: 1.35rem; font-weight: 700; color: var(--color-text-main); margin-bottom: 6px; }
+.ef-chart-subheading { font-size: 0.88rem; color: var(--color-text-muted); margin-bottom: 24px; }
+.ef-chart-empty { font-size: 0.9rem; color: var(--color-text-muted); text-align: center; padding: 40px 0; }
+.ef-chart-card {
+    background: var(--color-bg-main);
+    border-radius: 16px;
+    padding: 24px 28px 20px;
+}
+.ef-chart-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+}
+.ef-chart-wrap { position: relative; height: 260px; }
+
+/* ===== Mobile compact bar ===== */
+.ef-mobile-bar {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    background: linear-gradient(135deg, var(--color-hero-start), var(--color-hero-end));
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.22);
+    padding: 10px 16px;
+}
+.ef-mobile-bar-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.ef-mobile-bar-item { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.ef-mobile-bar-label {
+    font-size: 0.67rem; font-weight: 700;
+    color: var(--color-hero-text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    line-height: 1; margin-bottom: 2px;
+}
+.ef-mobile-bar-value {
+    font-size: 0.97rem; font-weight: 700;
+    color: var(--color-hero-text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ef-mobile-bar-sep {
+    width: 1px; height: 32px;
+    background: rgba(255,255,255,0.18);
+    flex-shrink: 0;
+}
+.ef-mobile-bar-link {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-hero-text);
+    font-size: 0.8rem; font-weight: 600;
+    padding: 7px 12px; border-radius: 8px;
+    white-space: nowrap; text-decoration: none;
+    flex-shrink: 0; transition: background 0.15s;
+}
+.ef-mobile-bar-link:hover { background: rgba(255, 255, 255, 0.22); }
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1100px) {
+    .ef-layout { grid-template-columns: minmax(0, 1fr) 320px; gap: 22px; }
+}
+
+@media (max-width: 900px) {
+    .ef-layout       { grid-template-columns: 1fr; gap: 0; }
+    .ef-inputs-col   { grid-row: 1; }
+    .ef-results-col  { grid-row: 2; }
+    .ef-sticky       { position: static; max-height: none; overflow-y: visible; }
+    .ef-results-card { margin-top: 24px; }
+    .ef-mobile-bar   { display: flex; }
+    .ef-section      { padding-bottom: 100px; }
+}
+
+@media (max-width: 600px) {
+    .ef-card             { padding: 20px 16px; }
+    .ef-display-val      { font-size: 1.6rem; }
+    .ef-manual-input     { width: 90px; }
+    .ef-target-value     { font-size: 2rem; }
+    .ef-results-card     { padding: 24px 18px; }
+    .ef-coverage-btn     { font-size: 0.78rem; padding: 9px 4px; }
+    .ef-chart-wrap       { height: 200px; }
+    .ef-chart-card       { padding: 20px 16px 16px; }
+}
