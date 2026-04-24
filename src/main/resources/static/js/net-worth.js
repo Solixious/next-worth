@@ -711,7 +711,7 @@
         var fireLink = el('nwFireLink');
         if (fireLink) {
             var fireCorpus   = Math.max(0, Math.round(getLiquidAssetsTotal()));
-            var fireMonthly  = Math.max(0, Math.round(surplus / 12));
+            var fireMonthly  = Math.max(0, Math.round((surplus + annSIP) / 12));
             var fireExpenses = Math.max(0, Math.round(annExp / 12));
             var firePassive  = Math.max(0, Math.round(getLiquidPassiveIncome()));
             fireLink.href = '/fire-calculator?corpus='   + fireCorpus  +
