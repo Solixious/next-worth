@@ -1,0 +1,423 @@
+/* ===== Rent vs Buy Calculator — Page Styles ===== */
+
+.rvb-section { padding: 48px 0 80px; }
+
+/* ===== Two-column layout ===== */
+.rvb-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 28px;
+    align-items: start;
+}
+
+.rvb-inputs-col  { min-width: 0; }
+.rvb-results-col { min-width: 0; }
+
+/* Sticky results wrapper */
+.rvb-sticky {
+    position: sticky;
+    top: 80px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    border-radius: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+.rvb-sticky::-webkit-scrollbar       { width: 4px; }
+.rvb-sticky::-webkit-scrollbar-track { background: transparent; }
+.rvb-sticky::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 2px; }
+
+/* ===== Input Cards ===== */
+.rvb-card {
+    background: var(--color-bg-main);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+}
+.rvb-card:last-child { margin-bottom: 0; }
+
+.rvb-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 12px;
+}
+
+.rvb-card-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.rvb-display-val {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 16px;
+}
+
+.rvb-card-val-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+.rvb-card-val-row .rvb-display-val { margin-bottom: 0; }
+
+/* Manual number input */
+.rvb-manual-input {
+    padding: 7px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-bg-white);
+    color: var(--color-text-main);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-align: right;
+    width: 90px;
+    flex-shrink: 0;
+    -moz-appearance: textfield;
+    transition: border-color 0.15s;
+}
+.rvb-manual-input::-webkit-outer-spin-button,
+.rvb-manual-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.rvb-manual-input:focus { outline: none; border-color: var(--color-primary); }
+
+.rvb-card-hint {
+    font-size: 0.79rem;
+    color: var(--color-text-muted);
+    margin-top: 10px;
+    line-height: 1.5;
+}
+
+/* ===== Slider ===== */
+.rvb-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-bg-light);
+    outline: none;
+    cursor: pointer;
+    display: block;
+    margin-top: 12px;
+}
+.rvb-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 3px solid var(--color-bg-white);
+    box-shadow: 0 2px 8px rgba(29, 78, 216, 0.30);
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+}
+.rvb-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.18);
+    box-shadow: 0 3px 12px rgba(29, 78, 216, 0.40);
+}
+.rvb-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 3px solid var(--color-bg-white);
+    box-shadow: 0 2px 8px rgba(29, 78, 216, 0.30);
+    cursor: pointer;
+}
+.rvb-slider::-webkit-slider-runnable-track { border-radius: 3px; }
+
+.rvb-slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding: 0 2px;
+}
+.rvb-slider-ticks span {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    letter-spacing: 0.01em;
+}
+
+/* Card section divider (for multi-slider cards) */
+.rvb-card-divider {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 20px 0 16px;
+    opacity: 0.5;
+}
+
+/* ===== Computed info row (inside down-payment card) ===== */
+.rvb-info-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+.rvb-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.rvb-info-label {
+    font-size: 0.71rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+}
+.rvb-info-value {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+}
+
+/* ===== Assumptions grid (2×2 compact) ===== */
+.rvb-assumptions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 24px;
+    margin-top: 14px;
+}
+.rvb-assumption-item { }
+.rvb-assumption-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.rvb-assumption-label {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+.rvb-assumption-val {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* ===== Results card ===== */
+.rvb-results-card {
+    background: linear-gradient(135deg, var(--color-hero-start), var(--color-hero-end));
+    border-radius: 20px;
+    padding: 32px 28px;
+    color: var(--color-hero-text);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.rvb-results-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    margin-bottom: 8px;
+}
+
+.rvb-verdict-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.rvb-diff-value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--color-hero-text);
+}
+
+.rvb-verdict-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+.rvb-verdict-badge.rvb-buy  { background: var(--color-accent); color: #1a1200; }
+.rvb-verdict-badge.rvb-rent { background: rgba(255,255,255,0.18); color: var(--color-hero-text); }
+.rvb-verdict-sub {
+    font-size: 0.82rem;
+    color: var(--color-hero-text-muted);
+    margin-bottom: 24px;
+    line-height: 1.4;
+}
+
+.rvb-stat-rows {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+.rvb-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.rvb-stat-row:last-child { border-bottom: none; }
+.rvb-stat-label { font-size: 0.84rem; color: var(--color-hero-text-muted); flex-shrink: 0; }
+.rvb-stat-value { font-size: 0.96rem; font-weight: 700; color: var(--color-hero-text); text-align: right; }
+.rvb-stat-value.rvb-accent { color: var(--color-accent); }
+.rvb-stat-row-bold .rvb-stat-label,
+.rvb-stat-row-bold .rvb-stat-value { font-weight: 700; font-size: 1rem; }
+
+.rvb-section-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    margin: 20px 0;
+}
+
+/* ===== Wealth comparison bar ===== */
+.rvb-breakdown {
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 16px 18px;
+}
+.rvb-breakdown-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-accent);
+    margin-bottom: 12px;
+}
+.rvb-bar-track {
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    display: flex;
+    background: rgba(255, 255, 255, 0.14);
+}
+.rvb-bar-fill    { height: 100%; transition: width 0.4s ease; }
+.rvb-bar-buy {
+    background: var(--color-accent);
+    border-radius: 5px 0 0 5px;
+}
+.rvb-bar-rent {
+    background: rgba(255, 255, 255, 0.35);
+    flex: 1;
+    border-radius: 0 5px 5px 0;
+}
+.rvb-bar-legend  { display: flex; gap: 20px; }
+.rvb-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.79rem;
+    color: var(--color-hero-text-muted);
+}
+.rvb-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.rvb-dot-buy    { background: var(--color-accent); }
+.rvb-dot-rent   { background: rgba(255, 255, 255, 0.35); }
+
+/* ===== Chart section ===== */
+.rvb-chart-section   { margin-top: 48px; margin-bottom: 12px; }
+.rvb-chart-heading   { font-size: 1.35rem; font-weight: 700; color: var(--color-text-main); margin-bottom: 6px; }
+.rvb-chart-subheading { font-size: 0.88rem; color: var(--color-text-muted); margin-bottom: 24px; }
+.rvb-chart-card {
+    background: var(--color-bg-main);
+    border-radius: 16px;
+    padding: 24px 28px 20px;
+}
+.rvb-chart-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+}
+.rvb-chart-wrap { position: relative; height: 300px; }
+
+/* ===== Mobile compact bar ===== */
+.rvb-mobile-bar {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    background: linear-gradient(135deg, var(--color-hero-start), var(--color-hero-end));
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.22);
+    padding: 10px 16px;
+}
+.rvb-mobile-bar-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.rvb-mobile-bar-item { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.rvb-mobile-bar-label {
+    font-size: 0.67rem; font-weight: 700;
+    color: var(--color-hero-text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    line-height: 1; margin-bottom: 2px;
+}
+.rvb-mobile-bar-value {
+    font-size: 0.97rem; font-weight: 700;
+    color: var(--color-hero-text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rvb-mobile-bar-sep {
+    width: 1px; height: 32px;
+    background: rgba(255,255,255,0.18);
+    flex-shrink: 0;
+}
+.rvb-mobile-bar-link {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-hero-text);
+    font-size: 0.8rem; font-weight: 600;
+    padding: 7px 12px; border-radius: 8px;
+    white-space: nowrap; text-decoration: none;
+    flex-shrink: 0; transition: background 0.15s;
+}
+.rvb-mobile-bar-link:hover { background: rgba(255, 255, 255, 0.22); }
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1100px) {
+    .rvb-layout { grid-template-columns: minmax(0, 1fr) 320px; gap: 22px; }
+}
+
+@media (max-width: 900px) {
+    .rvb-layout       { grid-template-columns: 1fr; gap: 0; }
+    .rvb-inputs-col   { grid-row: 1; }
+    .rvb-results-col  { grid-row: 2; }
+    .rvb-sticky       { position: static; max-height: none; overflow-y: visible; }
+    .rvb-results-card { margin-top: 24px; }
+    .rvb-mobile-bar   { display: flex; }
+    .rvb-section      { padding-bottom: 100px; }
+}
+
+@media (max-width: 600px) {
+    .rvb-card              { padding: 20px 16px; }
+    .rvb-display-val       { font-size: 1.6rem; }
+    .rvb-manual-input      { width: 76px; }
+    .rvb-diff-value        { font-size: 1.8rem; }
+    .rvb-results-card      { padding: 24px 18px; }
+    .rvb-assumptions-grid  { grid-template-columns: 1fr; gap: 16px; }
+    .rvb-chart-wrap        { height: 240px; }
+    .rvb-chart-card        { padding: 20px 16px 16px; }
+}

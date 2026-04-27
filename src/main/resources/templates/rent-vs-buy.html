@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    'Free Rent vs Buy Calculator India — Should You Rent or Buy a Home? | NextWorth',
+    'Compare the true long-term financial outcome of renting vs buying. Model property appreciation, rent growth, opportunity cost of down payment, and stamp duty to find your break-even year.',
+    'rent vs buy calculator India, should I rent or buy, home buying calculator, opportunity cost down payment, rent or buy comparison India'
+)}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<link rel="stylesheet" th:href="@{/css/rent-vs-buy.css(v=1)}">
+
+<main>
+
+<!-- ===== Hero ===== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <p class="eyebrow">Free Rent vs Buy Calculator — No Sign-up Required</p>
+            <h1>Rent vs Buy Calculator — Find Your Financial Break-Even</h1>
+            <p class="hero-subtitle">
+                Model property appreciation, rent growth, stamp duty, loan EMI, and the opportunity
+                cost of investing your down payment. See exactly when — and by how much — buying
+                beats renting over your chosen time horizon.
+            </p>
+            <div class="hero-trust-badges">
+                <span class="hero-trust-badge">&#128274; Nothing is stored or shared</span>
+                <span class="hero-trust-badge">&#9989; 100% free, no sign-up</span>
+                <span class="hero-trust-badge">&#128187; Runs entirely in your browser</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Calculator ===== -->
+<section class="rvb-section">
+<div class="container">
+<div class="rvb-layout">
+
+    <!-- ── Left column: inputs ── -->
+    <div class="rvb-inputs-col">
+
+        <!-- Currency selector -->
+        <div class="currency-bar" id="currencyBar"></div>
+
+        <!-- Property Price -->
+        <div class="rvb-card">
+            <div class="rvb-card-header">
+                <span class="rvb-card-label">Property Price</span>
+                <input type="number" id="propertyPrice" class="rvb-manual-input"
+                       value="6000000" min="500000" max="50000000" step="100000"
+                       aria-label="Property price">
+            </div>
+            <div class="rvb-display-val" id="display-price">&#8377;60,00,000</div>
+            <input type="range" id="price-slider" class="rvb-slider"
+                   min="500000" max="50000000" step="100000" value="6000000"
+                   aria-label="Property price slider">
+            <div class="rvb-slider-ticks">
+                <span>&#8377;5L</span><span>&#8377;1.25Cr</span><span>&#8377;2.5Cr</span><span>&#8377;3.75Cr</span><span>&#8377;5Cr</span>
+            </div>
+            <p class="rvb-card-hint">Use the current market value of the property you are considering buying.</p>
+        </div>
+
+        <!-- Down Payment -->
+        <div class="rvb-card">
+            <div class="rvb-card-header">
+                <span class="rvb-card-label">Down Payment</span>
+                <input type="number" id="downPaymentPct" class="rvb-manual-input"
+                       value="20" min="5" max="100" step="1"
+                       aria-label="Down payment percentage">
+            </div>
+            <div class="rvb-display-val" id="display-down-pct">20%</div>
+            <input type="range" id="down-slider" class="rvb-slider"
+                   min="5" max="100" step="1" value="20"
+                   aria-label="Down payment slider">
+            <div class="rvb-slider-ticks">
+                <span>5%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
+            </div>
+            <div class="rvb-info-row" id="display-down-info">
+                <div class="rvb-info-item">
+                    <span class="rvb-info-label">Down Payment</span>
+                    <span class="rvb-info-value" id="info-down-amt">&#8377;12,00,000</span>
+                </div>
+                <div class="rvb-info-item">
+                    <span class="rvb-info-label">Loan Amount</span>
+                    <span class="rvb-info-value" id="info-loan-amt">&#8377;48,00,000</span>
+                </div>
+                <div class="rvb-info-item">
+                    <span class="rvb-info-label">Stamp Duty (est.)</span>
+                    <span class="rvb-info-value" id="info-stamp-amt">&#8377;3,00,000</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Home Loan Details -->
+        <div class="rvb-card">
+            <span class="rvb-card-label">Home Loan Details</span>
+
+            <div style="margin-top:14px;">
+                <div class="rvb-card-header">
+                    <span class="rvb-card-label" style="font-size:0.73rem;">Annual Interest Rate</span>
+                    <input type="number" id="loanRate" class="rvb-manual-input"
+                           value="8.5" min="1" max="20" step="0.1"
+                           aria-label="Home loan interest rate">
+                </div>
+                <div class="rvb-display-val" id="display-rate">8.5%</div>
+                <input type="range" id="rate-slider" class="rvb-slider"
+                       min="1" max="20" step="0.1" value="8.5"
+                       aria-label="Loan rate slider">
+                <div class="rvb-slider-ticks">
+                    <span>1%</span><span>6%</span><span>10%</span><span>15%</span><span>20%</span>
+                </div>
+            </div>
+
+            <hr class="rvb-card-divider">
+
+            <div>
+                <div class="rvb-card-header">
+                    <span class="rvb-card-label" style="font-size:0.73rem;">Loan Tenure</span>
+                    <input type="number" id="loanTenure" class="rvb-manual-input"
+                           value="20" min="1" max="30" step="1"
+                           aria-label="Loan tenure in years">
+                </div>
+                <div class="rvb-display-val" id="display-tenure">20 Years</div>
+                <input type="range" id="tenure-slider" class="rvb-slider"
+                       min="1" max="30" step="1" value="20"
+                       aria-label="Tenure slider">
+                <div class="rvb-slider-ticks">
+                    <span>1 yr</span><span>8 yrs</span><span>15 yrs</span><span>22 yrs</span><span>30 yrs</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Costs -->
+        <div class="rvb-card">
+            <span class="rvb-card-label">Monthly Costs</span>
+
+            <div style="margin-top:14px;">
+                <div class="rvb-card-header">
+                    <span class="rvb-card-label" style="font-size:0.73rem;">Current Monthly Rent</span>
+                    <input type="number" id="monthlyRent" class="rvb-manual-input"
+                           value="20000" min="0" max="500000" step="500"
+                           aria-label="Monthly rent">
+                </div>
+                <div class="rvb-display-val" id="display-rent">&#8377;20,000</div>
+                <input type="range" id="rent-slider" class="rvb-slider"
+                       min="0" max="500000" step="500" value="20000"
+                       aria-label="Rent slider">
+                <div class="rvb-slider-ticks">
+                    <span>&#8377;0</span><span>&#8377;1.25L</span><span>&#8377;2.5L</span><span>&#8377;3.75L</span><span>&#8377;5L</span>
+                </div>
+            </div>
+
+            <hr class="rvb-card-divider">
+
+            <div>
+                <div class="rvb-card-header">
+                    <span class="rvb-card-label" style="font-size:0.73rem;">Monthly Maintenance (if buying)</span>
+                    <input type="number" id="maintenance" class="rvb-manual-input"
+                           value="5000" min="0" max="100000" step="500"
+                           aria-label="Monthly maintenance cost">
+                </div>
+                <div class="rvb-display-val" id="display-maintenance">&#8377;5,000</div>
+                <input type="range" id="maintenance-slider" class="rvb-slider"
+                       min="0" max="100000" step="500" value="5000"
+                       aria-label="Maintenance slider">
+                <div class="rvb-slider-ticks">
+                    <span>&#8377;0</span><span>&#8377;25K</span><span>&#8377;50K</span><span>&#8377;75K</span><span>&#8377;1L</span>
+                </div>
+                <p class="rvb-card-hint">Includes society maintenance, property tax, and home insurance. Typically ₹3,000–₹10,000/month for a mid-range apartment.</p>
+            </div>
+        </div>
+
+        <!-- Growth & Return Assumptions -->
+        <div class="rvb-card">
+            <span class="rvb-card-label">Growth &amp; Return Assumptions</span>
+            <div class="rvb-assumptions-grid">
+
+                <div class="rvb-assumption-item">
+                    <div class="rvb-assumption-header">
+                        <span class="rvb-assumption-label">Stamp Duty &amp; Registration</span>
+                        <span class="rvb-assumption-val" id="display-stamp-duty">5%</span>
+                    </div>
+                    <input type="range" id="stamp-slider" class="rvb-slider"
+                           min="0" max="12" step="0.5" value="5"
+                           aria-label="Stamp duty percentage">
+                    <input type="number" id="stampDutyPct" value="5" min="0" max="12" step="0.5"
+                           style="display:none" aria-hidden="true">
+                    <div class="rvb-slider-ticks"><span>0%</span><span>6%</span><span>12%</span></div>
+                </div>
+
+                <div class="rvb-assumption-item">
+                    <div class="rvb-assumption-header">
+                        <span class="rvb-assumption-label">Annual Rent Growth</span>
+                        <span class="rvb-assumption-val" id="display-rent-growth">5%</span>
+                    </div>
+                    <input type="range" id="rent-growth-slider" class="rvb-slider"
+                           min="0" max="20" step="0.5" value="5"
+                           aria-label="Annual rent growth slider">
+                    <input type="number" id="rentGrowth" value="5" min="0" max="20" step="0.5"
+                           style="display:none" aria-hidden="true">
+                    <div class="rvb-slider-ticks"><span>0%</span><span>10%</span><span>20%</span></div>
+                </div>
+
+                <div class="rvb-assumption-item">
+                    <div class="rvb-assumption-header">
+                        <span class="rvb-assumption-label">Property Appreciation</span>
+                        <span class="rvb-assumption-val" id="display-appreciation">7%</span>
+                    </div>
+                    <input type="range" id="appreciation-slider" class="rvb-slider"
+                           min="0" max="20" step="0.5" value="7"
+                           aria-label="Property appreciation slider">
+                    <input type="number" id="appreciation" value="7" min="0" max="20" step="0.5"
+                           style="display:none" aria-hidden="true">
+                    <div class="rvb-slider-ticks"><span>0%</span><span>10%</span><span>20%</span></div>
+                </div>
+
+                <div class="rvb-assumption-item">
+                    <div class="rvb-assumption-header">
+                        <span class="rvb-assumption-label">Investment Return</span>
+                        <span class="rvb-assumption-val" id="display-invest-return">10%</span>
+                    </div>
+                    <input type="range" id="invest-return-slider" class="rvb-slider"
+                           min="0" max="20" step="0.5" value="10"
+                           aria-label="Investment return slider">
+                    <input type="number" id="investReturn" value="10" min="0" max="20" step="0.5"
+                           style="display:none" aria-hidden="true">
+                    <div class="rvb-slider-ticks"><span>0%</span><span>10%</span><span>20%</span></div>
+                </div>
+
+            </div>
+            <p class="rvb-card-hint">Investment return is the annual return on the down payment if invested instead (e.g., equity mutual funds historically ~12%, balanced funds ~10%). Property appreciation for Tier-1 cities has averaged 6–9% per year.</p>
+        </div>
+
+        <!-- Time Horizon -->
+        <div class="rvb-card">
+            <div class="rvb-card-header">
+                <span class="rvb-card-label">Time Horizon</span>
+                <input type="number" id="timeHorizon" class="rvb-manual-input"
+                       value="20" min="1" max="40" step="1"
+                       aria-label="Time horizon in years">
+            </div>
+            <div class="rvb-display-val" id="display-horizon">20 Years</div>
+            <input type="range" id="horizon-slider" class="rvb-slider"
+                   min="1" max="40" step="1" value="20"
+                   aria-label="Time horizon slider">
+            <div class="rvb-slider-ticks">
+                <span>1 yr</span><span>10 yrs</span><span>20 yrs</span><span>30 yrs</span><span>40 yrs</span>
+            </div>
+            <p class="rvb-card-hint">How many years do you plan to stay in the same city? Buying favours longer horizons. Most analysis assumes 10–20 years.</p>
+        </div>
+
+    </div><!-- /rvb-inputs-col -->
+
+    <!-- ── Right column: sticky results ── -->
+    <div class="rvb-results-col">
+        <div class="rvb-sticky" id="rvbResultsAnchor">
+            <div class="rvb-results-card">
+
+                <p class="rvb-results-label" id="rvb-results-label">Buying is better by</p>
+
+                <div class="rvb-verdict-row">
+                    <div class="rvb-diff-value" id="rvb-diff-value">&#8377;0</div>
+                    <span class="rvb-verdict-badge rvb-buy" id="rvb-verdict-badge">BUY</span>
+                </div>
+
+                <p class="rvb-verdict-sub" id="rvb-verdict-sub">over 20 years at current assumptions</p>
+
+                <div class="rvb-stat-rows">
+                    <div class="rvb-stat-row rvb-stat-row-bold">
+                        <span class="rvb-stat-label">Net Wealth — Buying</span>
+                        <span class="rvb-stat-value rvb-accent" id="r-buyer-wealth">&#8377;0</span>
+                    </div>
+                    <div class="rvb-stat-row rvb-stat-row-bold">
+                        <span class="rvb-stat-label">Net Wealth — Renting</span>
+                        <span class="rvb-stat-value" id="r-renter-wealth">&#8377;0</span>
+                    </div>
+                </div>
+
+                <hr class="rvb-section-divider">
+
+                <div class="rvb-stat-rows">
+                    <div class="rvb-stat-row">
+                        <span class="rvb-stat-label">Monthly EMI</span>
+                        <span class="rvb-stat-value" id="r-emi">&#8377;0</span>
+                    </div>
+                    <div class="rvb-stat-row">
+                        <span class="rvb-stat-label">Total Buying Cost / mo</span>
+                        <span class="rvb-stat-value" id="r-buyer-monthly">&#8377;0</span>
+                    </div>
+                    <div class="rvb-stat-row">
+                        <span class="rvb-stat-label">Current Rent / mo</span>
+                        <span class="rvb-stat-value" id="r-renter-monthly">&#8377;0</span>
+                    </div>
+                    <div class="rvb-stat-row">
+                        <span class="rvb-stat-label">Rent at End of Horizon</span>
+                        <span class="rvb-stat-value" id="r-rent-at-horizon">&#8377;0</span>
+                    </div>
+                    <div class="rvb-stat-row">
+                        <span class="rvb-stat-label">Property Value (end)</span>
+                        <span class="rvb-stat-value" id="r-prop-value">&#8377;0</span>
+                    </div>
+                    <div class="rvb-stat-row">
+                        <span class="rvb-stat-label">Outstanding Loan (end)</span>
+                        <span class="rvb-stat-value" id="r-outstanding">&#8377;0</span>
+                    </div>
+                    <div class="rvb-stat-row">
+                        <span class="rvb-stat-label">Break-even Year</span>
+                        <span class="rvb-stat-value rvb-accent" id="r-breakeven">—</span>
+                    </div>
+                </div>
+
+                <div class="rvb-breakdown">
+                    <p class="rvb-breakdown-title">Net Wealth Comparison</p>
+                    <div class="rvb-bar-track">
+                        <div class="rvb-bar-fill rvb-bar-buy" id="rvb-bar-buy" style="width:50%"></div>
+                        <div class="rvb-bar-fill rvb-bar-rent"></div>
+                    </div>
+                    <div class="rvb-bar-legend">
+                        <div class="rvb-legend-item">
+                            <span class="rvb-legend-dot rvb-dot-buy"></span>
+                            <span>Buy &nbsp;<strong id="legend-buy-pct">50%</strong></span>
+                        </div>
+                        <div class="rvb-legend-item">
+                            <span class="rvb-legend-dot rvb-dot-rent"></span>
+                            <span>Rent &nbsp;<strong id="legend-rent-pct">50%</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div><!-- /rvb-results-col -->
+
+</div><!-- /rvb-layout -->
+
+<!-- ===== Chart ===== -->
+<div class="rvb-chart-section">
+    <h2 class="rvb-chart-heading">Net Wealth Over Time — Buying vs Renting</h2>
+    <p class="rvb-chart-subheading">Track how buyer equity and renter investment corpus evolve year by year. The point where lines cross is your break-even.</p>
+    <div class="rvb-chart-card">
+        <p class="rvb-chart-title">Net Wealth — Buying (Equity) vs Renting (Investment Corpus)</p>
+        <div class="rvb-chart-wrap"><canvas id="chartWealth"></canvas></div>
+    </div>
+</div>
+
+</div><!-- /container -->
+</section>
+
+<!-- ===== Intent hook ===== -->
+<div class="container">
+    <div class="calc-intent-hook">
+        <span class="calc-intent-hook-eyebrow">Ready to Run the Numbers?</span>
+        <h3>Plan your loan EMI or project your investment returns</h3>
+        <p>
+            Once you know which path works better for you, use the EMI Calculator to plan your exact
+            monthly payment, or the SIP Calculator to model the investment corpus from your down payment.
+        </p>
+        <div class="calc-intent-hook-actions">
+            <a th:href="@{/emi-calculator}" class="calc-intent-btn primary">EMI Calculator &#8594;</a>
+            <a th:href="@{/sip-calculator}" class="calc-intent-btn">SIP Calculator</a>
+            <a th:href="@{/loan-prepayment-calculator}" class="calc-intent-btn">Loan Prepayment</a>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Content / FAQ ===== -->
+<section class="content-section">
+<div class="container">
+<div class="content-narrow">
+
+    <h2 class="calc-steps-title">How to Use This Calculator — Step by Step</h2>
+
+    <div class="calc-steps">
+        <div class="calc-step">
+            <div class="calc-step-num">1</div>
+            <div class="calc-step-body">
+                <h4>Enter the property price and down payment</h4>
+                <p>Use the current asking price for the property you are evaluating. The down payment percentage determines your loan amount and the initial capital the renter can invest instead.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">2</div>
+            <div class="calc-step-body">
+                <h4>Enter your home loan details</h4>
+                <p>Use the current home loan rate from your preferred lender (typically 8–9.5% for salaried borrowers in 2025). Tenure affects the EMI and how quickly you build equity.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">3</div>
+            <div class="calc-step-body">
+                <h4>Enter monthly costs for both scenarios</h4>
+                <p>Monthly rent is what you currently pay (or would pay) to rent an equivalent property. Monthly maintenance covers society charges, property tax, and insurance when buying.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">4</div>
+            <div class="calc-step-body">
+                <h4>Adjust the growth assumptions</h4>
+                <p>The key variables: <strong>Stamp Duty</strong> (5–8% in most Indian states), <strong>Rent Growth</strong> (rents typically rise 5–8%/year in metros), <strong>Property Appreciation</strong> (historical 6–9%/year), and <strong>Investment Return</strong> (what you'd earn on the down payment if renting — equity mutual funds have historically returned 12% CAGR).</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">5</div>
+            <div class="calc-step-body">
+                <h4>Set your time horizon and read the chart</h4>
+                <p>The break-even year on the chart shows when buying overtakes renting. If you plan to stay shorter than the break-even, renting may be financially better.</p>
+            </div>
+        </div>
+    </div>
+
+    <span class="calc-example-label">Worked Example — Mumbai Suburb</span>
+
+    <div class="calc-example-box">
+        <p class="calc-example-scenario">Price: &#8377;60L &nbsp;|&nbsp; Down: 20% &nbsp;|&nbsp; Rate: 8.5% &nbsp;|&nbsp; Tenure: 20 yr &nbsp;|&nbsp; Rent: &#8377;20K &nbsp;|&nbsp; Horizon: 20 yr</p>
+        <p class="calc-example-scenario" style="margin-top:4px;">Appreciation: 7% &nbsp;|&nbsp; Rent Growth: 5% &nbsp;|&nbsp; Investment Return: 10% &nbsp;|&nbsp; Stamp Duty: 5%</p>
+        <div class="calc-example-rows">
+            <div class="calc-example-row"><span>Down Payment + Stamp Duty (upfront)</span><span>&#8377;12L + &#8377;3L = &#8377;15L</span></div>
+            <div class="calc-example-row"><span>Monthly EMI</span><span>&#8377;41,641</span></div>
+            <div class="calc-example-row"><span>Total Buying Cost / month (EMI + maintenance)</span><span>&#8377;46,641</span></div>
+            <div class="calc-example-row"><span>Property Value after 20 yrs (7%/yr)</span><span>&#8377;2.32 Cr</span></div>
+            <div class="calc-example-row"><span>Loan fully repaid after</span><span>20 years</span></div>
+            <div class="calc-example-row"><span>Buyer Net Equity (after 2% selling cost)</span><span>&#8377;2.28 Cr</span></div>
+            <div class="calc-example-row"><span>Renter — Initial corpus invested (₹15L at 10%)</span><span>&#8377;1.01 Cr</span></div>
+            <div class="calc-example-row"><span>Renter — Monthly surplus invested (tapering as rent rises)</span><span>&#8377;~1.18 Cr</span></div>
+            <div class="calc-example-row is-result"><span>Buying advantage after 20 yrs</span><span>&#8377;~0.09 Cr</span></div>
+        </div>
+    </div>
+
+    <h2>How This Calculator Models "Buying" vs "Renting"</h2>
+    <p>
+        The core idea is to put both options on equal financial footing. The buyer pays
+        <strong>down payment + stamp duty</strong> upfront, then pays EMI + maintenance each month.
+        The renter invests the same upfront amount and invests any monthly surplus (the difference
+        between what a buyer pays and what a renter pays in rent).
+    </p>
+    <ul class="content-list">
+        <li><strong>Buyer's net wealth</strong> = Property value − Outstanding loan − 2% selling cost (brokerage)</li>
+        <li><strong>Renter's net wealth</strong> = Initial investment corpus compounded + accumulated monthly surplus contributions</li>
+        <li><strong>Break-even year</strong> = The first year buyer wealth exceeds renter wealth</li>
+        <li>Rent is modelled to grow at a fixed annual rate each year, making buying relatively cheaper over time on a monthly basis</li>
+    </ul>
+
+    <h2>Why Does Investment Return Matter So Much?</h2>
+    <p>
+        The opportunity cost of the down payment is one of the most under-appreciated factors. A ₹12 lakh
+        down payment invested at 10% CAGR for 20 years grows to over ₹80 lakh — even before counting the
+        monthly savings from lower rent. Increasing investment return from 10% to 12% can shift the
+        break-even from Year 12 to Year 18 for the same property.
+    </p>
+
+    <h2>When Does Buying Win?</h2>
+    <ul class="content-list">
+        <li><strong>Long time horizon:</strong> Buying becomes mathematically better the longer you stay. Most analysis shows 10–15 years as the typical break-even in Indian metros.</li>
+        <li><strong>High property appreciation:</strong> Tier-1 city properties in prime localities have appreciated 8–10%/year in some periods, heavily favouring buying.</li>
+        <li><strong>Rising rents:</strong> When rents grow faster than investment returns, buying protects you from escalating housing costs.</li>
+        <li><strong>Emotional and lifestyle value:</strong> Stability, ability to renovate, and not being subject to eviction are real benefits not captured in this model.</li>
+    </ul>
+
+    <h2>When Does Renting Win?</h2>
+    <ul class="content-list">
+        <li><strong>Short horizon:</strong> If you may move cities within 5 years, stamp duty and selling costs alone can wipe out gains.</li>
+        <li><strong>Low appreciation:</strong> In over-priced markets, if appreciation is below the investment return on your down payment, renting and investing beats buying.</li>
+        <li><strong>High price-to-rent ratios:</strong> In markets where property prices are 300× monthly rent or more, the numbers almost always favour renting.</li>
+        <li><strong>Career flexibility:</strong> Renting lets you move for better opportunities without the friction and cost of selling a property.</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+        <article class="faq-item">
+            <h3>Does this calculator account for home loan tax benefits?</h3>
+            <p>
+                No. Section 80C deduction (up to ₹1.5L on principal repayment) and Section 24(b) deduction
+                (up to ₹2L on home loan interest) would improve the buying case in the new tax regime only
+                marginally since most salaried individuals now use the new tax regime. Adding these benefits
+                manually would shift the break-even 1–2 years earlier for buyers.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>What is stamp duty and why does it matter?</h3>
+            <p>
+                Stamp duty is a state government tax paid when registering a property purchase — typically
+                5–8% in major Indian states plus 1% registration fee. It is a significant upfront sunk
+                cost that the renter avoids entirely. A ₹3–5 lakh stamp duty bill on a ₹60L property must
+                be recovered purely through property appreciation, which takes several years.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Why does the renter corpus start ahead of buyer equity?</h3>
+            <p>
+                The renter invests the full upfront cash (down payment + stamp duty) from day one. The buyer's
+                equity on day one equals only the down payment minus stamp duty and the 2% assumed selling cost,
+                while the renter's corpus equals the full cash invested. Over time, property appreciation builds
+                the buyer's equity and eventually overtakes the renter's corpus — that is the break-even point.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>What investment return should I use?</h3>
+            <p>
+                Use 10–12% for a diversified equity mutual fund (index fund or large-cap fund over 15+ years).
+                Use 7–8% for a balanced/hybrid fund. Use 6–7% for fixed deposits or debt funds. The higher
+                the investment return, the stronger the case for renting.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Does this include rental income if I buy and rent it out?</h3>
+            <p>
+                No — this calculator assumes you live in the property you buy. If you are comparing buying
+                an investment property vs renting your residence, the numbers and assumptions would differ
+                significantly (gross rental yield in India is typically 2–3%).
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Is my data saved anywhere?</h3>
+            <p>No. All calculations happen entirely in your browser. Nothing is sent to any server.</p>
+        </article>
+    </div>
+
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- ===== Mobile compact bar ===== -->
+<div class="rvb-mobile-bar" id="rvbMobileBar" aria-label="Rent vs buy quick summary">
+    <div class="rvb-mobile-bar-content">
+        <div class="rvb-mobile-bar-item">
+            <span class="rvb-mobile-bar-label">Better Choice</span>
+            <span class="rvb-mobile-bar-value" id="mb-verdict">Buy</span>
+        </div>
+        <div class="rvb-mobile-bar-sep"></div>
+        <div class="rvb-mobile-bar-item">
+            <span class="rvb-mobile-bar-label">Advantage</span>
+            <span class="rvb-mobile-bar-value" id="mb-diff">&#8377;0</span>
+        </div>
+        <a href="#rvbResultsAnchor" class="rvb-mobile-bar-link">Details &#8594;</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:src="@{/js/rent-vs-buy.js(v=1)}"></script>
+
+</body>
+</html>
