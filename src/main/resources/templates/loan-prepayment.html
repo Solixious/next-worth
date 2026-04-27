@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    'Free Loan Prepayment Calculator — Interest Saved &amp; Tenure Reduced | NextWorth',
+    'Calculate exactly how much interest you save and how many years you cut off your loan with a lump-sum prepayment. Compare reduce-tenure vs reduce-EMI strategies instantly.',
+    'loan prepayment calculator India, home loan prepayment calculator, prepayment interest savings, reduce loan tenure calculator, part payment calculator'
+)}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<link rel="stylesheet" th:href="@{/css/loan-prepayment.css(v=1)}">
+
+<main>
+
+<!-- ===== Hero ===== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <p class="eyebrow">Free Prepayment Calculator — No Sign-up Required</p>
+            <h1>Loan Prepayment Calculator — See Your Interest Savings Instantly</h1>
+            <p class="hero-subtitle">
+                Enter your outstanding loan balance, interest rate, remaining tenure, and the
+                lump-sum amount you plan to prepay. Instantly see how much interest you save and
+                how many months you cut off your loan.
+            </p>
+            <div class="hero-trust-badges">
+                <span class="hero-trust-badge">&#128274; Nothing is stored or shared</span>
+                <span class="hero-trust-badge">&#9989; 100% free, no sign-up</span>
+                <span class="hero-trust-badge">&#128187; Runs entirely in your browser</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Calculator ===== -->
+<section class="lp-section">
+<div class="container">
+<div class="lp-layout">
+
+    <!-- ── Left column: inputs ── -->
+    <div class="lp-inputs-col">
+
+        <!-- Currency selector -->
+        <div class="currency-bar" id="currencyBar"></div>
+
+        <!-- Outstanding Loan Amount -->
+        <div class="lp-card">
+            <div class="lp-card-header">
+                <span class="lp-card-label">Outstanding Loan Amount</span>
+                <input type="number" id="loanAmount" class="lp-manual-input"
+                       value="3000000" min="0" max="100000000" step="10000"
+                       aria-label="Outstanding loan amount">
+            </div>
+            <div class="lp-display-val" id="display-loan">&#8377;30,00,000</div>
+            <input type="range" id="loan-slider" class="lp-slider"
+                   min="0" max="100000000" step="10000" value="3000000"
+                   aria-label="Loan amount slider">
+            <div class="lp-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;2.5Cr</span><span>&#8377;5Cr</span><span>&#8377;7.5Cr</span><span>&#8377;10Cr</span>
+            </div>
+            <p class="lp-card-hint">Enter the current outstanding principal — not the original loan amount. Check your latest bank statement or loan account portal.</p>
+        </div>
+
+        <!-- Annual Interest Rate -->
+        <div class="lp-card">
+            <div class="lp-card-header">
+                <span class="lp-card-label">Annual Interest Rate</span>
+                <input type="number" id="interestRate" class="lp-manual-input"
+                       value="8.5" min="0.1" max="30" step="0.1"
+                       aria-label="Annual interest rate">
+            </div>
+            <div class="lp-display-val" id="display-rate">8.5%</div>
+            <input type="range" id="rate-slider" class="lp-slider"
+                   min="0.1" max="30" step="0.1" value="8.5"
+                   aria-label="Interest rate slider">
+            <div class="lp-slider-ticks">
+                <span>0.1%</span><span>8%</span><span>15%</span><span>22%</span><span>30%</span>
+            </div>
+        </div>
+
+        <!-- Remaining Tenure -->
+        <div class="lp-card">
+            <div class="lp-card-header">
+                <span class="lp-card-label">Remaining Tenure</span>
+                <div class="lp-tenure-toggle">
+                    <button type="button" id="tenure-years-btn" class="lp-tenure-btn active">Years</button>
+                    <button type="button" id="tenure-months-btn" class="lp-tenure-btn">Months</button>
+                </div>
+            </div>
+            <div class="lp-card-val-row">
+                <div class="lp-display-val" id="display-tenure">15 Years</div>
+                <input type="number" id="tenure" class="lp-manual-input"
+                       value="15" min="1" max="30" step="1"
+                       aria-label="Remaining tenure">
+            </div>
+            <input type="range" id="tenure-slider" class="lp-slider"
+                   min="1" max="30" step="1" value="15"
+                   aria-label="Tenure slider">
+            <div class="lp-slider-ticks" id="tenure-ticks">
+                <span>1 yr</span><span>8 yrs</span><span>15 yrs</span><span>22 yrs</span><span>30 yrs</span>
+            </div>
+            <p class="lp-card-hint">Enter the number of months or years still left on the loan — not the original tenure.</p>
+        </div>
+
+        <!-- Prepayment Amount -->
+        <div class="lp-card">
+            <div class="lp-card-header">
+                <span class="lp-card-label">Prepayment Amount</span>
+                <input type="number" id="prepayment" class="lp-manual-input"
+                       value="500000" min="0" max="10000000" step="10000"
+                       aria-label="Prepayment amount">
+            </div>
+            <div class="lp-display-val" id="display-prepay">&#8377;5,00,000</div>
+            <input type="range" id="prepay-slider" class="lp-slider"
+                   min="0" max="10000000" step="10000" value="500000"
+                   aria-label="Prepayment slider">
+            <div class="lp-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;25L</span><span>&#8377;50L</span><span>&#8377;75L</span><span>&#8377;1Cr</span>
+            </div>
+            <p class="lp-card-hint">The lump-sum amount you plan to pay now, in addition to your regular EMI. Check with your lender for any prepayment charges first.</p>
+        </div>
+
+        <!-- Prepayment Strategy -->
+        <div class="lp-card">
+            <div class="lp-card-header">
+                <span class="lp-card-label">Prepayment Strategy</span>
+            </div>
+            <div class="lp-strategy-selector">
+                <button type="button" class="lp-strategy-btn active" data-strategy="tenure">
+                    Reduce Tenure
+                    <span class="lp-strategy-sub">Keep same EMI, pay off faster</span>
+                </button>
+                <button type="button" class="lp-strategy-btn" data-strategy="emi">
+                    Reduce EMI
+                    <span class="lp-strategy-sub">Keep same tenure, lower payment</span>
+                </button>
+            </div>
+            <p class="lp-card-hint">Reducing tenure saves more interest overall. Reducing EMI improves monthly cashflow. Most financial advisors recommend reducing tenure.</p>
+        </div>
+
+    </div><!-- /lp-inputs-col -->
+
+    <!-- ── Right column: sticky results ── -->
+    <div class="lp-results-col">
+        <div class="lp-sticky" id="lpResultsAnchor">
+            <div class="lp-results-card">
+
+                <p class="lp-results-label">Total Interest Saved</p>
+                <div class="lp-savings-value" id="lp-savings-value">&#8377;0</div>
+
+                <div class="lp-stat-rows">
+                    <div class="lp-stat-row">
+                        <span class="lp-stat-label">Monthly EMI</span>
+                        <span class="lp-stat-value" id="r-emi">&#8377;0</span>
+                    </div>
+                    <!-- Reduce Tenure rows -->
+                    <div class="lp-stat-row" id="lp-row-new-tenure">
+                        <span class="lp-stat-label">New Tenure</span>
+                        <span class="lp-stat-value lp-accent" id="r-new-tenure">—</span>
+                    </div>
+                    <div class="lp-stat-row" id="lp-row-tenure-saved">
+                        <span class="lp-stat-label">Tenure Saved</span>
+                        <span class="lp-stat-value lp-accent" id="r-tenure-saved">—</span>
+                    </div>
+                    <!-- Reduce EMI row -->
+                    <div class="lp-stat-row" id="lp-row-new-emi" style="display:none">
+                        <span class="lp-stat-label">New Monthly EMI</span>
+                        <span class="lp-stat-value lp-accent" id="r-new-emi">&#8377;0</span>
+                    </div>
+                    <div class="lp-stat-row" id="lp-row-emi-saved" style="display:none">
+                        <span class="lp-stat-label">EMI Reduced By</span>
+                        <span class="lp-stat-value lp-accent" id="r-emi-saved">&#8377;0</span>
+                    </div>
+                    <div class="lp-stat-row">
+                        <span class="lp-stat-label">Interest (no prepayment)</span>
+                        <span class="lp-stat-value" id="r-interest-orig">&#8377;0</span>
+                    </div>
+                    <div class="lp-stat-row">
+                        <span class="lp-stat-label">Interest (after prepayment)</span>
+                        <span class="lp-stat-value" id="r-interest-new">&#8377;0</span>
+                    </div>
+                    <div class="lp-stat-row lp-stat-row-bold">
+                        <span class="lp-stat-label">Interest Saved</span>
+                        <span class="lp-stat-value lp-accent" id="r-interest-saved">&#8377;0</span>
+                    </div>
+                </div>
+
+                <div class="lp-breakdown">
+                    <p class="lp-breakdown-title">Interest Remaining vs Saved</p>
+                    <div class="lp-bar-track">
+                        <div class="lp-bar-fill lp-bar-remaining" id="lp-bar-remaining" style="width:50%"></div>
+                        <div class="lp-bar-fill lp-bar-saved"></div>
+                    </div>
+                    <div class="lp-bar-legend">
+                        <div class="lp-legend-item">
+                            <span class="lp-legend-dot lp-dot-remaining"></span>
+                            <span>Remaining &nbsp;<strong id="legend-remaining-pct">0%</strong></span>
+                        </div>
+                        <div class="lp-legend-item">
+                            <span class="lp-legend-dot lp-dot-saved"></span>
+                            <span>Saved &nbsp;<strong id="legend-saved-pct">0%</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div><!-- /lp-results-col -->
+
+</div><!-- /lp-layout -->
+
+<!-- ===== Chart ===== -->
+<div class="lp-chart-section">
+    <h2 class="lp-chart-heading">Outstanding Balance Over Time</h2>
+    <p class="lp-chart-subheading">See how the prepayment accelerates your loan payoff compared to the original schedule.</p>
+    <div class="lp-chart-card">
+        <p class="lp-chart-title">Loan Balance — With vs Without Prepayment</p>
+        <div class="lp-chart-wrap"><canvas id="chartAmort"></canvas></div>
+    </div>
+</div>
+
+</div><!-- /container -->
+</section>
+
+<!-- ===== Intent hook ===== -->
+<div class="container">
+    <div class="calc-intent-hook">
+        <span class="calc-intent-hook-eyebrow">Beyond Prepayment</span>
+        <h3>See how this loan fits into your complete financial picture</h3>
+        <p>
+            Every rupee saved on interest is a rupee that can compound elsewhere. Add your loan to
+            the Net Worth Calculator to see its impact on your projected wealth — or calculate the
+            original EMI on a new loan with the EMI Calculator.
+        </p>
+        <div class="calc-intent-hook-actions">
+            <a th:href="@{/net-worth-calculator}" class="calc-intent-btn primary">Net Worth Calculator &#8594;</a>
+            <a th:href="@{/emi-calculator}" class="calc-intent-btn">EMI Calculator</a>
+            <a th:href="@{/sip-calculator}" class="calc-intent-btn">SIP Calculator</a>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Content / FAQ ===== -->
+<section class="content-section">
+<div class="container">
+<div class="content-narrow">
+
+    <h2 class="calc-steps-title">How to Use This Prepayment Calculator — Step by Step</h2>
+
+    <div class="calc-steps">
+        <div class="calc-step">
+            <div class="calc-step-num">1</div>
+            <div class="calc-step-body">
+                <h4>Enter the outstanding loan balance</h4>
+                <p>This is the current principal you still owe — not the original loan amount. Find it in your latest bank statement, loan account portal, or by calling your lender.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">2</div>
+            <div class="calc-step-body">
+                <h4>Enter the interest rate and remaining tenure</h4>
+                <p>Use your current applicable rate. For floating-rate loans, use today's rate. Enter the years or months still remaining on the loan — not the original tenure.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">3</div>
+            <div class="calc-step-body">
+                <h4>Enter the prepayment amount</h4>
+                <p>How much do you plan to pay as a lump sum today? Check your loan agreement for prepayment charges — many home loans have nil charges after the first year.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">4</div>
+            <div class="calc-step-body">
+                <h4>Choose a prepayment strategy</h4>
+                <p><strong>Reduce Tenure</strong> keeps your EMI the same but you become debt-free sooner — maximising total interest savings. <strong>Reduce EMI</strong> keeps the same tenure but lowers your monthly payment, improving cashflow.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">5</div>
+            <div class="calc-step-body">
+                <h4>Read the results and the balance chart</h4>
+                <p>See your total interest saved, new tenure or new EMI, and the chart comparing how your outstanding balance drops with and without the prepayment.</p>
+            </div>
+        </div>
+    </div>
+
+    <span class="calc-example-label">Worked Example — Home Loan Prepayment</span>
+
+    <div class="calc-example-box">
+        <p class="calc-example-scenario">Outstanding: &#8377;30L &nbsp;|&nbsp; Rate: 8.5% &nbsp;|&nbsp; Remaining: 15 yrs &nbsp;|&nbsp; Prepayment: &#8377;5L &nbsp;|&nbsp; Strategy: Reduce Tenure</p>
+        <div class="calc-example-rows">
+            <div class="calc-example-row"><span>Monthly EMI (unchanged)</span><span>&#8377;29,549</span></div>
+            <div class="calc-example-row"><span>Original Remaining Tenure</span><span>15 yrs (180 mo)</span></div>
+            <div class="calc-example-row"><span>New Tenure</span><span>10 yrs 10 mo (130 mo)</span></div>
+            <div class="calc-example-row"><span>Tenure Cut Short By</span><span>4 yrs 2 mo (50 months)</span></div>
+            <div class="calc-example-row"><span>Interest Without Prepayment</span><span>&#8377;23,18,820</span></div>
+            <div class="calc-example-row"><span>Interest After Prepayment</span><span>&#8377;13,41,370</span></div>
+            <div class="calc-example-row is-result"><span>Total Interest Saved</span><span>&#8377;9,77,450</span></div>
+        </div>
+    </div>
+
+    <h2>Reduce Tenure vs Reduce EMI — Which is Better?</h2>
+    <p>
+        Both strategies reduce your total interest paid compared to making no prepayment.
+        However, <strong>reducing tenure saves more interest</strong> because the principal is
+        cleared faster, reducing the base on which interest compounds.
+    </p>
+    <ul class="content-list">
+        <li><strong>Reduce Tenure:</strong> Same EMI, debt-free sooner. Best when income is stable and you want to maximise savings.</li>
+        <li><strong>Reduce EMI:</strong> Same tenure, lower monthly obligation. Best when you need improved monthly cashflow for other goals or investments.</li>
+        <li><strong>Rule of thumb:</strong> If the loan rate exceeds your expected investment return, reduce tenure. If you can invest the saved EMI at a higher return, reduce EMI and invest the difference.</li>
+    </ul>
+
+    <h2>How is Interest Saved Calculated?</h2>
+    <p class="formula-block">Interest Saved = Total Interest (original) &minus; Total Interest (after prepayment)</p>
+    <ul class="content-list">
+        <li><strong>Reduce Tenure:</strong> New tenure = ⌈ ln(EMI / (EMI − r × P_new)) ÷ ln(1 + r) ⌉ months</li>
+        <li><strong>Reduce EMI:</strong> New EMI = P_new × r × (1+r)^n ÷ ((1+r)^n − 1), where n is unchanged</li>
+        <li>In both cases: Total Interest = (EMI × months) − Principal</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+        <article class="faq-item">
+            <h3>Are there prepayment charges on home loans in India?</h3>
+            <p>
+                For floating-rate home loans from banks, RBI guidelines prohibit prepayment penalties.
+                Fixed-rate loans and loans from NBFCs may still have charges (typically 1–4% of the
+                prepaid amount). Always check your loan agreement before prepaying.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>When is the best time to prepay a loan?</h3>
+            <p>
+                Early in the loan tenure — when the outstanding principal is highest and most of your
+                EMI is going toward interest. A prepayment in year 2 of a 20-year loan saves far more
+                than the same prepayment in year 15.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Should I prepay or invest the lump sum?</h3>
+            <p>
+                Compare your loan interest rate to the post-tax return on your investment. If the loan
+                rate (e.g. 8.5%) is higher than the expected post-tax investment return, prepaying wins.
+                If you can reliably earn more after tax (e.g., equity SIP at 12%), investing may be
+                better — though prepaying provides a guaranteed, risk-free return equal to your interest rate.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Does this calculator account for multiple prepayments?</h3>
+            <p>
+                This calculator models a single lump-sum prepayment made now. For a series of
+                prepayments over time, run the calculator after each payment by updating the new
+                outstanding balance and remaining tenure.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Is my data saved anywhere?</h3>
+            <p>No. All calculations happen entirely in your browser. Nothing is sent to any server.</p>
+        </article>
+    </div>
+
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- ===== Mobile compact bar ===== -->
+<div class="lp-mobile-bar" id="lpMobileBar" aria-label="Loan prepayment quick summary">
+    <div class="lp-mobile-bar-content">
+        <div class="lp-mobile-bar-item">
+            <span class="lp-mobile-bar-label">Interest Saved</span>
+            <span class="lp-mobile-bar-value" id="mb-saved">&#8377;0</span>
+        </div>
+        <div class="lp-mobile-bar-sep"></div>
+        <div class="lp-mobile-bar-item">
+            <span class="lp-mobile-bar-label">Monthly EMI</span>
+            <span class="lp-mobile-bar-value" id="mb-emi">&#8377;0</span>
+        </div>
+        <a href="#lpResultsAnchor" class="lp-mobile-bar-link">Details &#8594;</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:src="@{/js/loan-prepayment.js(v=1)}"></script>
+
+</body>
+</html>
