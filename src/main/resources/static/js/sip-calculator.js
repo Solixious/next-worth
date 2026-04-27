@@ -234,7 +234,7 @@
 
     function init() {
         loadState();
-        renderCurrencySelector();
+        // renderCurrencySelector(); // re-enable to show currency picker
         bindSliderInput('amount-slider', 'monthlyAmount');
         bindSliderInput('rate-slider', 'returnRate');
         setupDurationToggle();

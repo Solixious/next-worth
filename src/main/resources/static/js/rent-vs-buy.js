@@ -424,7 +424,7 @@
 
     function init() {
         loadState();
-        renderCurrencySelector();
+        // renderCurrencySelector(); // re-enable to show currency picker
 
         new MutationObserver(function () {
             if (wealthChart) { wealthChart.destroy(); wealthChart = null; }

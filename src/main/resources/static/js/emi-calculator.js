@@ -234,7 +234,7 @@
 
     function init() {
         loadState();
-        renderCurrencySelector();
+        // renderCurrencySelector(); // re-enable to show currency picker
         bindSliderInput('loan-slider', 'loanAmount');
         bindSliderInput('rate-slider', 'interestRate');
         setupTenureToggle();

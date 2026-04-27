@@ -254,7 +254,7 @@
 
     function init() {
         loadState();
-        renderCurrencySelector();
+        // renderCurrencySelector(); // re-enable to show currency picker
         bindSliderInput('principal-slider', 'principal');
         bindSliderInput('rate-slider', 'interestRate');
         setupTenureToggle();

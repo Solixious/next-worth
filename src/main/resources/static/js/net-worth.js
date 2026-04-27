@@ -1151,7 +1151,7 @@
         // Load saved state — patches HIERARCHY sections before they are rendered
         var savedState = loadState();
 
-        renderCurrencySelector();
+        // renderCurrencySelector(); // re-enable to show currency picker
 
         // Sync currency pill active state if currency was restored
         document.querySelectorAll('#currencyBar .currency-pill').forEach(function (p) {

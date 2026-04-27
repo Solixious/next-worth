@@ -346,12 +346,10 @@
     function init() {
         loadState(); // restores saved values; URL params override saved corpus/monthly/expenses
 
-        buildCurrencyBar();
-
-        // Sync currency bar button active state after loadState may have changed activeCurrency
-        document.querySelectorAll('#currencyBar .currency-btn').forEach(function (btn) {
-            btn.classList.toggle('active', btn.textContent.indexOf(activeCurrency.code) !== -1);
-        });
+        // buildCurrencyBar(); // re-enable to show currency picker
+        // document.querySelectorAll('#currencyBar .currency-btn').forEach(function (btn) {
+        //     btn.classList.toggle('active', btn.textContent.indexOf(activeCurrency.code) !== -1);
+        // });
 
         bindSWRButtons();
 

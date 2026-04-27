@@ -346,7 +346,7 @@
 
     function init() {
         loadState();
-        renderCurrencySelector();
+        // renderCurrencySelector(); // re-enable to show currency picker
 
         new MutationObserver(function () {
             if (progressChart) { progressChart.destroy(); progressChart = null; }

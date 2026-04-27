@@ -492,7 +492,7 @@
 
     function init() {
         loadState();
-        renderCurrencySelector();
+        // renderCurrencySelector(); // re-enable to show currency picker
         bindSlider('loan-slider',   'loanAmount');
         bindSlider('rate-slider',   'interestRate');
         bindSlider('prepay-slider', 'prepayment');
