@@ -10,8 +10,18 @@
     var coverageMonths = 6;
     var STORAGE_KEY = 'nw_ef_v1';
     var progressChart = null;
+    var lastTheme = null;
 
     function el(id) { return document.getElementById(id); }
+
+    function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
+    function chartColors() {
+        var dark = isDark();
+        return {
+            text: dark ? '#a9b7c9' : '#475569',
+            grid: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)'
+        };
+    }
     function num(v) { var n = parseFloat(String(v).replace(/,/g, '')); return isNaN(n) ? 0 : n; }
 
     function fmt(n) {
@@ -164,7 +174,18 @@
             targetData.push(Math.round(target));
         }
 
+        var theme = isDark() ? 'dark' : 'light';
+        if (progressChart && theme !== lastTheme) {
+            progressChart.destroy();
+            progressChart = null;
+        }
+        lastTheme = theme;
+
         if (progressChart) {
+            var cc = chartColors();
+            progressChart.options.scales.x.ticks.color = cc.text;
+            progressChart.options.scales.y.ticks.color = cc.text;
+            progressChart.options.plugins.legend.labels.color = cc.text;
             progressChart.data.labels                  = labels;
             progressChart.data.datasets[0].data        = fundData;
             progressChart.data.datasets[1].data        = targetData;
@@ -210,7 +231,7 @@
                     legend: {
                         display: true,
                         labels: {
-                            color: 'var(--color-text-muted)',
+                            color: chartColors().text,
                             font: { size: 12, weight: '600' },
                             usePointStyle: true,
                             pointStyleWidth: 10,
@@ -229,15 +250,15 @@
                 scales: {
                     x: {
                         ticks: {
-                            color: 'var(--color-text-muted)',
+                            color: chartColors().text,
                             font: { size: 11 },
                             maxTicksLimit: 10
                         },
-                        grid: { color: 'rgba(128,128,128,0.12)' }
+                        grid: { color: chartColors().grid }
                     },
                     y: {
                         ticks: {
-                            color: 'var(--color-text-muted)',
+                            color: chartColors().text,
                             font: { size: 11 },
                             callback: function (v) {
                                 if (v >= 10000000) return activeCurrency.symbol + (v / 10000000).toFixed(1) + 'Cr';
@@ -246,7 +267,7 @@
                                 return activeCurrency.symbol + v;
                             }
                         },
-                        grid: { color: 'rgba(128,128,128,0.12)' }
+                        grid: { color: chartColors().grid }
                     }
                 }
             }
@@ -326,6 +347,11 @@
     function init() {
         loadState();
         renderCurrencySelector();
+
+        new MutationObserver(function () {
+            if (progressChart) { progressChart.destroy(); progressChart = null; }
+            recalc();
+        }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
         bindSlider('expenses-slider', 'monthlyExpenses');
         bindSlider('existing-slider', 'existingFund');
         bindSlider('savings-slider',  'monthlySavings');
