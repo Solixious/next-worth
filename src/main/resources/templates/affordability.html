@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    'Free Home Loan Affordability Calculator India — How Much Can You Borrow? | NextWorth',
+    'Find out the maximum home loan amount and property price you can comfortably afford based on your income, monthly expenses, and existing EMI obligations.',
+    'home loan affordability calculator India, how much home loan can I get, maximum loan amount calculator, FOIR calculator India, housing affordability calculator'
+)}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<link rel="stylesheet" th:href="@{/css/affordability.css(v=1)}">
+
+<main>
+
+<!-- ===== Hero ===== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <p class="eyebrow">Free Affordability Calculator — No Sign-up Required</p>
+            <h1>Home Loan Affordability Calculator — Know Your Limit Before You Search</h1>
+            <p class="hero-subtitle">
+                Enter your monthly income, expenses, and existing loan obligations. The calculator
+                uses the standard FOIR (Fixed Obligation to Income Ratio) method lenders use to
+                show you the maximum home loan and property price you can comfortably afford.
+            </p>
+            <div class="hero-trust-badges">
+                <span class="hero-trust-badge">&#128274; Nothing is stored or shared</span>
+                <span class="hero-trust-badge">&#9989; 100% free, no sign-up</span>
+                <span class="hero-trust-badge">&#128187; Runs entirely in your browser</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Calculator ===== -->
+<section class="af-section">
+<div class="container">
+<div class="af-layout">
+
+    <!-- ── Left column: inputs ── -->
+    <div class="af-inputs-col">
+
+        <!-- Monthly Income -->
+        <div class="af-card">
+            <div class="af-card-header">
+                <span class="af-card-label">Monthly Take-Home Income</span>
+                <input type="number" id="monthlyIncome" class="af-manual-input"
+                       value="100000" min="10000" max="10000000" step="5000"
+                       aria-label="Monthly income">
+            </div>
+            <div class="af-display-val" id="display-income">&#8377;1,00,000</div>
+            <input type="range" id="income-slider" class="af-slider"
+                   min="10000" max="10000000" step="5000" value="100000"
+                   aria-label="Income slider">
+            <div class="af-slider-ticks">
+                <span>&#8377;10K</span><span>&#8377;25L</span><span>&#8377;50L</span><span>&#8377;75L</span><span>&#8377;1Cr</span>
+            </div>
+            <p class="af-card-hint">Use your net monthly take-home pay — after tax and PF deductions. If you have a co-applicant, include their income too.</p>
+        </div>
+
+        <!-- Monthly Expenses -->
+        <div class="af-card">
+            <div class="af-card-header">
+                <span class="af-card-label">Monthly Living Expenses</span>
+                <input type="number" id="monthlyExpenses" class="af-manual-input"
+                       value="30000" min="0" max="5000000" step="1000"
+                       aria-label="Monthly expenses">
+            </div>
+            <div class="af-display-val" id="display-expenses">&#8377;30,000</div>
+            <input type="range" id="expenses-slider" class="af-slider"
+                   min="0" max="5000000" step="1000" value="30000"
+                   aria-label="Expenses slider">
+            <div class="af-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;12.5L</span><span>&#8377;25L</span><span>&#8377;37.5L</span><span>&#8377;50L</span>
+            </div>
+            <p class="af-card-hint">Include groceries, utilities, transport, subscriptions, and household expenses — excluding any loan repayments.</p>
+        </div>
+
+        <!-- Existing EMIs -->
+        <div class="af-card">
+            <div class="af-card-header">
+                <span class="af-card-label">Existing Monthly EMIs</span>
+                <input type="number" id="existingEMIs" class="af-manual-input"
+                       value="5000" min="0" max="5000000" step="500"
+                       aria-label="Existing EMIs">
+            </div>
+            <div class="af-display-val" id="display-existing">&#8377;5,000</div>
+            <input type="range" id="existing-slider" class="af-slider"
+                   min="0" max="5000000" step="500" value="5000"
+                   aria-label="Existing EMIs slider">
+            <div class="af-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;12.5L</span><span>&#8377;25L</span><span>&#8377;37.5L</span><span>&#8377;50L</span>
+            </div>
+            <p class="af-card-hint">Total of all current loan EMIs — car loan, personal loan, education loan. The lender will deduct these from your EMI eligibility.</p>
+            <div class="af-warn-banner" id="af-foir-warn">
+                &#9888;&nbsp; Existing EMIs already exceed your FOIR budget. Reduce existing obligations or raise the FOIR limit below.
+            </div>
+        </div>
+
+        <!-- Down Payment -->
+        <div class="af-card">
+            <div class="af-card-header">
+                <span class="af-card-label">Down Payment Available</span>
+                <input type="number" id="downPayment" class="af-manual-input"
+                       value="1000000" min="0" max="50000000" step="50000"
+                       aria-label="Down payment">
+            </div>
+            <div class="af-display-val" id="display-down">&#8377;10,00,000</div>
+            <input type="range" id="down-slider" class="af-slider"
+                   min="0" max="50000000" step="50000" value="1000000"
+                   aria-label="Down payment slider">
+            <div class="af-slider-ticks">
+                <span>&#8377;0</span><span>&#8377;1.25Cr</span><span>&#8377;2.5Cr</span><span>&#8377;3.75Cr</span><span>&#8377;5Cr</span>
+            </div>
+            <p class="af-card-hint">The lump sum you can pay upfront — savings, gifts, or proceeds from another property. Includes stamp duty (≈ 5–7% of property price).</p>
+        </div>
+
+        <!-- Home Loan Details -->
+        <div class="af-card">
+            <span class="af-card-label">Home Loan Details</span>
+
+            <div style="margin-top:14px;">
+                <div class="af-card-header">
+                    <span class="af-card-label" style="font-size:0.73rem;">Annual Interest Rate</span>
+                    <input type="number" id="loanRate" class="af-manual-input"
+                           value="8.5" min="1" max="20" step="0.1"
+                           aria-label="Loan interest rate">
+                </div>
+                <div class="af-display-val" id="display-rate">8.5%</div>
+                <input type="range" id="rate-slider" class="af-slider"
+                       min="1" max="20" step="0.1" value="8.5"
+                       aria-label="Rate slider">
+                <div class="af-slider-ticks">
+                    <span>1%</span><span>6%</span><span>10%</span><span>15%</span><span>20%</span>
+                </div>
+            </div>
+
+            <hr class="af-card-divider">
+
+            <div>
+                <div class="af-card-header">
+                    <span class="af-card-label" style="font-size:0.73rem;">Loan Tenure</span>
+                    <input type="number" id="loanTenure" class="af-manual-input"
+                           value="20" min="1" max="30" step="1"
+                           aria-label="Loan tenure in years">
+                </div>
+                <div class="af-display-val" id="display-tenure">20 Years</div>
+                <input type="range" id="tenure-slider" class="af-slider"
+                       min="1" max="30" step="1" value="20"
+                       aria-label="Tenure slider">
+                <div class="af-slider-ticks">
+                    <span>1 yr</span><span>8 yrs</span><span>15 yrs</span><span>22 yrs</span><span>30 yrs</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOIR Limit -->
+        <div class="af-card">
+            <div class="af-card-header">
+                <span class="af-card-label">EMI-to-Income Limit (FOIR)</span>
+                <input type="number" id="foirLimit" class="af-manual-input"
+                       value="50" min="20" max="65" step="1"
+                       aria-label="FOIR limit percentage">
+            </div>
+            <div class="af-display-val" id="display-foir">50%</div>
+            <input type="range" id="foir-slider" class="af-slider"
+                   min="20" max="65" step="1" value="50"
+                   aria-label="FOIR slider">
+            <div class="af-slider-ticks">
+                <span>20%</span><span>35%</span><span>50%</span><span>55%</span><span>65%</span>
+            </div>
+            <p class="af-card-hint">FOIR (Fixed Obligation to Income Ratio) is the maximum share of your income that can go toward all EMIs combined. Most banks allow 40–50% for salaried borrowers. Lower means more conservative; higher means more stretched.</p>
+        </div>
+
+    </div><!-- /af-inputs-col -->
+
+    <!-- ── Right column: sticky results ── -->
+    <div class="af-results-col">
+        <div class="af-sticky" id="afResultsAnchor">
+            <div class="af-results-card">
+
+                <p class="af-results-label">Max Property You Can Afford</p>
+
+                <div class="af-headline-row">
+                    <div class="af-max-value" id="af-max-value">&#8377;0</div>
+                    <span class="af-comfort-badge comfortable" id="af-comfort-badge">Comfortable</span>
+                </div>
+
+                <div class="af-stat-rows">
+                    <div class="af-stat-row af-stat-row-bold">
+                        <span class="af-stat-label">Max Loan Amount</span>
+                        <span class="af-stat-value af-accent" id="r-max-loan">&#8377;0</span>
+                    </div>
+                    <div class="af-stat-row af-stat-row-bold">
+                        <span class="af-stat-label">Max Monthly EMI</span>
+                        <span class="af-stat-value af-accent" id="r-max-emi">&#8377;0</span>
+                    </div>
+                    <div class="af-stat-row">
+                        <span class="af-stat-label">Down Payment</span>
+                        <span class="af-stat-value" id="r-down-pay">&#8377;0</span>
+                    </div>
+                    <div class="af-stat-row">
+                        <span class="af-stat-label">Loan-to-Value Ratio</span>
+                        <span class="af-stat-value" id="r-ltv">0%</span>
+                    </div>
+                    <div class="af-stat-row">
+                        <span class="af-stat-label">EMI-to-Income (FOIR)</span>
+                        <span class="af-stat-value" id="r-foir">0%</span>
+                    </div>
+                    <div class="af-stat-row af-stat-row-bold">
+                        <span class="af-stat-label">Free Cash / Month</span>
+                        <span class="af-stat-value" id="r-free-cash">&#8377;0</span>
+                    </div>
+                </div>
+
+                <div class="af-breakdown">
+                    <p class="af-breakdown-title">Monthly Income Allocation</p>
+                    <div class="af-budget-bar">
+                        <div class="af-budget-seg af-seg-existing" id="af-seg-existing" style="width:5%"></div>
+                        <div class="af-budget-seg af-seg-emi"      id="af-seg-emi"      style="width:45%"></div>
+                        <div class="af-budget-seg af-seg-expenses" id="af-seg-expenses" style="width:30%"></div>
+                        <div class="af-budget-seg af-seg-free"></div>
+                    </div>
+                    <div class="af-legend-grid">
+                        <div class="af-legend-item">
+                            <span class="af-legend-dot af-dot-existing"></span>
+                            <span>Existing EMIs &nbsp;<strong id="legend-pct-existing">5%</strong></span>
+                        </div>
+                        <div class="af-legend-item">
+                            <span class="af-legend-dot af-dot-emi"></span>
+                            <span>Home EMI &nbsp;<strong id="legend-pct-emi">45%</strong></span>
+                        </div>
+                        <div class="af-legend-item">
+                            <span class="af-legend-dot af-dot-expenses"></span>
+                            <span>Expenses &nbsp;<strong id="legend-pct-expenses">30%</strong></span>
+                        </div>
+                        <div class="af-legend-item">
+                            <span class="af-legend-dot af-dot-free"></span>
+                            <span>Free Cash &nbsp;<strong id="legend-pct-free">20%</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div><!-- /af-results-col -->
+
+</div><!-- /af-layout -->
+
+<!-- ===== Chart ===== -->
+<div class="af-chart-section">
+    <h2 class="af-chart-heading">How Your Income is Allocated</h2>
+    <p class="af-chart-subheading">A visual breakdown of where every rupee of your monthly income goes at maximum affordability.</p>
+    <div class="af-chart-card">
+        <p class="af-chart-title">Monthly Income Breakdown — % of Total Income</p>
+        <div class="af-chart-wrap"><canvas id="chartIncome"></canvas></div>
+    </div>
+</div>
+
+</div><!-- /container -->
+</section>
+
+<!-- ===== Intent hook ===== -->
+<div class="container">
+    <div class="calc-intent-hook">
+        <span class="calc-intent-hook-eyebrow">Ready to Plan Your Loan?</span>
+        <h3>Calculate your exact EMI or compare buying vs renting</h3>
+        <p>
+            Now that you know your maximum budget, use the EMI Calculator for your exact monthly
+            payment schedule, or the Rent vs Buy Calculator to see if buying is the right financial
+            move at this price point.
+        </p>
+        <div class="calc-intent-hook-actions">
+            <a th:href="@{/emi-calculator}" class="calc-intent-btn primary">EMI Calculator &#8594;</a>
+            <a th:href="@{/rent-vs-buy-calculator}" class="calc-intent-btn">Rent vs Buy</a>
+            <a th:href="@{/loan-prepayment-calculator}" class="calc-intent-btn">Loan Prepayment</a>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Content / FAQ ===== -->
+<section class="content-section">
+<div class="container">
+<div class="content-narrow">
+
+    <h2 class="calc-steps-title">How to Use This Calculator — Step by Step</h2>
+
+    <div class="calc-steps">
+        <div class="calc-step">
+            <div class="calc-step-num">1</div>
+            <div class="calc-step-body">
+                <h4>Enter your monthly take-home income</h4>
+                <p>Use your net monthly salary after tax, PF, and other deductions. If you have a co-applicant (spouse or parent), include their income here too — lenders consider combined household income for joint applications.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">2</div>
+            <div class="calc-step-body">
+                <h4>Enter your monthly living expenses and existing EMIs separately</h4>
+                <p>Living expenses (groceries, transport, utilities) are for your own reference — to see free cash. Existing EMIs matter most to lenders: car loans, personal loans, and education loans all reduce your home loan eligibility.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">3</div>
+            <div class="calc-step-body">
+                <h4>Enter your available down payment</h4>
+                <p>The sum you can put down upfront. Remember to reserve 5–7% extra for stamp duty and registration. The calculator adds this directly to your max loan to show maximum property price.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">4</div>
+            <div class="calc-step-body">
+                <h4>Set the loan rate, tenure, and FOIR limit</h4>
+                <p>Use the current home loan rate from your lender. Longer tenures increase the max loan by lowering the EMI. The FOIR slider lets you choose how conservative or aggressive you want to be — 40% is safe, 50% is typical, above 55% is risky.</p>
+            </div>
+        </div>
+        <div class="calc-step">
+            <div class="calc-step-num">5</div>
+            <div class="calc-step-body">
+                <h4>Read the results and budget breakdown</h4>
+                <p>The max property price and loan amount show your ceiling. Watch the comfort badge and the "Free Cash / Month" figure — if free cash falls below ₹15,000–20,000, you may feel financially squeezed after the purchase.</p>
+            </div>
+        </div>
+    </div>
+
+    <span class="calc-example-label">Worked Example — Salaried Couple in Bengaluru</span>
+
+    <div class="calc-example-box">
+        <p class="calc-example-scenario">Combined income: &#8377;1.5L/mo &nbsp;|&nbsp; Expenses: &#8377;45K &nbsp;|&nbsp; Existing EMI: &#8377;8K (car loan) &nbsp;|&nbsp; Down payment: &#8377;20L</p>
+        <p class="calc-example-scenario" style="margin-top:4px;">Rate: 8.5% &nbsp;|&nbsp; Tenure: 20 yrs &nbsp;|&nbsp; FOIR limit: 50%</p>
+        <div class="calc-example-rows">
+            <div class="calc-example-row"><span>FOIR budget (50% of &#8377;1.5L)</span><span>&#8377;75,000</span></div>
+            <div class="calc-example-row"><span>Less existing EMI</span><span>&#8377;8,000</span></div>
+            <div class="calc-example-row"><span>Max new home loan EMI</span><span>&#8377;67,000</span></div>
+            <div class="calc-example-row"><span>Max loan amount (8.5%, 20 yrs)</span><span>&#8377;69.18L</span></div>
+            <div class="calc-example-row"><span>Down payment</span><span>&#8377;20L</span></div>
+            <div class="calc-example-row is-result"><span>Max Property Price</span><span>&#8377;89.18L</span></div>
+            <div class="calc-example-row"><span>Free cash after all obligations</span><span>&#8377;30,000</span></div>
+            <div class="calc-example-row"><span>Comfort level</span><span>Comfortable</span></div>
+        </div>
+    </div>
+
+    <h2>What is FOIR and Why Do Banks Use It?</h2>
+    <p>
+        FOIR — Fixed Obligation to Income Ratio — is the primary metric Indian banks use to decide
+        your home loan eligibility. It caps the total of all your monthly EMI payments (including
+        the new home loan) as a percentage of your gross monthly income.
+    </p>
+    <ul class="content-list">
+        <li><strong>Most banks allow 40–50% FOIR</strong> for salaried borrowers with stable employment.</li>
+        <li><strong>Self-employed borrowers</strong> often face a stricter 40–45% cap due to income variability.</li>
+        <li><strong>High credit score (750+) borrowers</strong> may negotiate a slightly higher FOIR with some lenders.</li>
+        <li><strong>Formula:</strong> Max EMI = (Monthly Income × FOIR%) − Existing EMIs</li>
+    </ul>
+
+    <h2>How Much Home Loan Can I Get on ₹1 Lakh Salary?</h2>
+    <p>
+        With a ₹1L/month net income, no existing EMIs, 8.5% rate, 20-year tenure, and a 50% FOIR
+        limit, the maximum EMI is ₹50,000 — translating to approximately <strong>₹51.7 lakh in loan</strong>.
+        Adding a ₹10L down payment gives a maximum property price of around <strong>₹61.7 lakh</strong>.
+    </p>
+    <p>
+        The exact figure varies significantly with tenure (30-year tenure raises it to ~₹64L loan),
+        interest rate (9.5% drops it to ~₹47L), and existing EMIs.
+    </p>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+        <article class="faq-item">
+            <h3>Does this calculator give the exact amount a bank will approve?</h3>
+            <p>
+                No — banks also consider your credit score, employment type, employer profile, property
+                valuation, age, and internal policies. This calculator uses the standard FOIR method
+                to give you a realistic estimate, but the actual sanction may be higher or lower.
+                Pre-qualifying with your bank before house-hunting gives you a firm number.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>What is a safe FOIR to target?</h3>
+            <p>
+                40% or below is considered conservative and gives you comfortable breathing room for
+                emergencies, investments, and lifestyle. 50% is the common bank limit. Going above
+                50% is possible but leaves little room for unexpected expenses — a job loss or
+                medical emergency could quickly become a financial crisis.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Should I include my spouse's income?</h3>
+            <p>
+                Yes, if you are applying jointly. Joint home loans allow combined income to be used
+                for eligibility, increasing your maximum loan amount. Both applicants' credit scores
+                are checked, so make sure both are in good standing before applying.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>What LTV ratio will the bank offer?</h3>
+            <p>
+                RBI guidelines cap Loan-to-Value at 90% for loans up to ₹30L, 80% for ₹30L–₹75L,
+                and 75% for loans above ₹75L. This means for a ₹90L property, the bank will fund
+                at most ₹67.5L (75%) — you must arrange the remaining ₹22.5L as down payment.
+                If the LTV shown in results is above the applicable cap, you may need a larger down payment.
+            </p>
+        </article>
+        <article class="faq-item">
+            <h3>Is my data saved anywhere?</h3>
+            <p>No. All calculations happen entirely in your browser. Nothing is sent to any server.</p>
+        </article>
+    </div>
+
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- ===== Mobile compact bar ===== -->
+<div class="af-mobile-bar" id="afMobileBar" aria-label="Affordability quick summary">
+    <div class="af-mobile-bar-content">
+        <div class="af-mobile-bar-item">
+            <span class="af-mobile-bar-label">Max Property</span>
+            <span class="af-mobile-bar-value" id="mb-max-prop">&#8377;0</span>
+        </div>
+        <div class="af-mobile-bar-sep"></div>
+        <div class="af-mobile-bar-item">
+            <span class="af-mobile-bar-label">Max EMI</span>
+            <span class="af-mobile-bar-value" id="mb-max-emi">&#8377;0</span>
+        </div>
+        <a href="#afResultsAnchor" class="af-mobile-bar-link">Details &#8594;</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:src="@{/js/affordability.js(v=1)}"></script>
+
+</body>
+</html>
