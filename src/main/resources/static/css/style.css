@@ -413,6 +413,21 @@ ul {
     background: rgba(255,255,255,0.12);
 }
 
+.btn-tertiary {
+    background: transparent;
+    border: 1px solid transparent;
+    color: rgba(255,255,255,0.60);
+    text-decoration: underline;
+    text-decoration-color: rgba(255,255,255,0.30);
+    text-underline-offset: 3px;
+}
+.btn-tertiary:hover {
+    color: rgba(255,255,255,0.90);
+    text-decoration-color: rgba(255,255,255,0.60);
+    background: transparent;
+    transform: none;
+}
+
 /* ===== Sections ===== */
 
 section {
