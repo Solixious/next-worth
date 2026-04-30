@@ -290,3 +290,28 @@
     .guide-content table { font-size: 0.82rem; }
     .guide-content th, .guide-content td { padding: 7px 10px; }
 }
+
+/* ── Home page guides section ─────────────────────── */
+
+.guides-home-section { padding: 0 0 80px; }
+.guides-home-section .guides-grid { margin-top: 8px; }
+
+.guides-home-browse {
+    text-align: center;
+    margin-top: 32px;
+}
+.guides-home-browse-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 11px 28px; border-radius: 10px;
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    font-size: 0.9rem; font-weight: 700;
+    text-decoration: none;
+    transition: background 0.18s, color 0.18s;
+}
+.guides-home-browse-link:hover {
+    background: var(--color-primary);
+    color: #fff;
+}
+[data-theme="dark"] .guides-home-browse-link:hover { color: var(--color-bg-main); }

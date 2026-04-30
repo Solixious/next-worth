@@ -11,6 +11,7 @@
 <header th:replace="~{fragments/header :: header}"></header>
 
 <link rel="stylesheet" th:href="@{/css/tools.css(v=3)}">
+<link rel="stylesheet" th:href="@{/css/guides.css(v=1)}">
 
 <main>
 
@@ -417,6 +418,42 @@
             </a>
 
         </div>
+    </div>
+
+</div>
+</section>
+
+<!-- ===== Guides ===== -->
+<section class="guides-home-section" id="guides" th:unless="${guides.empty}">
+<div class="container">
+
+    <div class="section-header">
+        <h2>Financial Planning Guides</h2>
+        <p>In-depth articles to help you make smarter financial decisions — no jargon, no product pitches.</p>
+    </div>
+
+    <div class="guides-grid">
+        <a class="guide-card"
+           th:each="guide : ${guides}"
+           th:href="@{/guides/{slug}(slug=${guide.slug})}">
+
+            <div class="guide-card-meta">
+                <span class="guide-cat-pill" th:text="${guide.category}">Category</span>
+                <span class="guide-read-time" th:text="${guide.readTime}">5 min read</span>
+            </div>
+
+            <h2 class="guide-card-title" th:text="${guide.title}">Guide Title</h2>
+            <p class="guide-card-desc" th:text="${guide.description}">Description</p>
+
+            <div class="guide-card-footer">
+                <span class="guide-card-date" th:text="${guide.date}">2026-04-30</span>
+                <span class="guide-card-cta">Read Guide &#8594;</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="guides-home-browse">
+        <a th:href="@{/guides}" class="guides-home-browse-link">Browse All Guides &#8594;</a>
     </div>
 
 </div>
