@@ -2,6 +2,7 @@ package in.nextworth.service;
 
 import in.nextworth.model.GuideDetail;
 import in.nextworth.model.GuideMetadata;
+import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.core.io.Resource;
@@ -34,8 +35,9 @@ public class GuideService {
 
     public GuideService(ResourcePatternResolver resourceResolver) {
         this.resourceResolver = resourceResolver;
-        this.markdownParser   = Parser.builder().build();
-        this.htmlRenderer     = HtmlRenderer.builder().escapeHtml(false).build();
+        var extensions        = List.of(TablesExtension.create());
+        this.markdownParser   = Parser.builder().extensions(extensions).build();
+        this.htmlRenderer     = HtmlRenderer.builder().escapeHtml(false).extensions(extensions).build();
     }
 
     public List<GuideMetadata> listGuides() {
