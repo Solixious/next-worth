@@ -73,6 +73,27 @@
     </url>
 
     <url>
+        <loc>https://nextworth.in/guides</loc>
+        <lastmod>2026-04-30</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://nextworth.in/guides/emergency-fund</loc>
+        <lastmod>2026-04-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://nextworth.in/guides/rent-vs-buy-india</loc>
+        <lastmod>2026-04-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
         <loc>https://nextworth.in/goal-corpus-calculator</loc>
         <lastmod>2026-04-24</lastmod>
         <changefreq>weekly</changefreq>

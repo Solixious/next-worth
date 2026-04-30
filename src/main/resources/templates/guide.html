@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    ${guide.metadata().title() + ' — NextWorth Guides'},
+    ${guide.metadata().description()},
+    ${guide.metadata().title() + ', personal finance India, NextWorth'}
+)}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<link rel="stylesheet" th:href="@{/css/guides.css(v=1)}">
+
+<main>
+
+<!-- ===== Guide Hero ===== -->
+<section class="guide-hero">
+    <div class="container">
+        <a th:href="@{/guides}" class="guide-hero-back">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            All Guides
+        </a>
+
+        <div class="guide-hero-meta">
+            <span class="guide-cat-pill" th:text="${guide.metadata().category()}">Category</span>
+            <span class="guide-read-time" th:text="${guide.metadata().readTime()}">5 min read</span>
+            <span class="guide-hero-date" th:text="${guide.metadata().date()}">2026-04-30</span>
+        </div>
+
+        <h1 class="guide-hero-title" th:text="${guide.metadata().title()}">Guide Title</h1>
+        <hr class="guide-hero-divider">
+    </div>
+</section>
+
+<!-- ===== Guide Body ===== -->
+<section class="guide-detail-section">
+    <div class="container">
+        <div class="guide-layout">
+
+            <!-- Article content -->
+            <div class="guide-content-col">
+                <article class="guide-content" th:utext="${guide.htmlContent()}">
+                    <!-- Rendered markdown injected here -->
+                </article>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="guide-sidebar">
+
+                <div class="guide-sidebar-card" th:unless="${guide.relatedTools().empty}">
+                    <p class="guide-sidebar-title">Related Calculators</p>
+                    <div class="guide-tool-links">
+                        <a class="guide-tool-link"
+                           th:each="tool : ${guide.relatedTools()}"
+                           th:href="${tool.url()}">
+                            <span class="guide-tool-icon" th:text="${tool.icon()}">NW</span>
+                            <span class="guide-tool-name" th:text="${tool.name()}">Calculator Name</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="guide-sidebar-card">
+                    <p class="guide-sidebar-title">More Guides</p>
+                    <a th:href="@{/guides}" class="guide-sidebar-back">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2.5"
+                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                        Browse all guides
+                    </a>
+                </div>
+
+            </aside>
+
+        </div>
+    </div>
+</section>
+
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

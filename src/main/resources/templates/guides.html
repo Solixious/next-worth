@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(
+    'Financial Planning Guides — NextWorth',
+    'Practical guides to help you make better financial decisions — from building an emergency fund to deciding whether to rent or buy in India.',
+    'financial planning guides India, personal finance articles, rent vs buy guide India, emergency fund guide India'
+)}">
+</head>
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<link rel="stylesheet" th:href="@{/css/guides.css(v=1)}">
+
+<main>
+
+<section class="guides-hero">
+    <div class="container">
+        <span class="guides-hero-eyebrow">Financial Guides</span>
+        <h1 class="guides-hero-title">Practical Guides for Better Financial Decisions</h1>
+        <p class="guides-hero-sub">
+            Clear, numbers-first articles on personal finance in India — no jargon, no product
+            pitches. Pick a topic and start reading.
+        </p>
+    </div>
+</section>
+
+<section class="guides-section">
+    <div class="container">
+
+        <div th:if="${guides.empty}" style="text-align:center; padding: 60px 0; color: var(--color-text-muted);">
+            No guides available yet. Check back soon.
+        </div>
+
+        <div class="guides-grid" th:unless="${guides.empty}">
+            <a class="guide-card"
+               th:each="guide : ${guides}"
+               th:href="@{/guides/{slug}(slug=${guide.slug})}">
+
+                <div class="guide-card-meta">
+                    <span class="guide-cat-pill" th:text="${guide.category}">Category</span>
+                    <span class="guide-read-time" th:text="${guide.readTime}">5 min read</span>
+                </div>
+
+                <h2 class="guide-card-title" th:text="${guide.title}">Guide Title</h2>
+                <p class="guide-card-desc" th:text="${guide.description}">Description</p>
+
+                <div class="guide-card-footer">
+                    <span class="guide-card-date" th:text="${guide.date}">2026-04-30</span>
+                    <span class="guide-card-cta">Read Guide &#8594;</span>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

@@ -16,13 +16,15 @@
                 <ul>
                     <li><a th:href="@{/}">Home</a></li>
 
-                    <!-- Wealth Tracking -->
+                    <!-- Tools (all calculators in one grouped dropdown) -->
                     <li class="nav-dropdown">
                         <button type="button" class="nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false">
-                            Wealth Tracking
+                            Tools
                             <svg class="nav-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
                         </button>
-                        <ul class="nav-dropdown-menu">
+                        <ul class="nav-dropdown-menu tools-menu">
+
+                            <li class="dd-group-label">Wealth Tracking</li>
                             <li><a th:href="@{/net-worth-calculator}">
                                 <span class="dd-icon">NW</span>Net Worth Calculator
                             </a></li>
@@ -32,16 +34,9 @@
                             <li><a th:href="@{/goal-corpus-calculator}">
                                 <span class="dd-icon">GC</span>Goal Corpus Calculator
                             </a></li>
-                        </ul>
-                    </li>
 
-                    <!-- Loans & Borrowing -->
-                    <li class="nav-dropdown">
-                        <button type="button" class="nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false">
-                            Loans &amp; Borrowing
-                            <svg class="nav-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-                        </button>
-                        <ul class="nav-dropdown-menu">
+                            <li class="dd-group-divider"></li>
+                            <li class="dd-group-label">Loans &amp; Borrowing</li>
                             <li><a th:href="@{/emi-calculator}">
                                 <span class="dd-icon">EM</span>EMI Calculator
                             </a></li>
@@ -54,16 +49,9 @@
                             <li><a th:href="@{/affordability-calculator}">
                                 <span class="dd-icon">AF</span>Affordability
                             </a></li>
-                        </ul>
-                    </li>
 
-                    <!-- Investments & Savings -->
-                    <li class="nav-dropdown">
-                        <button type="button" class="nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false">
-                            Investments &amp; Savings
-                            <svg class="nav-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-                        </button>
-                        <ul class="nav-dropdown-menu">
+                            <li class="dd-group-divider"></li>
+                            <li class="dd-group-label">Investments &amp; Savings</li>
                             <li><a th:href="@{/sip-calculator}">
                                 <span class="dd-icon">SI</span>SIP Calculator
                             </a></li>
@@ -72,6 +60,26 @@
                             </a></li>
                             <li><a th:href="@{/emergency-fund-calculator}">
                                 <span class="dd-icon">EF</span>Emergency Fund
+                            </a></li>
+
+                        </ul>
+                    </li>
+
+                    <!-- Guides -->
+                    <li class="nav-dropdown">
+                        <button type="button" class="nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+                            Guides
+                            <svg class="nav-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <ul class="nav-dropdown-menu">
+                            <li><a th:href="@{/guides}">
+                                <span class="dd-icon">&#128218;</span>All Guides
+                            </a></li>
+                            <li><a th:href="@{/guides/emergency-fund}">
+                                <span class="dd-icon">EF</span>Emergency Fund Guide
+                            </a></li>
+                            <li><a th:href="@{/guides/rent-vs-buy-india}">
+                                <span class="dd-icon">RB</span>Rent vs Buy in India
                             </a></li>
                         </ul>
                     </li>
